@@ -917,8 +917,7 @@ function drawDNA (ctx, dna) {
 			+ shape.r + ','
 			+ shape.g + ','
 			+ shape.b + ','
-			+ shape.a / 255 + ','
-			+ ')'
+			+ shape.a / 255 + ')'
 		ctx.moveTo (shape.x (0), shape.y (0))
 		for (var j = 1; j < shape.verts.length; j += 1)
 			ctx.lineTo (shape.x (j), shape.y (j))
@@ -932,12 +931,12 @@ pauseButton.addEventListener ('click', pauseEvolution)
 numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value)
 	bestDNA.changeLength (newLength)
-	testDNA.changeLength (newLength)
+	drawDNA (bestCtx, bestDNA)
 })
 numVertsInput.addEventListener ('change', function (event) {
 	var newWidth = parseInt (numVertsInput.value)
 	bestDNA.changeWidth (newWidth)
-	testDNA.changeWidth (newWidth)
+	drawDNA (bestCtx, bestDNA)
 })
 
 

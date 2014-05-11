@@ -21,6 +21,15 @@
 <canvas id="test-canvas"></canvas>
 <!--canvas id="congestion-canvas"></canvas-->
 
+<section>
+<p>
+Difference <output id='difference'></output><br/>
+Mutations <output id='evolution-count'></output><br/>
+Mutations/s <output id='evolutions-per-second'></output><br/>
+Consecutive failed mutations <output id='consecutive-failures'></output><br/>
+</p>
+</section>
+
 	<span id="fitness">95.77%</span> Fitness<br>
 	<span id="step_benefit">3249</span> Improvements<br>
 	<span id="step_total">585555</span> Mutations<br>
@@ -67,9 +76,9 @@
 
 	<div id="geometry">
 		<label for='num-polys'>Polygons</label>
-		<input id='num-polys' type='number' step='1' min='1' max='1000' value='10' />
+		<input id='num-polys' type='number' step='1' min='1' max='1000' value='50' />
 		<label for='num-verts'>Vertices</label>
-		<input id='num-verts' type='number' step='1' min='3' max='30' value='3' />
+		<input id='num-verts' type='number' step='1' min='3' max='30' value='6' />
 	</div>
 </div>
 <script type="text/javascript" src="webmona.js"></script>

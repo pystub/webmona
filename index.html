@@ -1,80 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset='utf-8' />
-<!--
-
-
--->
-<title>webmona</title>
-
-
-<link rel="stylesheet" type="text/css" href="webmona.css">
-
-<script type="text/javascript" src="webmona.js"></script>
-
+	<meta charset='utf-8' />
+	<title>webmona</title>
+	<link rel="stylesheet" type="text/css" href="webmona.css">
+	<script type="text/javascript" src="webmona.js"></script>
 </head>
-
 <body onload="init()">
-<div class="image">
-	<canvas id="input-canvas" width="256" height="256"></canvas>
-</div>
-
-<div class="image">
-	<canvas id="best-canvas" width="256" height="256"></canvas>
-</div>
-
-<div class="image">
-	<canvas id="test-canvas" width="256" height="256"></canvas>
-</div>
-
-	<span id="fitness">95.77%</span> Fitness<br>
-	<span id="step_benefit">3249</span> Improvements<br>
-	<span id="step_total">585555</span> Mutations<br>
-
-	<button id="start" onclick="start()">Start</button>
-	<button id="stop" onclick="stop()" style="display: none;">Stop</button>
-
-	<div id="stats">
-		<span id="time">52m 11s</span> Elapsed time<br>
-		<span id="mutsec">189.6</span> Mutations per second<br>
-	</div>
-
-<div id="imgform">
+	<canvas id="input-canvas" width="256px" height="256px"></canvas>
+	<canvas id="best-canvas" width="256px" height="256px"></canvas>
+	<canvas id="test-canvas" width="256px" height="256px"></canvas>
+	<br>
 	<input type='file' id='image-input' />
 	<small style="color:#555;">Image should be small (~200x200 pixels), otherwise fitness computation is very slow.
 	</small>
-</div>
-
-<div id="dnaformwrap">
+	<br>
+	<button id="start" onclick="start()">Start</button><br>
+	<span id="fitness">95.77%</span> Fitness
+	<span id="step_benefit">3249</span> Improvements
+	<span id="step_total">585555</span> Mutations<br>
+	<button id="stop" onclick="stop()" style="display: none;">Stop</button>	
+	<span id="time">52m 11s</span> Elapsed time<br>
+	<span id="mutsec">189.6</span> Mutations per second<br>
+	<textarea name="clipboard" id="clipboard" onclick="select_all();"></textarea><br>
 	<button id="b_export_dna" onclick="export_dna()">Export DNA</button>
 	<button id="b_export_svg" onclick="export_dna_as_svg()">Export SVG</button>
 	<button id="b_import_dna" onclick="import_dna()">Import DNA</button>
-	<textarea name="clipboard" id="clipboard" onclick="select_all();"></textarea>
-</div>
-
-
-<div id="parameters">
-	<div id="mutationtype">
-		<div class="parname">Mutation</div>
-		<button id="b_mut_gauss" onclick="setMutation(&#39;gauss&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Gaussian</button>
-		<button id="b_mut_soft" onclick="setMutation(&#39;soft&#39;)" style="color: white; background-color: orange; background-position: initial initial; background-repeat: initial initial;">Soft</button>
-		<button id="b_mut_med" onclick="setMutation(&#39;medium&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Medium</button>
-		<button id="b_mut_hard" onclick="setMutation(&#39;hard&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Hard</button>
-		<button id="b_mut_new" onclick="setMutation(&#39;new&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">new</button>
-	</div>
-
-	<div id="resetdna">
-		<div class="parname">Initialize DNA</div>
-		<button id="b_dna_random" onclick="setDnaRandom()" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Color</button>
-		<button id="b_dna_white" onclick="setDnaColor(254,254,254)" style="color: white; background-color: orange; background-position: initial initial; background-repeat: initial initial;">White</button>
-		<button id="b_dna_black" onclick="setDnaColor(0,0,0)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Black</button>
-	</div>
-
-	<div id="geometry">
-		<button onclick="removePolygon()">-</button> <button onclick="addPolygon()">+</button> <span class="parname pargeo"><span id="polygons">50</span> Polygons</span> <br>
-		<button onclick="removeVertex()">-</button> <button onclick="addVertex()">+</button> <span class="parname pargeo"><span id="vertices">6</span> Vertices</span>
-	</div>
-</div>
+	<br>
+	Mutation
+	<button id="b_mut_gauss" onclick="setMutation(&#39;gauss&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Gaussian</button>
+	<button id="b_mut_soft" onclick="setMutation(&#39;soft&#39;)" style="color: white; background-color: orange; background-position: initial initial; background-repeat: initial initial;">Soft</button>
+	<button id="b_mut_med" onclick="setMutation(&#39;medium&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Medium</button>
+	<button id="b_mut_hard" onclick="setMutation(&#39;hard&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Hard</button>
+	<button id="b_mut_new" onclick="setMutation(&#39;new&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">new</button>
+	<br>
+	<button onclick="removePolygon()">-</button> <button onclick="addPolygon()">+</button> <span class="parname pargeo"><span id="polygons">50</span> Polygons</span> 
+	<button onclick="removeVertex()">-</button> <button onclick="addVertex()">+</button> <span class="parname pargeo"><span id="vertices">6</span> Vertices</span>
+	<br>
+	Initialize DNA
+	<button id="b_dna_random" onclick="setDnaRandom()" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Color</button>
+	<button id="b_dna_white" onclick="setDnaColor(254,254,254)" style="color: white; background-color: orange; background-position: initial initial; background-repeat: initial initial;">White</button>
+	<button id="b_dna_black" onclick="setDnaColor(0,0,0)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Black</button>
 </body>
 </html>

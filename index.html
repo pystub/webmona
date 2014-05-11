@@ -11,22 +11,15 @@
 
 <link rel="stylesheet" type="text/css" href="webmona.css">
 
-<script type="text/javascript" src="webmona.js"></script>
 
 </head>
 
 <body onload="init()">
-<div class="image">
-	<canvas id="input-canvas" width="256" height="256"></canvas>
-</div>
 
-<div class="image">
-	<canvas id="best-canvas" width="256" height="256"></canvas>
-</div>
-
-<div class="image">
-	<canvas id="test-canvas" width="256" height="256"></canvas>
-</div>
+<canvas id="input-canvas"></canvas>
+<canvas id="best-canvas"></canvas>
+<canvas id="test-canvas"></canvas>
+<!--canvas id="congestion-canvas"></canvas-->
 
 	<span id="fitness">95.77%</span> Fitness<br>
 	<span id="step_benefit">3249</span> Improvements<br>
@@ -57,24 +50,28 @@
 <div id="parameters">
 	<div id="mutationtype">
 		<div class="parname">Mutation</div>
-		<button id="b_mut_gauss" onclick="setMutation(&#39;gauss&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Gaussian</button>
-		<button id="b_mut_soft" onclick="setMutation(&#39;soft&#39;)" style="color: white; background-color: orange; background-position: initial initial; background-repeat: initial initial;">Soft</button>
-		<button id="b_mut_med" onclick="setMutation(&#39;medium&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Medium</button>
-		<button id="b_mut_hard" onclick="setMutation(&#39;hard&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Hard</button>
-		<button id="b_mut_new" onclick="setMutation(&#39;new&#39;)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">new</button>
+		<button id="b_mut_gauss" onclick="setMutation(&#39;gauss&#39;)">Gaussian</button>
+		<button id="b_mut_soft" onclick="setMutation(&#39;soft&#39;)">Soft</button>
+		<button id="b_mut_med" onclick="setMutation(&#39;medium&#39;)">Medium</button>
+		<button id="b_mut_hard" onclick="setMutation(&#39;hard&#39;)">Hard</button>
+		<button id="b_mut_new" onclick="setMutation(&#39;new&#39;)">new</button>
 	</div>
 
 	<div id="resetdna">
 		<div class="parname">Initialize DNA</div>
-		<button id="b_dna_random" onclick="setDnaRandom()" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Color</button>
-		<button id="b_dna_white" onclick="setDnaColor(254,254,254)" style="color: white; background-color: orange; background-position: initial initial; background-repeat: initial initial;">White</button>
-		<button id="b_dna_black" onclick="setDnaColor(0,0,0)" style="color: white; background-color: black; background-position: initial initial; background-repeat: initial initial;">Black</button>
+		<button id="b_dna_random" onclick="setDnaRandom()">Color</button>
+		<button id="b_dna_white" onclick="setDnaColor(254,254,254)">White</button>
+		<button id="b_dna_black" onclick="setDnaColor(0,0,0)">Black</button>
 	</div>
 
+
 	<div id="geometry">
-		<button onclick="removePolygon()">-</button> <button onclick="addPolygon()">+</button> <span class="parname pargeo"><span id="polygons">50</span> Polygons</span> <br>
-		<button onclick="removeVertex()">-</button> <button onclick="addVertex()">+</button> <span class="parname pargeo"><span id="vertices">6</span> Vertices</span>
+		<label for='num-polys'>Polygons</label>
+		<input id='num-polys' type='number' step='1' min='1' max='1000' />
+		<label for='num-verts'>Vertices</label>
+		<input id='num-verts' type='number' step='1' min='3' max='30' />
 	</div>
 </div>
+<script type="text/javascript" src="webmona.js"></script>
 </body>
 </html>

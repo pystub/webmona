@@ -146,6 +146,7 @@ Shape.prototype.dupe = function dupeShape () {
 	var result = new Shape (this.r, this.g, this.b, this.a, 0)
 	for (var i = this.verts.length - 1; i >= 0; --i)
 		result.verts.unshift (this.verts[i])
+	return result
 }
 Shape.prototype.changeWidth = function changeShapeWidth (newWidth) {
 	while (newWidth * 2 > this.verts.length)
@@ -160,7 +161,7 @@ function DNA (length, width) {
 	this.strand = []
 	this.width = width
 	for (var i = length - 1; i >= 0; --i)
-		this.strand.push (new Shape (0, 0, 0, 0, width))
+		this.strand.push (new Shape (0, 0, 0, 255, width))
 }
 DNA.prototype.dupe = function dupeDNA () {
 	var result = new DNA (0, this.width)
@@ -170,7 +171,7 @@ DNA.prototype.dupe = function dupeDNA () {
 }
 DNA.prototype.changeLength = function changeDNALength (newLength) {
 	while (newLength > this.strand.length)
-		this.strand.push (new Shape (0, 0, 0, 0, this.width))
+		this.strand.push (new Shape (0, 0, 0, 255, this.width))
 	while (newLength < this.strand.length)
 		this.strand.pop ()
 }
@@ -818,6 +819,7 @@ function init() {
 	setButtonHighlight("b_dna_black", ["b_dna_random", "b_dna_white", "b_dna_black"]);
 	setButtonHighlight("b_mut_med", ["b_mut_gauss", "b_mut_soft", "b_mut_med", "b_mut_hard", "b_mut_new"]);
 }
+
 var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
 	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
@@ -836,8 +838,9 @@ function initialize () {
 	var newLength = parseInt (numPolysInput.value)
 		,newWidth = parseInt (numVertsInput.value)
 	bestDNA = new DNA (newLength, newWidth)
-	testDNA = new DNA (newLength, newWidth)
+	bestDifference = 1e+300
 
+	startTime = new Date ()
 	elapsedTime = 0
 
 	for (var i = 0; i < bestDNA.strand.length; i++) {
@@ -851,22 +854,58 @@ function initialize () {
 	drawDNA (bestCtx, bestDNA)
 }
 function startEvolution () {
-	satrtTime = new Date ()
 	if (!evolutionTimer)
 		evolutionTimer = setInterval (evolutionStep, 0)
 
-	startButton.classList.add ('disabled')
-	pauseButton.classList.remove ('disabled')
+	satrtTime = new Date ()
+
+	startButton.classList.add ('unvisible')
+	pauseButton.classList.remove ('unvisible')
 }
 function pauseEvolution () {
 	clearInterval (evolutionTimer)
 	evolutionTimer = null
+
 	elapsedTime += (new Date ()) - startTime
 
-	pauseButton.classList.add ('disabled')
-	startButton.classList.remove ('disabled')
+	pauseButton.classList.add ('unvisible')
+	startButton.classList.remove ('unvisible')
 }
 function evolutionStep () {
+	testDNA = bestDNA.dupe ()
+	var targetShape = testDNA.strand[Math.floor (Math.random () * testDNA.strand.length)]
+		,verts = targetShape.verts
+	targetShape.r = clamp (targetShape.r + Math.floor (Math.random () * 31) - 15, 0, 255)
+	targetShape.g = clamp (targetShape.g + Math.floor (Math.random () * 31) - 15, 0, 255)
+	targetShape.b = clamp (targetShape.b + Math.floor (Math.random () * 31) - 15, 0, 255)
+	targetShape.a = clamp (targetShape.a + Math.floor (Math.random () * 31) - 15, 0, 255)
+	for (var i = verts.length - 1; i >= 0; i -= 2) {
+		verts[i] = clamp (verts[i] + Math.floor (Math.random () * 3) - 1, 0, inputCtx.canvas.width)
+		verts[i + 1] = clamp (verts[i + 1] + Math.floor (Math.random () * 3) - 1, 0, inputCtx.canvas.height)
+	}
+
+	drawDNA (testCtx, testDNA)
+
+	var difference = 0
+		,width = inputCtx.canvas.width
+		,height = inputCtx.canvas.height
+		,nPixels = width * height * 4
+		,inputPixels = inputCtx.getImageData (0, 0, width, height).data
+		,testPixels = testCtx.getImageData (0, 0, width, height).data
+
+	for (var i = 0; i < nPixels; i += 4) {
+		difference +=
+			Math.abs (inputPixels[i] - testPixels[i]) + 
+			Math.abs (inputPixels[i + 1] - testPixels[i + 1]) + 
+			Math.abs (inputPixels[i + 2] - testPixels[i + 2]) +
+			Math.abs (inputPixels[i + 3] - testPixels[i + 3])
+	}
+
+	if (difference < bestDifference) {
+		bestDNA = testDNA
+		bestDifference = difference
+		drawDNA (bestCtx, bestDNA)
+	}
 }
 
 function drawDNA (ctx, dna) {
@@ -878,11 +917,11 @@ function drawDNA (ctx, dna) {
 			+ shape.r + ','
 			+ shape.g + ','
 			+ shape.b + ','
-			+ shape.a / 256 + ','
+			+ shape.a / 255 + ','
 			+ ')'
 		ctx.moveTo (shape.x (0), shape.y (0))
-		for (var j = 1; j < shape.verts.length; j += 2)
-			ctx.lineTo(shape.x (j), shape.y (j))
+		for (var j = 1; j < shape.verts.length; j += 1)
+			ctx.lineTo (shape.x (j), shape.y (j))
 		ctx.fill ()
 	}
 }

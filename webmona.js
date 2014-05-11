@@ -784,3 +784,53 @@ function init() {
 	setButtonHighlight("b_dna_black", ["b_dna_random", "b_dna_white", "b_dna_black"]);
 	setButtonHighlight("b_mut_med", ["b_mut_gauss", "b_mut_soft", "b_mut_med", "b_mut_hard", "b_mut_new"]);
 }
+var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
+	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
+	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
+	// ,congestionCtx = document.getElementById ('congestion-canvas').getContext ('2d')
+
+
+
+var imageInput = document.getElementById ('image-input')
+	,reader = new FileReader ()
+	,proxyImage = new Image ()
+
+
+imageInput.addEventListener ('change', function (event) {
+	reader.readAsDataURL (event.target.files[0])
+}, false)
+reader.addEventListener ('load', function (event) {
+	proxyImage.src = event.target.result
+})
+proxyImage.addEventListener ('load', function (event) {
+	inputCtx.canvas.width =
+	testCtx.canvas.width = // congestionCtx.canvas.width =
+	bestCtx.canvas.width = event.target.width
+	inputCtx.canvas.height = 
+	testCtx.canvas.height = // congestionCtx.canvas.height =
+	bestCtx.canvas.height = event.target.height
+	// just in case we have transparent input
+	inputCtx.clearRect (0, 0, event.target.width, event.target.height)
+	inputCtx.drawImage (event.target, 0, 0)
+
+	// legacy from here
+	IWIDTH = event.target.width
+	IHEIGHT = event.target.height
+
+	SUBPIXELS = IWIDTH*IHEIGHT*DEPTH;
+	NORM_COEF = IWIDTH*IHEIGHT*3*255;
+
+	DATA_INPUT = inputCtx.getImageData (0, 0, IWIDTH, IHEIGHT).data;
+
+	EL_STEP_TOTAL = document.getElementById("step_total");
+	EL_STEP_BENEFIT = document.getElementById("step_benefit");
+	EL_FITNESS = document.getElementById("fitness");
+	EL_ELAPSED_TIME = document.getElementById("time");
+	EL_MUTSEC = document.getElementById("mutsec");
+
+	init_dna(DNA_TEST);
+	init_dna(DNA_BEST);
+	copyDNA(DNA_BEST, DNA_TEST);
+
+	redrawDNA();
+})

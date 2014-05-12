@@ -1,9 +1,9 @@
-//select image with lowest leader accuracy
+//select image in database with lowest leader accuracy
 
 //download input image from server
-
+inputimage = ;
 //download leader dna from server
-
+leaderdna = ;
 //initialise variables
 
 //calculate complexity = 1 / (pixel colour standard deviation)
@@ -11,7 +11,7 @@
 //split image into quadtree where each node is a region with similar complexity
 
 //if no leader dna exists yet
-if(){
+if(leaderdna = ""){
 	for each region {
   //pick a sensible initial dna
 		//find average colour of region
@@ -20,7 +20,7 @@ if(){
 }
 
 //render leader dna
-
+render(leaderdna);
 //divvy up polygon budget for each region
 regionpolygons = polygons / regions;
 
@@ -38,9 +38,9 @@ worker.postMessage('Hello World'); // Send data to our worker.
 }
 
 //render whole image
-
+mutatedimage = render(mutateddna);
 //compare to input image 
-
+mutatedfitness = compare(inputimage, mutatedimage);
 //if better match than leader rendered image
 
 if (mutatedfitness>leaderfitness) 
@@ -61,3 +61,7 @@ function renderpoly(dna){}
 //calculate complexity = 1 / (pixel colour standard deviation)
 
 function complexitycalc(image){}
+
+//compare images
+
+function compare(image0,image1){}

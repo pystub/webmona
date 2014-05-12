@@ -229,14 +229,15 @@ function evolutionStep () {
 	drawDNA (testCtx, testDNA)
 
 	if (comparators) {
-		var remainingWidth = width
+		var scan = 0
 		accumulatedDifference = 0
 		pendingComparatorResponses = comparators.length
 		
 		for (var i = comparators.length; i > 0; i--) {
-			var sliceWidth = Math.floor (remainingWidth / i)
-				,data = testCtx.getImageData (remainingWidth - sliceWidth, 0, sliceWidth, height).data
-			remainingWidth -= sliceWidth
+			var slice = Math.floor ((width - scan) / i)
+				,data = testCtx.getImageData (scan, 0, slice, height).data
+			console.log (scan, slice)
+			scan += slice
 
 			comparators[i - 1].postMessage (data.buffer, [data.buffer])
 		}
@@ -352,13 +353,15 @@ proxyImage.addEventListener ('load', function (event) {
 
 	if (Worker) {
 		comparators = [] // TODO: reuse old comparators	
-		var remainingWidth = inputCtx.canvas.width
+		var width = inputCtx.canvas.width
+			,scan = 0
 
 		for (var i = numComparators; i > 0; i--) {
 			var comparator = new Worker ('comparator.js')
-				,sliceWidth = Math.floor (remainingWidth / i)
-				,data = inputCtx.getImageData (remainingWidth - sliceWidth, 0, sliceWidth, inputCtx.canvas.height).data
-			remainingWidth -= sliceWidth
+				,slice = Math.floor ((width - scan) / i)
+				,data = inputCtx.getImageData (scan, 0, slice, inputCtx.canvas.height).data
+			console.log (scan, slice)
+			scan += slice
 
 			comparator.onmessage = comparatorResponse
 			comparator.postMessage (data.buffer, [data.buffer])
@@ -367,7 +370,7 @@ proxyImage.addEventListener ('load', function (event) {
 				break
 			}
 			else
-				comparators.push (comparator)
+				comparators.unshift (comparator)
 		}
 	}
 

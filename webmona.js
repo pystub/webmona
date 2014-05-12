@@ -235,7 +235,7 @@ function evolutionStep () {
 		
 		for (var i = comparators.length; i > 0; i--) {
 			var sliceWidth = Math.floor (remainingWidth / i)
-				,data = testCtx.getImageData (0, 0, sliceWidth, height).data
+				,data = testCtx.getImageData (remainingWidth - sliceWidth, 0, sliceWidth, height).data
 			remainingWidth -= sliceWidth
 
 			comparators[i - 1].postMessage (data.buffer, [data.buffer])
@@ -258,8 +258,6 @@ function evolutionStep () {
 	}
 
 	validateMutation (newDifference)
-
-	// validation
 }
 
 function comparatorResponse (event) {
@@ -284,7 +282,7 @@ function validateMutation (newDifference) {
 		lastRateEval.time += 1000
 		lastRateEval.evolutions = evolutionCount
 	}
-	evolutionTimer = setTimeout (evolutionStep, 0)
+	evolutionTimer = setTimeout (evolutionStep, 1)
 }
 
 function updateInfo () {
@@ -359,7 +357,7 @@ proxyImage.addEventListener ('load', function (event) {
 		for (var i = numComparators; i > 0; i--) {
 			var comparator = new Worker ('comparator.js')
 				,sliceWidth = Math.floor (remainingWidth / i)
-				,data = inputCtx.getImageData (0, 0, sliceWidth, inputCtx.canvas.height).data
+				,data = inputCtx.getImageData (remainingWidth - sliceWidth, 0, sliceWidth, inputCtx.canvas.height).data
 			remainingWidth -= sliceWidth
 
 			comparator.onmessage = comparatorResponse

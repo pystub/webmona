@@ -256,7 +256,6 @@ function evolutionStep () {
 		break
 
 	case NULL_CONTRIBUTION_CHECK:
-		testDNA.strand.push (testDNA.strand.splice (targetShapeIndex, 1)[0])
 		for (var i = verts.length; i > 0;) {
 			// ITERATIONS ARE REVERSED
 			verts[--i] = 0 // Y
@@ -266,6 +265,7 @@ function evolutionStep () {
 
 	case MOVE_SHAPE_TO_TOP:
 		testDNA.strand.push (testDNA.strand.splice (targetShapeIndex, 1)[0])
+		targetShapeIndex = testDNA.strand.length - 1
 		break 
 	}
 
@@ -288,6 +288,10 @@ function evolutionStep () {
 		if (difference == bestDifference) {
 			success = true
 			bestDifference = 1e+300
+			targetShape.r = Math.floor (Math.random () * 255)
+			targetShape.g = Math.floor (Math.random () * 255)
+			targetShape.b = Math.floor (Math.random () * 255)
+			targetShape.a = Math.floor (Math.random () * 255)
 			for (var i = verts.length; i > 0;) {
 				// ITERATIONS ARE REVERSED
 				verts[--i] = Math.floor (Math.random () * height) // Y

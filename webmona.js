@@ -133,7 +133,7 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
 	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
 
-	,differenceOut = document.getElementById ('difference')
+	,fitnessOut = document.getElementById ('fitness')
 	,evolutionCountOut = document.getElementById ('evolution-count')
 	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
 	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
@@ -148,6 +148,8 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,startTime
 	,evolutionTimer
 	,bestDifference
+	,maximumDifference
+	,bitsPP = 4
 	,evolutionCount
 	,lastRateEval = {time: 0, evolutions: 0}
 	,evolutionsPerSecond
@@ -156,8 +158,12 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 function initialize () {
 	var newLength = parseInt (numPolysInput.value)
 		,newWidth = parseInt (numVertsInput.value)
+		,width = inputCtx.canvas.width
+		,height = inputCtx.canvas.height
 	bestDNA = new DNA (newLength, newWidth)
 	bestDifference = 1e+300
+	// TODO: detect transparent/grayscale images and update bitsPP
+	maximumDifference = width * height * bitsPP * 255
 
 	startTime = new Date ()
 	elapsedTime = 0
@@ -326,7 +332,8 @@ function evolutionStep () {
 }
 
 function updateInfo () {
-	differenceOut.value = bestDifference
+	var fitness = (maximumDifference - bestDifference) / maximumDifference
+	fitnessOut.value = fitness.toFixed (2) + '%'
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures

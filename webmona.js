@@ -1,6 +1,9 @@
 function clamp (value, min, max) {
 	return Math.max (min, Math.min (max, value))
 }
+function randInt (n) {
+	return Math.floor (Math.random () * n)
+}
 function randSignedInt (n) {
 	return Math.floor (Math.random () * ((n << 1) + 1)) - n
 }
@@ -165,8 +168,8 @@ function initialize () {
 	for (var i = 0; i < bestDNA.strand.length; i++) {
 		var shape = bestDNA.strand[i]
 		for (var j = 0; j < shape.verts.length; j += 2) {
-			shape.verts[j] = Math.floor (Math.random () * bestCtx.canvas.width)
-			shape.verts[j + 1] = Math.floor (Math.random () * bestCtx.canvas.height)
+			shape.verts[j] = randInt (bestCtx.canvas.width)
+			shape.verts[j + 1] = randInt (bestCtx.canvas.height)
 		}
 	}
 
@@ -230,7 +233,7 @@ function evolutionStep () {
 
 	// mutation
 	var testDNA = bestDNA.dupe ()
-		,targetShapeIndex = Math.floor (Math.random () * testDNA.strand.length)
+		,targetShapeIndex = randInt (testDNA.strand.length)
 		,targetShape = testDNA.strand[targetShapeIndex]
 		,verts = targetShape.verts
 		,width = inputCtx.canvas.width
@@ -287,14 +290,14 @@ function evolutionStep () {
 		if (difference == bestDifference) {
 			success = true
 			bestDifference = 1e+300
-			targetShape.r = Math.floor (Math.random () * 255)
-			targetShape.g = Math.floor (Math.random () * 255)
-			targetShape.b = Math.floor (Math.random () * 255)
-			targetShape.a = Math.floor (Math.random () * 255)
+			targetShape.r = randInt (255)
+			targetShape.g = randInt (255)
+			targetShape.b = randInt (255)
+			targetShape.a = randInt (255)
 			for (var i = verts.length; i > 0;) {
 				// ITERATIONS ARE REVERSED
-				verts[--i] = Math.floor (Math.random () * height) // Y
-				verts[--i] = Math.floor (Math.random () * width) // X
+				verts[--i] = randInt (height) // Y
+				verts[--i] = randInt (width) // X
 			}
 		}
 		break

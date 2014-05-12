@@ -286,6 +286,10 @@ function evolutionStep () {
 	drawDNA (testCtx, testDNA)
 
 	var difference = compareContextData (inputCtx, testCtx)
+	if (bestDifference == 1e+300) {
+		bestDifference = difference
+		return
+	}
 
 	// validation
 	switch (operation) {
@@ -305,10 +309,12 @@ function evolutionStep () {
 			targetShape.g = randInt (255)
 			targetShape.b = randInt (255)
 			targetShape.a = randInt (255)
+			var originX = randInt (width)
+			var originY = randInt (height)
 			for (var i = verts.length; i > 0;) {
 				// ITERATIONS ARE REVERSED
-				verts[--i] = randInt (height) // Y
-				verts[--i] = randInt (width) // X
+				verts[--i] = clamp (originY + randSignedInt (5), 0, height) // Y
+				verts[--i] = clamp (originX + randSignedInt (5), 0, width) // X
 			}
 		}
 		break

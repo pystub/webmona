@@ -44,7 +44,6 @@ function DNA (length, width) {
 	if (arguments.length == 1 && (typeof arguments[0] == 'string')) {
 		var ptrn = /\s*(\d+(?:\.\d+)?)/y
 			,string = arguments[0]
-			//,validator = 0
 		this.width = parseInt (ptrn.exec (string)[1])
 		this.strand = Array (parseInt (ptrn.exec (string)[1]))
 		for (var i = 0; i < this.strand.length; i++) {
@@ -142,7 +141,6 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 
 	,numPolysInput = document.getElementById ('num-polys')
 	,numVertsInput = document.getElementById ('num-verts')
-	// ,congestionCtx = document.getElementById ('congestion-canvas').getContext ('2d')
 	
 	,elapsedTime = 0
 	,startTime
@@ -199,40 +197,72 @@ function pauseEvolution () {
 	startButton.classList.remove ('unvisible')
 }
 
+function compareContextData (a, b) {
+	var difference = 0
+		,width = Math.min (a.canvas.width, b.canvas.width)
+		,height = Math.min (a.canvas.height, b.canvas.height)
+		,aData = a.getImageData (0, 0, width, height).data
+		,bData = b.getImageData (0, 0, width, height).data
+
+	for (var i = width * height * 4; i > 0;) {
+		// ITERATIONS ARE REVERSED
+		difference +=
+			Math.abs (aData[--i] - bData[i]) + // A
+			Math.abs (aData[--i] - bData[i]) + // B
+			Math.abs (aData[--i] - bData[i]) + // G
+			Math.abs (aData[--i] - bData[i])   // R
+	}
+	return difference
+}
+
+var CHANGE_SHAPE = 1
+	,REMOVE_SHAPE = 2
+	,MOVE_SHAPE_TO_TOP = 3
+
 function evolutionStep () {
+	var rr = Math.random ()
+		,operation
+	if (rr < 0.8)
+		operation = CHANGE_SHAPE
+	// else if (rr < 0.9)
+	// 	operation = REMOVE_SHAPE
+	else
+		operation = MOVE_SHAPE_TO_TOP
+
 	// mutation
-	testDNA = bestDNA.dupe ()
-	var targetShapeIndex = Math.floor (Math.random () * testDNA.strand.length)
+	var testDNA = bestDNA.dupe ()
+		,targetShapeIndex = Math.floor (Math.random () * testDNA.strand.length)
 		,targetShape = testDNA.strand[targetShapeIndex]
 		,verts = targetShape.verts
 		,width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
-	targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
-	targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
-	targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
-	targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
-	for (var i = verts.length; i > 0;) {
-		// ITERATIONS ARE REVERSED
-		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
-		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+
+	switch (operation) {
+	case CHANGE_SHAPE:
+		targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
+		targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
+		targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
+		targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
+		for (var i = verts.length; i > 0;) {
+			// ITERATIONS ARE REVERSED
+			verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
+			verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+		}
+		break
+
+	case REMOVE_SHAPE:
+
+		break
+
+	case MOVE_SHAPE_TO_TOP:
+		testDNA.strand.push (testDNA.strand.splice (targetShapeIndex, 1)[0])
+		break 
 	}
 
 	// difference evaluation
 	drawDNA (testCtx, testDNA)
 
-	var difference = 0
-		,dataLength = width * height * 4
-		,inputData = inputCtx.getImageData (0, 0, width, height).data
-		,testData = testCtx.getImageData (0, 0, width, height).data
-
-	for (var i = dataLength; i > 0;) {
-		// ITERATIONS ARE REVERSED
-		difference +=
-			Math.abs (inputData[--i] - testData[i]) + // A
-			Math.abs (inputData[--i] - testData[i]) + // B
-			Math.abs (inputData[--i] - testData[i]) + // G
-			Math.abs (inputData[--i] - testData[i])   // R
-	}
+	var difference = compareContextData (inputCtx, testCtx)
 
 	// validation
 	++evolutionCount

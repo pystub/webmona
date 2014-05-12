@@ -254,7 +254,7 @@ function evolutionStep () {
 			targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
 			targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
 		}
-		if (rr < 0.8) {
+		else if (rr < 0.8) {
 			var targetVertIndex = randInt (verts.length >> 1) << 1
 			verts[targetVertIndex] = randInt (width)
 			verts[targetVertIndex + 1] = randInt (height)
@@ -333,7 +333,7 @@ function evolutionStep () {
 
 function updateInfo () {
 	var fitness = (maximumDifference - bestDifference) / maximumDifference
-	fitnessOut.value = fitness.toFixed (2) + '%'
+	fitnessOut.value = (fitness * 100).toFixed (2) + '%'
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures

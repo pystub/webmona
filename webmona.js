@@ -42,19 +42,18 @@ function DNA (length, width) {
 	if (!(this && this instanceof DNA))
 		throw new TypeError ()
 	if (arguments.length == 1 && (typeof arguments[0] == 'string')) {
-		var ptrn = /\s*(\d+(?:\.\d+)?)/y
-			,string = arguments[0]
-		this.width = parseInt (ptrn.exec (string)[1])
-		this.strand = Array (parseInt (ptrn.exec (string)[1]))
+		var data = arguments[0].split (/\s/)
+		this.width = parseInt (data.shift ())
+		this.strand = Array (parseInt (data.shift ()))
 		for (var i = 0; i < this.strand.length; i++) {
 			this.strand[i] = new Shape (
-				parseInt (ptrn.exec (string)[1]),
-				parseInt (ptrn.exec (string)[1]),
-				parseInt (ptrn.exec (string)[1]),
-				parseFloat (ptrn.exec (string)[1]) * 255, 0
+				parseInt (data.shift ()),
+				parseInt (data.shift ()),
+				parseInt (data.shift ()),
+				parseFloat (data.shift ()) * 255, 0
 			)
 			for (var j = 0; j < this.width * 2; j++)
-				this.strand[i].verts.push (parseFloat (ptrn.exec (string)[1]))
+				this.strand[i].verts.push (parseFloat (data.shift ()))
 		}
 		return
 	}
@@ -404,5 +403,6 @@ importButton.addEventListener ('click', function (event) {
 	if (event.button != 0)
 		return
 	bestDNA = new DNA (clipboard.value)
+	drawDNA (bestCtx, bestDNA)
 	bestDifference = 1e+300
 })

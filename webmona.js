@@ -351,11 +351,13 @@ numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value)
 	bestDNA.changeLength (newLength)
 	drawDNA (bestCtx, bestDNA)
+	bestDifference = 1e+300
 })
 numVertsInput.addEventListener ('change', function (event) {
 	var newWidth = parseInt (numVertsInput.value)
 	bestDNA.changeWidth (newWidth)
 	drawDNA (bestCtx, bestDNA)
+	bestDifference = 1e+300
 })
 
 

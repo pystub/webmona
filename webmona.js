@@ -216,16 +216,16 @@ function compareContextData (a, b) {
 }
 
 var CHANGE_SHAPE = 1
-	,REMOVE_SHAPE = 2
+	,NULL_CONTRIBUTION_CHECK = 2
 	,MOVE_SHAPE_TO_TOP = 3
 
 function evolutionStep () {
 	var rr = Math.random ()
 		,operation
-	if (rr < 0.8)
+	if (rr < 0.9)
 		operation = CHANGE_SHAPE
-	// else if (rr < 0.9)
-	// 	operation = REMOVE_SHAPE
+	else if (rr < 0.95)
+	 	operation = NULL_CONTRIBUTION_CHECK
 	else
 		operation = MOVE_SHAPE_TO_TOP
 
@@ -236,22 +236,32 @@ function evolutionStep () {
 		,verts = targetShape.verts
 		,width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
+		,success = false
 
 	switch (operation) {
 	case CHANGE_SHAPE:
-		targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
-		targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
-		targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
-		targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
-		for (var i = verts.length; i > 0;) {
-			// ITERATIONS ARE REVERSED
-			verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
-			verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+		if (rr < 0.4) {
+			targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
+			targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
+			targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
+			targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
+		}
+		else {
+			for (var i = verts.length; i > 0;) {
+				// ITERATIONS ARE REVERSED
+				verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
+				verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+			}
 		}
 		break
 
-	case REMOVE_SHAPE:
-
+	case NULL_CONTRIBUTION_CHECK:
+		testDNA.strand.push (testDNA.strand.splice (targetShapeIndex, 1)[0])
+		for (var i = verts.length; i > 0;) {
+			// ITERATIONS ARE REVERSED
+			verts[--i] = 0 // Y
+			verts[--i] = 0 // X
+		}
 		break
 
 	case MOVE_SHAPE_TO_TOP:
@@ -265,11 +275,33 @@ function evolutionStep () {
 	var difference = compareContextData (inputCtx, testCtx)
 
 	// validation
+	switch (operation) {
+	case CHANGE_SHAPE:
+	case MOVE_SHAPE_TO_TOP:
+		if (difference < bestDifference) {
+			success = true
+			bestDifference = difference
+		}
+		break
+
+	case NULL_CONTRIBUTION_CHECK:
+		if (difference == bestDifference) {
+			success = true
+			bestDifference = 1e+300
+			for (var i = verts.length; i > 0;) {
+				// ITERATIONS ARE REVERSED
+				verts[--i] = Math.floor (Math.random () * height) // Y
+				verts[--i] = Math.floor (Math.random () * width) // X
+			}
+		}
+		break
+
+	}
+
 	++evolutionCount
 	++consecutiveFailures
-	if (difference < bestDifference) {
+	if (success) {
 		bestDNA = testDNA
-		bestDifference = difference
 		drawDNA (bestCtx, bestDNA)
 		consecutiveFailures = 0
 	}

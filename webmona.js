@@ -142,7 +142,6 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 
 	,numPolysInput = document.getElementById ('num-polys')
 	,numVertsInput = document.getElementById ('num-verts')
-	// ,congestionCtx = document.getElementById ('congestion-canvas').getContext ('2d')
 	
 	,elapsedTime = 0
 	,startTime
@@ -152,6 +151,9 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,lastRateEval = {time: 0, evolutions: 0}
 	,evolutionsPerSecond
 	,consecutiveFailures
+
+	,numComparators = 8
+	,comparators
 
 function initialize () {
 	var newLength = parseInt (numPolysInput.value)
@@ -178,7 +180,9 @@ function initialize () {
 
 function startEvolution () {
 	if (!evolutionTimer)
-		evolutionTimer = setInterval (evolutionStep, 0)
+		evolutionTimer = setTimeout (evolutionStep, 0)
+	else
+		return
 
 	satrtTime = new Date ()
 
@@ -190,7 +194,7 @@ function startEvolution () {
 	updateInfo ()
 }
 function pauseEvolution () {
-	clearInterval (evolutionTimer)
+	clearTimeout (evolutionTimer)
 	evolutionTimer = null
 
 	elapsedTime += (new Date ()) - startTime
@@ -198,6 +202,10 @@ function pauseEvolution () {
 	pauseButton.classList.add ('unvisible')
 	startButton.classList.remove ('unvisible')
 }
+
+var testDNA
+	,accumulatedDifference
+	,pendingComparatorResponses
 
 function evolutionStep () {
 	// mutation
@@ -220,6 +228,22 @@ function evolutionStep () {
 	// difference evaluation
 	drawDNA (testCtx, testDNA)
 
+	if (comparators) {
+		var scan = 0
+		accumulatedDifference = 0
+		pendingComparatorResponses = comparators.length
+		
+		for (var i = comparators.length; i > 0; i--) {
+			var slice = Math.floor ((width - scan) / i)
+				,data = testCtx.getImageData (scan, 0, slice, height).data
+			console.log (scan, slice)
+			scan += slice
+
+			comparators[i - 1].postMessage (data.buffer, [data.buffer])
+		}
+		return
+	}
+
 	var difference = 0
 		,dataLength = width * height * 4
 		,inputData = inputCtx.getImageData (0, 0, width, height).data
@@ -234,12 +258,22 @@ function evolutionStep () {
 			Math.abs (inputData[--i] - testData[i])   // R
 	}
 
-	// validation
+	validateMutation (newDifference)
+}
+
+function comparatorResponse (event) {
+	accumulatedDifference += event.data
+	--pendingComparatorResponses
+	if (pendingComparatorResponses == 0) 
+		validateMutation (accumulatedDifference)
+}
+
+function validateMutation (newDifference) {
 	++evolutionCount
 	++consecutiveFailures
-	if (difference < bestDifference) {
+	if (newDifference < bestDifference) {
 		bestDNA = testDNA
-		bestDifference = difference
+		bestDifference = newDifference
 		drawDNA (bestCtx, bestDNA)
 		consecutiveFailures = 0
 	}
@@ -249,7 +283,7 @@ function evolutionStep () {
 		lastRateEval.time += 1000
 		lastRateEval.evolutions = evolutionCount
 	}
-
+	evolutionTimer = setTimeout (evolutionStep, 1)
 }
 
 function updateInfo () {
@@ -316,6 +350,29 @@ proxyImage.addEventListener ('load', function (event) {
 	// just in case we have transparent input
 	inputCtx.clearRect (0, 0, event.target.width, event.target.height)
 	inputCtx.drawImage (event.target, 0, 0)
+
+	if (Worker) {
+		comparators = [] // TODO: reuse old comparators	
+		var width = inputCtx.canvas.width
+			,scan = 0
+
+		for (var i = numComparators; i > 0; i--) {
+			var comparator = new Worker ('comparator.js')
+				,slice = Math.floor ((width - scan) / i)
+				,data = inputCtx.getImageData (scan, 0, slice, inputCtx.canvas.height).data
+			console.log (scan, slice)
+			scan += slice
+
+			comparator.onmessage = comparatorResponse
+			comparator.postMessage (data.buffer, [data.buffer])
+			if (data.byteLength) {  // no support for transferring
+				comparators = null
+				break
+			}
+			else
+				comparators.unshift (comparator)
+		}
+	}
 
 	initialize ()
 })

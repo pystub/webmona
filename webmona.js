@@ -304,6 +304,9 @@ reader.addEventListener ('load', function (event) {
 	proxyImage.src = event.target.result
 })
 proxyImage.addEventListener ('load', function (event) {
+	//make hiddenstuff visible
+	var div = document.getElementById('hiddenstuff');
+	div.style.display = 'block';
 	inputCtx.canvas.width =
 	testCtx.canvas.width = // congestionCtx.canvas.width =
 	bestCtx.canvas.width = event.target.width

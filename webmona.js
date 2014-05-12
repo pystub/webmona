@@ -248,6 +248,11 @@ function evolutionStep () {
 			targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
 			targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
 		}
+		if (rr < 0.8) {
+			var targetVertIndex = randInt (verts.length >> 1) << 1
+			verts[targetVertIndex] = randInt (width)
+			verts[targetVertIndex + 1] = randInt (height)
+		}
 		else {
 			for (var i = verts.length; i > 0;) {
 				// ITERATIONS ARE REVERSED

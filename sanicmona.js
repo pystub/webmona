@@ -1,16 +1,25 @@
 //download input image from server
 
+//download leader dna from server
+
+//initialise variables
+
+//render leader dna
+
+//calculate complexity = 1 / (pixel colour standard deviation)
+
 //split image into quadtree where each node is a region with similar complexity
-	//complexity = 1 / (pixel colour standard deviation)
+
 //divvy up polygon budget for each region
 regionpolygons = polygons / regions;
+
 //for each region
 {
-//pick a sensible initial dna
-	//find average colour of region
-	//add polygon(s) filling whole region with average colour
+	//pick a sensible initial dna
+		//find average colour of region
+		//add polygon(s) filling whole region with average colour
 
-	//evolve until desired accuracy is met
+	//evolve until accuracy is better than leading accuracy
 		//mutate dna
 		//render mutated shape
 		//render original shape
@@ -20,8 +29,19 @@ regionpolygons = polygons / regions;
 		//if mutated is better match, update leaderdna
 }
 
-//stitch image back together
+//render whole image
 
-//upload dna to server
-//upload rendered image to server
-//upload svg to server
+//compare to input image 
+
+//if better match than leader rendered image
+
+if (mutatedfitness>leaderfitness) 
+	{
+		//upload dna to server
+		//upload rendered image to server
+		//upload svg to server
+	}
+
+
+
+

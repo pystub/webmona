@@ -1,14 +1,25 @@
+//select image with lowest leader accuracy
+
 //download input image from server
 
 //download leader dna from server
 
 //initialise variables
 
-//render leader dna
-
 //calculate complexity = 1 / (pixel colour standard deviation)
 
 //split image into quadtree where each node is a region with similar complexity
+
+//if no leader dna exists yet
+if(){
+	for each region {
+  //pick a sensible initial dna
+		//find average colour of region
+		//add polygon(s) filling whole region with average colour
+	}
+}
+
+//render leader dna
 
 //divvy up polygon budget for each region
 regionpolygons = polygons / regions;

@@ -198,19 +198,19 @@ function evolutionStep () {
 	{
     //increase colour
     rand = Math.floor((Math.random() * 4) + 1);
-    if (rand=1) {targetShape.r = clamp (targetShape.r + 1, 0, 255)}
-    if (rand=2) {targetShape.g = clamp (targetShape.g + 1, 0, 255)}
-    if (rand=3) {targetShape.b = clamp (targetShape.b + 1, 0, 255)}
-    if (rand=4) {targetShape.a = clamp (targetShape.a + 1, 0, 255)}
+    if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)}
+    if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)}
+    if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)}
+    if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)}
 	}
 	else
 	{
 	//decrease colour
     rand = Math.floor((Math.random() * 4) + 1);
-    if (rand=1) {targetShape.r = clamp (targetShape.r - 1, 0, 255)}
-    if (rand=2) {targetShape.g = clamp (targetShape.g - 1, 0, 255)}
-    if (rand=3) {targetShape.b = clamp (targetShape.b - 1, 0, 255)}
-    if (rand=4) {targetShape.a = clamp (targetShape.a - 1, 0, 255)}
+    if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (15), 0, 255)}
+    if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (15), 0, 255)}
+    if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (15), 0, 255)}
+    if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (15), 0, 255)}
 	}
 
 	for (var i = verts.length; i > 0;) {

@@ -193,10 +193,26 @@ function evolutionStep () {
 		,verts = targetShape.verts
 		,width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
-	targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
-	targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
-	targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
-	targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
+
+	if (Math.random()<=0.5)
+	{
+    //increase colour
+    rand = Math.floor((Math.random() * 4) + 1);
+    if (rand=1) {targetShape.r = clamp (targetShape.r + 1, 0, 255)}
+    if (rand=2) {targetShape.g = clamp (targetShape.g + 1, 0, 255)}
+    if (rand=3) {targetShape.b = clamp (targetShape.b + 1, 0, 255)}
+    if (rand=4) {targetShape.a = clamp (targetShape.a + 1, 0, 255)}
+	}
+	else
+	{
+	//decrease colour
+    rand = Math.floor((Math.random() * 4) + 1);
+    if (rand=1) {targetShape.r = clamp (targetShape.r - 1, 0, 255)}
+    if (rand=2) {targetShape.g = clamp (targetShape.g - 1, 0, 255)}
+    if (rand=3) {targetShape.b = clamp (targetShape.b - 1, 0, 255)}
+    if (rand=4) {targetShape.a = clamp (targetShape.a - 1, 0, 255)}
+	}
+
 	for (var i = verts.length; i > 0;) {
 		// ITERATIONS ARE REVERSED
 		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
@@ -255,6 +271,9 @@ function validateMutation (newDifference) {
 		bestDifference = newDifference
 		drawDNA (bestCtx, bestDNA)
 		consecutiveFailures = 0
+			//export dna
+			dnaboard = document.getElementById ('dnaboard')
+		dnaboard.value = bestDNA
 	}
 
 	if (new Date () - lastRateEval.time >= 1000) {
@@ -373,12 +392,7 @@ var exportButton = document.getElementById ('b_export_dna')
 	,importButton = document.getElementById ('b_import_dna')
 	,clipboard = document.getElementById ('clipboard')
 
-exportButton.addEventListener ('click', function (event) {
-	//export dna
-	if (event.button != 0)
-		return
-	clipboard.value = bestDNA
-})
+
 exportSVGButton.addEventListener ('click', function (event) {
 	//export svg
 	if (event.button != 0)

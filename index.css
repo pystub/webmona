@@ -1,10 +1,12 @@
 
 body 	{
-	font-family:arial, sans-serif; padding:1em
+	font-family:arial, sans-serif; padding:1em;
+	background-color: black;
+	color: white;
 	}
 
 canvas 	{ 
-	border:solid 1px #000 
+	border:solid 1px white;
 	}
 
 

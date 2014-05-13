@@ -135,9 +135,9 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
 
 	,differenceOut = document.getElementById ('difference')
-	,evolutionCountOut = document.getElementById ('evolution-count')
-	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
-	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	//,evolutionCountOut = document.getElementById ('evolution-count')
+	//,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
+	
 
 	,numPolysInput = document.getElementById ('num-polys')
 	,numVertsInput = document.getElementById ('num-verts')
@@ -149,8 +149,7 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,evolutionCount
 	,lastRateEval = {time: 0, evolutions: 0}
 	,evolutionsPerSecond
-	,consecutiveFailures
-
+	
 	,numComparators = 8
 	,comparators
 
@@ -165,7 +164,7 @@ function initialize () {
 	elapsedTime = 0
 
 	evolutionCount = 0
-	consecutiveFailures = 0
+
 
 	for (var i = 0; i < bestDNA.strand.length; i++) {
 		var shape = bestDNA.strand[i]
@@ -288,15 +287,14 @@ function comparatorResponse (event) {
 function validateMutation (newDifference) {
 	//validate mutation
 	++evolutionCount
-	++consecutiveFailures
+	
 	if (newDifference < bestDifference) {
 		bestDNA = testDNA
 		bestDifference = newDifference
 		drawDNA (bestCtx, bestDNA)
-		consecutiveFailures = 0
+		
 		//export dna
-		dnaboard = document.getElementById ('dnaboard')
-		dnaboard.value = bestDNA
+
 	}
 
 	if (new Date () - lastRateEval.time >= 1000) {
@@ -309,11 +307,15 @@ function validateMutation (newDifference) {
 
 function updateInfo () {
 	//update information
-	differenceOut.value = 1/bestDifference
+	differenceOut.value = 100/bestDifference
 	//differenceOut.value = bestDifference
-	evolutionCountOut.value = evolutionCount
-	evolutionsPerSecondOut.value = evolutionsPerSecond
-	consecutiveFailuresOut.value = consecutiveFailures
+	//evolutionCountOut.value = evolutionCount
+	//evolutionsPerSecondOut.value = evolutionsPerSecond
+	svgboard = document.getElementById ('svgboard')
+	svgboard.value = bestDNA.toSVG ();
+	dnaboard = document.getElementById ('dnaboard')
+	dnaboard.value = bestDNA
+	
 	if (evolutionTimer)
 		requestAnimationFrame (updateInfo)
 }
@@ -419,12 +421,6 @@ var exportButton = document.getElementById ('b_export_dna')
 	,clipboard = document.getElementById ('clipboard')
 
 
-exportSVGButton.addEventListener ('click', function (event) {
-	//export svg
-	if (event.button != 0)
-		return
-	clipboard.value = bestDNA.toSVG ()
-})
 importButton.addEventListener ('click', function (event) {
 	//import dna
 	if (event.button != 0)

@@ -6,31 +6,26 @@
 		<link rel="stylesheet" type="text/css" href="index.css">
 	</head>
 	<body>
-		<canvas id="input-canvas"></canvas>
-		<canvas id="best-canvas"></canvas>
-		<canvas id="test-canvas"></canvas>
-		<section>
-			<p>
-				<label for='image-input'>source image</label>
-				<input type='file' id='image-input' /><br>
-				<div id='hiddenstuff' style='display:none;'>
-					<label for='num-polys'>polygons</label><br>
-					<input id='num-polys' type='number' step='1' min='1' max='1000' value='50' /><br>
-					<label for='num-verts'>vertices</label><br>
-					<input id='num-verts' type='number' step='1' min='3' max='30' value='3' /><br>
-					fitness <output id='difference'></output><br>
-					mutations <output id='evolution-count'></output><br>
-					mutations per second <output id='evolutions-per-second'></output><br>
-					consecutive failed mutations <output id='consecutive-failures'></output><br>
-					leader dna<br>
-					<textarea id='dnaboard'></textarea><br>
-					clipboard<br>
-					<textarea id='clipboard'></textarea><br>
-					<button id='b_export_svg'>Export SVG</button>
-					<button id='b_import_dna'>Import DNA</button>
+		source image
+		<input type='file' id='image-input' /><br>
+		<canvas id="input-canvas"></canvas><br>
+		<canvas id="best-canvas"></canvas><br>
+		<canvas id="test-canvas"></canvas><br>
+			<div id='hiddenstuff' style='display:none;'>
+				<label for='num-polys'>polygons</label><br>
+				<input id='num-polys' type='number' step='1' min='1' max='1000' value='50' /><br>
+				<label for='num-verts'>vertices</label><br>
+				<input id='num-verts' type='number' step='1' min='3' max='30' value='3' /><br>
+				fitness <output id='difference'></output><br>
+				leader dna<br>
+				<textarea id='dnaboard'></textarea><br>
+				import dna<br>
+				<textarea id='clipboard'></textarea><br>
+				<button id='b_import_dna'>import dna</button><br>
+				leader svg<br>
+				<textarea id='svgboard'></textarea><br>
+
 				</div>
-			</p>
-		</section>
 		<script type="text/javascript" src="webmona.js"></script>
 	</body>
 </html>

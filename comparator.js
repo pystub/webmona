@@ -17,5 +17,7 @@ onmessage = function (event) {
 			Math.abs (refData[--i] - newData[i]) + // G
 			Math.abs (refData[--i] - newData[i])   // R
 	}
+
+
 	postMessage (delta)
 }

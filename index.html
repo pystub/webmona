@@ -6,31 +6,25 @@
 		<link rel="stylesheet" type="text/css" href="index.css">
 	</head>
 	<body>
-		<canvas id="input-canvas"></canvas>
-		<canvas id="best-canvas"></canvas>
-		<canvas id="test-canvas"></canvas>
-		<section>
-			<p>
-				<label for='image-input'>source image</label>
-				<input type='file' id='image-input' /><br>
-				<div id='hiddenstuff' style='display:none;'>
-					<button id='start'>start</button>
-					<button id='stop' class='unvisible'>stop</button><br>
-					<label for='num-polys'>polygons</label><br>
-					<input id='num-polys' type='number' step='1' min='1' max='1000' value='50' /><br>
-					<label for='num-verts'>vertices</label><br>
-					<input id='num-verts' type='number' step='1' min='3' max='30' value='6' /><br>
-					fitness <output id='difference'></output><br>
-					mutations <output id='evolution-count'></output><br>
-					mutations per second <output id='evolutions-per-second'></output><br>
-					consecutive failed mutations <output id='consecutive-failures'></output><br>
-					<textarea id='clipboard'></textarea><br>
-					<button id='b_export_dna'>Export DNA</button>
-					<button id='b_export_svg'>Export SVG</button>
-					<button id='b_import_dna'>Import DNA</button>
-				</div>
-			</p>
-		</section>
+		source image
+		<input type='file' id='image-input' /><br>
+		<div id='hiddenstuff' style='display:none;'>
+			<canvas id="input-canvas"></canvas>
+			<canvas id="best-canvas"></canvas><br>
+			fitness <output id='difference'></output><br>
+			<canvas id="test-canvas" style='display:none;'></canvas><br>
+			<label for='num-polys'>polygons</label>
+			<input id='num-polys' type='number' step='1' min='1' max='1000' value='50' style="width: 5%"/>
+			<label for='num-verts'>vertices</label>
+			<input id='num-verts' type='number' step='1' min='3' max='30' value='3' style="width: 5%"/><br>
+			leader dna<br>
+			<textarea id='dnaboard' style="width: 100%"></textarea><br>
+			leader svg<br>
+			<textarea id='svgboard' style="width: 100%"></textarea><br>
+			import dna<br>
+			<textarea id='clipboard' style="width: 100%"></textarea><br>
+			<button id='b_import_dna'>import dna</button><br>
+		</div>
 		<script type="text/javascript" src="webmona.js"></script>
 	</body>
 </html>

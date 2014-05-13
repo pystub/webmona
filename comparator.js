@@ -1,6 +1,6 @@
 var refData
 onmessage = function (event) {
-
+	//compare images
 	var newData = new Uint8ClampedArray (event.data)
 
 	if (!refData || refData.length != newData.length) {

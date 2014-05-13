@@ -181,33 +181,6 @@ function initialize () {
 	drawDNA (bestCtx, bestDNA)
 }
 
-function startEvolution () {
-	//start evolution
-	if (!evolutionTimer)
-		evolutionTimer = setTimeout (evolutionStep, 0)
-	else
-		return
-
-	satrtTime = new Date ()
-
-	startButton.classList.add ('unvisible')
-	pauseButton.classList.remove ('unvisible')
-
-	lastRateEval.time = + new Date ()
-
-	updateInfo ()
-}
-function pauseEvolution () {
-	//pause evolution
-	clearTimeout (evolutionTimer)
-	evolutionTimer = null
-
-	elapsedTime += (new Date ()) - startTime
-
-	pauseButton.classList.add ('unvisible')
-	startButton.classList.remove ('unvisible')
-}
-
 var testDNA
 	,accumulatedDifference
 	,pendingComparatorResponses
@@ -320,11 +293,6 @@ function drawDNA (ctx, dna) {
 	}
 }
 
-//start evolving
-startButton.addEventListener ('click', startEvolution)
-//pause evolving
-pauseButton.addEventListener ('click', pauseEvolution)
-
 numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value)
 	bestDNA.changeLength (newLength)
@@ -385,6 +353,18 @@ proxyImage.addEventListener ('load', function (event) {
 	}
 
 	initialize ()
+
+	//start evolution
+		//start evolution
+	if (!evolutionTimer)
+		evolutionTimer = setTimeout (evolutionStep, 0)
+	else
+		return
+
+	satrtTime = new Date ()
+	lastRateEval.time = + new Date ()
+
+	updateInfo ()
 })
 
 //get buttons
@@ -394,7 +374,7 @@ var exportButton = document.getElementById ('b_export_dna')
 	,clipboard = document.getElementById ('clipboard')
 
 exportButton.addEventListener ('click', function (event) {
-	//import dna
+	//export dna
 	if (event.button != 0)
 		return
 	clipboard.value = bestDNA

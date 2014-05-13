@@ -139,9 +139,6 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
 	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
 
-	,startButton = document.getElementById ('start')
-	,pauseButton = document.getElementById ('stop')
-
 	,numPolysInput = document.getElementById ('num-polys')
 	,numVertsInput = document.getElementById ('num-verts')
 	
@@ -197,20 +194,46 @@ function evolutionStep () {
 	if (Math.random()<=0.5)
 	{
     //increase colour
-    rand = Math.floor((Math.random() * 4) + 1);
-    if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)}
-    if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)}
-    if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)}
-    if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)}
+    	if (Math.random()<=0.5)
+    	{
+    	//small change
+    	rand = Math.floor((Math.random() * 4) + 1);
+    	if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (4), 0, 255)}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (4), 0, 255)}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (4), 0, 255)}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (4), 0, 255)}
+    	}
+    	else
+    	{
+    	//big change
+    	rand = Math.floor((Math.random() * 4) + 1);
+    	if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (32), 0, 255)}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (32), 0, 255)}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (32), 0, 255)}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (32), 0, 255)}
+    	}	
 	}
 	else
 	{
 	//decrease colour
-    rand = Math.floor((Math.random() * 4) + 1);
-    if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (15), 0, 255)}
-    if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (15), 0, 255)}
-    if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (15), 0, 255)}
-    if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (15), 0, 255)}
+		if (Math.random()<=0.5)
+    	{
+    	//small change
+    	rand = Math.floor((Math.random() * 4) + 1);
+    	if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (4), 0, 255)}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (4), 0, 255)}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (4), 0, 255)}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (4), 0, 255)}
+    	}
+    	else
+    	{
+    	//big change
+    	rand = Math.floor((Math.random() * 4) + 1);
+    	if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (32), 0, 255)}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (32), 0, 255)}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (32), 0, 255)}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (32), 0, 255)}
+    	}	
 	}
 
 	for (var i = verts.length; i > 0;) {
@@ -338,6 +361,7 @@ proxyImage.addEventListener ('load', function (event) {
 	//make hiddenstuff visible
 	var div = document.getElementById('hiddenstuff');
 	div.style.display = 'block';
+	//set canvas sizes to that of input image
 	inputCtx.canvas.width =
 	testCtx.canvas.width = // congestionCtx.canvas.width =
 	bestCtx.canvas.width = event.target.width
@@ -383,6 +407,7 @@ proxyImage.addEventListener ('load', function (event) {
 	satrtTime = new Date ()
 	lastRateEval.time = + new Date ()
 
+	//update statistics
 	updateInfo ()
 })
 

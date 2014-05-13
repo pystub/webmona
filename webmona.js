@@ -309,7 +309,8 @@ function validateMutation (newDifference) {
 
 function updateInfo () {
 	//update information
-	differenceOut.value = bestDifference
+	differenceOut.value = 1/bestDifference
+	//differenceOut.value = bestDifference
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures

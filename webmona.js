@@ -71,12 +71,14 @@ DNA.prototype.dupe = function dupeDNA () {
 	return result
 }
 DNA.prototype.changeLength = function changeDNALength (newLength) {
+	//change dna length
 	while (newLength > this.strand.length)
 		this.strand.push (new Shape (0, 0, 0, 255, this.width))
 	while (newLength < this.strand.length)
 		this.strand.pop ()
 }
 DNA.prototype.changeWidth = function changeDNAWidth (newWidth) {
+	//change dna width
 	for (var i = this.strand.length - 1; i >= 0; --i)
 		this.strand[i].changeWidth (newWidth)
 	this.width = newWidth
@@ -156,6 +158,7 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,comparators
 
 function initialize () {
+	//add some random dna to start
 	var newLength = parseInt (numPolysInput.value)
 		,newWidth = parseInt (numVertsInput.value)
 	bestDNA = new DNA (newLength, newWidth)
@@ -179,6 +182,7 @@ function initialize () {
 }
 
 function startEvolution () {
+	//start evolution
 	if (!evolutionTimer)
 		evolutionTimer = setTimeout (evolutionStep, 0)
 	else
@@ -194,6 +198,7 @@ function startEvolution () {
 	updateInfo ()
 }
 function pauseEvolution () {
+	//pause evolution
 	clearTimeout (evolutionTimer)
 	evolutionTimer = null
 
@@ -208,7 +213,7 @@ var testDNA
 	,pendingComparatorResponses
 
 function evolutionStep () {
-	// mutation
+	// mutate dna
 	testDNA = bestDNA.dupe ()
 	var targetShapeIndex = Math.floor (Math.random () * testDNA.strand.length)
 		,targetShape = testDNA.strand[targetShapeIndex]
@@ -269,6 +274,7 @@ function comparatorResponse (event) {
 }
 
 function validateMutation (newDifference) {
+	//validate mutation
 	++evolutionCount
 	++consecutiveFailures
 	if (newDifference < bestDifference) {
@@ -287,6 +293,7 @@ function validateMutation (newDifference) {
 }
 
 function updateInfo () {
+	//update information
 	differenceOut.value = bestDifference
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
@@ -296,6 +303,7 @@ function updateInfo () {
 }
 
 function drawDNA (ctx, dna) {
+	//draw input dna
 	ctx.clearRect (0, 0, ctx.canvas.width, ctx.canvas.height)
 	for (var i = 0; i < dna.strand.length; i++) {
 		var shape = dna.strand[i]
@@ -312,7 +320,9 @@ function drawDNA (ctx, dna) {
 	}
 }
 
+//start evolving
 startButton.addEventListener ('click', startEvolution)
+//pause evolving
 pauseButton.addEventListener ('click', pauseEvolution)
 
 numPolysInput.addEventListener ('change', function (event) {
@@ -377,22 +387,26 @@ proxyImage.addEventListener ('load', function (event) {
 	initialize ()
 })
 
+//get buttons
 var exportButton = document.getElementById ('b_export_dna')
 	,exportSVGButton = document.getElementById ('b_export_svg')
 	,importButton = document.getElementById ('b_import_dna')
 	,clipboard = document.getElementById ('clipboard')
 
 exportButton.addEventListener ('click', function (event) {
+	//import dna
 	if (event.button != 0)
 		return
 	clipboard.value = bestDNA
 })
 exportSVGButton.addEventListener ('click', function (event) {
+	//export svg
 	if (event.button != 0)
 		return
 	clipboard.value = bestDNA.toSVG ()
 })
 importButton.addEventListener ('click', function (event) {
+	//import dna
 	if (event.button != 0)
 		return
 	bestDNA = new DNA (clipboard.value)

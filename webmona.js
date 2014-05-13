@@ -271,8 +271,8 @@ function validateMutation (newDifference) {
 		bestDifference = newDifference
 		drawDNA (bestCtx, bestDNA)
 		consecutiveFailures = 0
-			//export dna
-			dnaboard = document.getElementById ('dnaboard')
+		//export dna
+		dnaboard = document.getElementById ('dnaboard')
 		dnaboard.value = bestDNA
 	}
 
@@ -371,10 +371,10 @@ proxyImage.addEventListener ('load', function (event) {
 		}
 	}
 
+	//add random dna to start with
 	initialize ()
 
 	//start evolution
-		//start evolution
 	if (!evolutionTimer)
 		evolutionTimer = setTimeout (evolutionStep, 0)
 	else

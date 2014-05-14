@@ -7,6 +7,47 @@ function randInt (n) {
 function randSignedInt (n) {
 	return Math.floor (Math.random () * ((n << 1) + 1)) - n
 }
+/*
+ *     Splits millisecond count to collection of larger time units that
+ *     collectively represent the same time amount.
+ * arguments:
+ *     ms (Number) millisecond count to be converted
+ *     limit (Number) limits the variety possible resulting units. The last
+ *         allowed unit will contain the remainder of time value.
+ * returns:
+ *     Object {
+ *         ms (Number) count of milliseconds, from 0 to 999 (Infinity if limit
+ *             is less than 1)
+ *         s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
+ *         m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
+ *         h (Number) count of hours, from 0 to 23 (Infinity if limit is 3)
+ *         d (Number) count of days, from 0 to 6 (Infinity if limit is 4)
+ *         w (Number) count of weeks, from 0 to Infinity
+ *     }
+ */
+var timeUnits = [
+	/* name, modulo */
+	{n: 'ms', m: 1000},
+	{n: 's', m: 60},
+	{n: 'm', m: 60},
+	{n: 'h', m: 24},
+	{n: 'd', m: 7},
+	{n: 'w', m: 1e+300},
+]
+function msToTimeInfo (ms, limit) {
+	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
+	if (limit === undefined)
+		limit = timeUnits.length - 1
+	for (var i = 0; i < limit; i++) {
+		// store the modulo remainder of this unit in a temp value
+		var thisUnit = ti[timeUnits[i].n] % timeUnits[i].m
+		// calculate the value of next unit
+		ti[timeUnits[i + 1].n] = (ti[timeUnits[i].n] - thisUnit) / timeUnits[i].m
+		// store the current unit's value
+		ti[timeUnits[i].n] = thisUnit
+	}
+	return ti
+}
 
 function Shape (r, g, b, a, n) {
 	if (!(this && this instanceof Shape))
@@ -137,6 +178,7 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,evolutionCountOut = document.getElementById ('evolution-count')
 	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
 	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	,timeElapsedOut = document.getElementById ('time-elapsed')
 
 	,startButton = document.getElementById ('start')
 	,pauseButton = document.getElementById ('stop')
@@ -186,7 +228,7 @@ function startEvolution () {
 	if (!evolutionTimer)
 		evolutionTimer = setInterval (evolutionStep, 0)
 
-	satrtTime = new Date ()
+	startTime = +new Date ()
 
 	startButton.classList.add ('unvisible')
 	pauseButton.classList.remove ('unvisible')
@@ -199,7 +241,7 @@ function pauseEvolution () {
 	clearInterval (evolutionTimer)
 	evolutionTimer = null
 
-	elapsedTime += (new Date ()) - startTime
+	elapsedTime += (+new Date ()) - startTime
 
 	pauseButton.classList.add ('unvisible')
 	startButton.classList.remove ('unvisible')
@@ -339,10 +381,18 @@ function evolutionStep () {
 
 function updateInfo () {
 	var fitness = (maximumDifference - bestDifference) / maximumDifference
+		,tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4)
 	fitnessOut.value = (fitness * 100).toFixed (2) + '%'
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures
+	timeElapsedOut.value =
+		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
+		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :
+		tInfo.m ? tInfo.m + ' minutes ' + tInfo.s + ' seconds':
+		tInfo.s + '.' + tInfo.ms + ' seconds'
+	// if the evolution is still running, schedule next info update with RAF
+	// because RAF fires only once per actual screen refresh
 	if (evolutionTimer)
 		requestAnimationFrame (updateInfo)
 }

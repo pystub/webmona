@@ -20,49 +20,39 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,reader = new FileReader ()
 	,proxyImage = new Image ();
 
-function clamp (value, min, max) {
-	return Math.max (min, Math.min (max, value));
-}
-function randSignedInt (n) {
-	return Math.floor (Math.random () * ((n << 1) + 1)) - n;
-}
+function clamp (value, min, max) {return Math.max (min, Math.min (max, value));}
+
+function randSignedInt (n) {return Math.floor (Math.random () * ((n << 1) + 1)) - n;}
 
 function Shape (r, g, b, a, n) {
-	if (!(this && this instanceof Shape))
-		throw new TypeError ();
+	if (!(this && this instanceof Shape)) {throw new TypeError ();}
 	this.r = r;
 	this.g = g;
 	this.b = b;
 	this.a = a;
 	this.verts = [];
-	for (var i = n * 2 - 1; i >= 0; --i)
-		this.verts.push (0);
+	for (var i = n * 2 - 1; i >= 0; --i) {this.verts.push (0);}
 }
-Shape.prototype.x = function getX (i) {
-	return this.verts [i * 2];
-}
-Shape.prototype.y = function getY (i) {
-	return this.verts [i * 2 + 1];
-}
-Shape.prototype.getWidth = function getShapeWidth () {
-	return this.verts.length / 2;
-}
+
+Shape.prototype.x = function getX (i) {return this.verts [i * 2];}
+
+Shape.prototype.y = function getY (i) {return this.verts [i * 2 + 1];}
+
+Shape.prototype.getWidth = function getShapeWidth () {return this.verts.length / 2;}
+
 Shape.prototype.dupe = function dupeShape () {
 	var result = new Shape (this.r, this.g, this.b, this.a, 0);
-	for (var i = this.verts.length - 1; i >= 0; --i)
-		result.verts.unshift (this.verts[i]);
+	for (var i = this.verts.length - 1; i >= 0; --i){result.verts.unshift (this.verts[i]);}
 	return result;
 }
+
 Shape.prototype.changeWidth = function changeShapeWidth (newWidth) {
-	while (newWidth * 2 > this.verts.length)
-		this.verts.push (0);
-	while (newWidth * 2 < this.verts.length)
-		this.verts.pop ();
+	while (newWidth * 2 > this.verts.length){this.verts.push (0);}
+	while (newWidth * 2 < this.verts.length){this.verts.pop ();}
 }
 
 function DNA (length, width) {
-	if (!(this && this instanceof DNA))
-		throw new TypeError ();
+	if (!(this && this instanceof DNA)){throw new TypeError ();}
 	if (arguments.length == 1 && (typeof arguments[0] == 'string')) {
 		var ptrn = /\s*(\d+(?:\.\d+)?)/y
 			,string = arguments[0];
@@ -70,12 +60,8 @@ function DNA (length, width) {
 		this.width = parseInt (ptrn.exec (string)[1]);
 		this.strand = Array (parseInt (ptrn.exec (string)[1]));
 		for (var i = 0; i < this.strand.length; i++) {
-			this.strand[i] = new Shape (
-				parseInt (ptrn.exec (string)[1]),
-				parseInt (ptrn.exec (string)[1]),
-				parseInt (ptrn.exec (string)[1]),
-				parseFloat (ptrn.exec (string)[1]) * 255, 0
-			);
+			this.strand[i] = new Shape (parseInt (ptrn.exec (string)[1]),parseInt (ptrn.exec (string)[1]),parseInt (ptrn.exec (string)[1]),
+			parseFloat (ptrn.exec (string)[1]) * 255, 0);
 			for (var j = 0; j < this.width * 2; j++)
 				this.strand[i].verts.push (parseFloat (ptrn.exec (string)[1]));
 		}
@@ -83,45 +69,34 @@ function DNA (length, width) {
 	}
 	this.strand = [];
 	this.width = width;
-	for (var i = length - 1; i >= 0; --i)
-		this.strand.push (new Shape (0, 0, 0, 255, width));
+	for (var i = length - 1; i >= 0; --i){this.strand.push (new Shape (0, 0, 0, 255, width));}
 }
+
 DNA.prototype.dupe = function dupeDNA () {
 	var result = new DNA (0, this.width);
-	for (var i = 0; i < this.strand.length; ++i)
-		result.strand.push (this.strand[i].dupe ());
-	return result
+	for (var i = 0; i < this.strand.length; ++i){result.strand.push (this.strand[i].dupe ());}
+	return result;
 }
+
 DNA.prototype.changeLength = function changeDNALength (newLength) {
 	//change dna length
-	while (newLength > this.strand.length)
-		this.strand.push (new Shape (0, 0, 0, 255, this.width));
-	while (newLength < this.strand.length)
-		this.strand.pop ();
+	while (newLength > this.strand.length){this.strand.push (new Shape (0, 0, 0, 255, this.width));}
+	while (newLength < this.strand.length){this.strand.pop ();}
 }
+
 DNA.prototype.changeWidth = function changeDNAWidth (newWidth) {
 	//change dna width
-	for (var i = this.strand.length - 1; i >= 0; --i)
-		this.strand[i].changeWidth (newWidth);
+	for (var i = this.strand.length - 1; i >= 0; --i){this.strand[i].changeWidth (newWidth);}
 	this.width = newWidth;
 }
 
 DNA.prototype.toString = function serializeDNA () {
 	// header
-	var string =
-		this.width + ' ' +
-		this.strand.length
+	var string = this.width + ' ' +	this.strand.length;
 	// shapes
 	for (var i = 0; i < this.strand.length; i++) {
-		string += ' '
-			+ this.strand[i].r + ' '
-			+ this.strand[i].g + ' '
-			+ this.strand[i].b + ' '
-			+ this.strand[i].a / 255
-		for (var j = 0; j < this.width; j++) {
-			string +=
-				' ' + this.strand[i].x (j) +
-				' ' + this.strand[i].y (j)
+		string += ' ' + this.strand[i].r + ' ' + this.strand[i].g + ' '	+ this.strand[i].b + ' ' + this.strand[i].a / 255;
+		for (var j = 0; j < this.width; j++) {string +=	' ' + this.strand[i].x (j) + ' ' + this.strand[i].y (j);
 		}
 	}
 	return string
@@ -134,62 +109,58 @@ DNA.prototype.toSVG = function DNA2SVG () {
 		+ ' width="' + inputCtx.canvas.width + 'px"'
 		+ ' height="' + inputCtx.canvas.height + 'px"'
 		+ ' viewBox="0 0 '
-		+ inputCtx.canvas.width + ' ' + inputCtx.canvas.height + '">\n'
+		+ inputCtx.canvas.width + ' ' + inputCtx.canvas.height + '">\n';
 
 	for (var i = 0; i < this.strand.length; i++) {
 		string += '<polygon fill="rgb('
 			+ this.strand[i].r + ','
 			+ this.strand[i].g + ','
 			+ this.strand[i].b + ')" opacity="'
-			+ this.strand[i].a / 255 + '" points="'
+			+ this.strand[i].a / 255 + '" points="';
 		for (var j = 0; j < this.width; j++) {
 			string += ' '
 				+ this.strand[i].x (j) + ' '
-				+ this.strand[i].y (j)
+				+ this.strand[i].y (j);
 		}
-		string += '" />\n'
+		string += '" />\n';
 	}
-	string += '</svg>'
-	return string
+	string += '</svg>';
+	return string;
 }
-
 
 function initialize () {
 	//add some random dna to start
 	var newLength = parseInt (numPolysInput.value)
-		,newWidth = parseInt (numVertsInput.value)
-	bestDNA = new DNA (newLength, newWidth)
-	bestDifference = 1e+300
-
-	startTime = new Date ()
-	elapsedTime = 0
-
-	evolutionCount = 0
-
+		,newWidth = parseInt (numVertsInput.value);
+	bestDNA = new DNA (newLength, newWidth);
+	bestDifference = 1e+300;
+	startTime = new Date ();
+	elapsedTime = 0;
+	evolutionCount = 0;
 
 	for (var i = 0; i < bestDNA.strand.length; i++) {
-		var shape = bestDNA.strand[i]
+		var shape = bestDNA.strand[i];
 		for (var j = 0; j < shape.verts.length; j += 2) {
-			shape.verts[j] = Math.floor (Math.random () * bestCtx.canvas.width)
-			shape.verts[j + 1] = Math.floor (Math.random () * bestCtx.canvas.height)
+			shape.verts[j] = Math.floor (Math.random () * bestCtx.canvas.width);
+			shape.verts[j + 1] = Math.floor (Math.random () * bestCtx.canvas.height);
 		}
 	}
 
-	drawDNA (bestCtx, bestDNA)
+	drawDNA (bestCtx, bestDNA);
 }
 
 var testDNA
 	,accumulatedDifference
-	,pendingComparatorResponses
+	,pendingComparatorResponses;
 
 function evolutionStep () {
 	// mutate dna
-	testDNA = bestDNA.dupe ()
+	testDNA = bestDNA.dupe ();
 	var targetShapeIndex = Math.floor (Math.random () * testDNA.strand.length)
 		,targetShape = testDNA.strand[targetShapeIndex]
 		,verts = targetShape.verts
 		,width = inputCtx.canvas.width
-		,height = inputCtx.canvas.height
+		,height = inputCtx.canvas.height;
 
 	if (Math.random()<=0.5)
 	{
@@ -198,19 +169,19 @@ function evolutionStep () {
     	{
     	//small change
     	rand = Math.floor((Math.random() * 4) + 1);
-    	if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (4), 0, 255)}
-    	if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (4), 0, 255)}
-    	if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (4), 0, 255)}
-    	if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (4), 0, 255)}
+    	if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (4), 0, 255);}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (4), 0, 255);}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (4), 0, 255);}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (4), 0, 255);}
     	}
     	else
     	{
     	//big change
     	rand = Math.floor((Math.random() * 4) + 1);
-    	if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (32), 0, 255)}
-    	if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (32), 0, 255)}
-    	if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (32), 0, 255)}
-    	if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (32), 0, 255)}
+    	if (rand=1) {targetShape.r = clamp (targetShape.r + randSignedInt (32), 0, 255);}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g + randSignedInt (32), 0, 255);}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b + randSignedInt (32), 0, 255);}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a + randSignedInt (32), 0, 255);}
     	}	
 	}
 	else
@@ -220,26 +191,26 @@ function evolutionStep () {
     	{
     	//small change
     	rand = Math.floor((Math.random() * 4) + 1);
-    	if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (4), 0, 255)}
-    	if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (4), 0, 255)}
-    	if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (4), 0, 255)}
-    	if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (4), 0, 255)}
+    	if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (4), 0, 255);}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (4), 0, 255);}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (4), 0, 255);}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (4), 0, 255);}
     	}
     	else
     	{
     	//big change
     	rand = Math.floor((Math.random() * 4) + 1);
-    	if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (32), 0, 255)}
-    	if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (32), 0, 255)}
-    	if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (32), 0, 255)}
-    	if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (32), 0, 255)}
+    	if (rand=1) {targetShape.r = clamp (targetShape.r - randSignedInt (32), 0, 255);}
+    	if (rand=2) {targetShape.g = clamp (targetShape.g - randSignedInt (32), 0, 255);}
+    	if (rand=3) {targetShape.b = clamp (targetShape.b - randSignedInt (32), 0, 255);}
+    	if (rand=4) {targetShape.a = clamp (targetShape.a - randSignedInt (32), 0, 255);}
     	}	
 	}
 
 	for (var i = verts.length; i > 0;) {
 		// ITERATIONS ARE REVERSED
-		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
-		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height); // Y
+		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width); // X
 	}
 
 	// difference evaluation
@@ -281,8 +252,7 @@ function evolutionStep () {
 function comparatorResponse (event) {
 	accumulatedDifference += event.data;
 	--pendingComparatorResponses;
-	if (pendingComparatorResponses == 0) 
-		validateMutation (accumulatedDifference);
+	if (pendingComparatorResponses == 0) {validateMutation (accumulatedDifference);}
 }
 
 function validateMutation (newDifference) {
@@ -317,7 +287,7 @@ function updateInfo () {
 
 function drawDNA (ctx, dna) {
 	//draw input dna
-	ctx.clearRect (0, 0, ctx.canvas.width, ctx.canvas.height)
+	ctx.clearRect (0, 0, ctx.canvas.width, ctx.canvas.height);
 	for (var i = 0; i < dna.strand.length; i++) {
 		var shape = dna.strand[i]
 		ctx.beginPath ()
@@ -326,30 +296,27 @@ function drawDNA (ctx, dna) {
 			+ shape.g + ','
 			+ shape.b + ','
 			+ shape.a / 255 + ')';
-		ctx.moveTo (shape.x (0), shape.y (0))
-		for (var j = 1; j < shape.verts.length / 2; j += 1)
-			ctx.lineTo (shape.x (j), shape.y (j));
-		ctx.fill ()
+		ctx.moveTo (shape.x (0), shape.y (0));
+		for (var j = 1; j < shape.verts.length / 2; j += 1){ctx.lineTo (shape.x (j), shape.y (j));}
+		ctx.fill ();
 	}
 }
 
 numPolysInput.addEventListener ('change', function (event) {
-	var newLength = parseInt (numPolysInput.value)
-	bestDNA.changeLength (newLength)
-	drawDNA (bestCtx, bestDNA)
-})
-numVertsInput.addEventListener ('change', function (event) {
-	var newWidth = parseInt (numVertsInput.value)
-	bestDNA.changeWidth (newWidth)
-	drawDNA (bestCtx, bestDNA)
+	var newLength = parseInt (numPolysInput.value);
+	bestDNA.changeLength (newLength);
+	drawDNA (bestCtx, bestDNA);
 })
 
-imageInput.addEventListener ('change', function (event) {
-	reader.readAsDataURL (event.target.files[0]);
-}, false)
-reader.addEventListener ('load', function (event) {
-	proxyImage.src = event.target.result;
+numVertsInput.addEventListener ('change', function (event) {
+	var newWidth = parseInt (numVertsInput.value);
+	bestDNA.changeWidth (newWidth);
+	drawDNA (bestCtx, bestDNA);
 })
+
+imageInput.addEventListener ('change', function (event) {reader.readAsDataURL (event.target.files[0]);}, false)
+reader.addEventListener ('load', function (event) {proxyImage.src = event.target.result;})
+
 proxyImage.addEventListener ('load', function (event) {
 	//make hiddenstuff visible
 	var div = document.getElementById('hiddenstuff');
@@ -367,8 +334,7 @@ proxyImage.addEventListener ('load', function (event) {
 
 	if (Worker) {
 		comparators = []; // TODO: reuse old comparators	
-		var width = inputCtx.canvas.width
-			,scan = 0;
+		var width = inputCtx.canvas.width,scan = 0;
 
 		for (var i = numComparators; i > 0; i--) {
 			var comparator = new Worker ('comparator.js')
@@ -377,14 +343,9 @@ proxyImage.addEventListener ('load', function (event) {
 			console.log (scan, slice);
 			scan += slice;
 
-			comparator.onmessage = comparatorResponse
-			comparator.postMessage (data.buffer, [data.buffer])
-			if (data.byteLength) {  // no support for transferring
-				comparators = null;
-				break;
-			}
-			else
-				comparators.unshift (comparator);
+			comparator.onmessage = comparatorResponse;
+			comparator.postMessage (data.buffer, [data.buffer]);
+			if (data.byteLength) {comparators = null; break;} else {comparators.unshift (comparator);}
 		}
 	}
 
@@ -402,8 +363,7 @@ proxyImage.addEventListener ('load', function (event) {
 
 importButton.addEventListener ('click', function (event) {
 	//import dna
-	if (event.button != 0)
-		return
+	if (event.button != 0) {return;}
 	bestDNA = new DNA (clipboard.value);
 	bestDifference = 1e+300;
 })

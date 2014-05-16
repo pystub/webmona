@@ -32,7 +32,7 @@ var timeUnits = [
 	{n: 'm', m: 60},
 	{n: 'h', m: 24},
 	{n: 'd', m: 7},
-	{n: 'w', m: 1e+300},
+	{n: 'w', m: Infinity},
 ]
 function msToTimeInfo (ms, limit) {
 	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
@@ -382,7 +382,11 @@ function evolutionStep () {
 function updateInfo () {
 	var fitness = (maximumDifference - bestDifference) / maximumDifference
 		,tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4)
-	fitnessOut.value = (fitness * 100).toFixed (2) + '%'
+	fitnessOut.value = fitness.toLocaleString (navigator.language, {
+		style: 'percent',
+		maximumFractionDigits: '2',
+		minimumFractionDigits: '2',
+	})
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures

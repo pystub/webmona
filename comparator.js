@@ -1,6 +1,6 @@
 var refData
 onmessage = function (event) {
-
+	//compare images
 	var newData = new Uint8ClampedArray (event.data)
 
 	if (!refData || refData.length != newData.length) {
@@ -17,5 +17,7 @@ onmessage = function (event) {
 			Math.abs (refData[--i] - newData[i]) + // G
 			Math.abs (refData[--i] - newData[i])   // R
 	}
+
+
 	postMessage (delta)
 }

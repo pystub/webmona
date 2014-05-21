@@ -169,6 +169,34 @@ DNA.prototype.toSVG = function DNA2SVG () {
 	string += '</svg>'
 	return string
 }
+/* complexity is sum of
+ *     all shapes'
+ *     neighbouring edges'
+ *     dot products'
+ *     absolute values
+ */
+DNA.prototype.computeComplexity = function computeDNAComplexity () {
+	var complexity = 0
+		,shape
+		,x0, y0, x1, y1
+	for (var i = this.strand.length; i > 0;) {
+		// calculate the vector that goes from the last point to the first
+		shape = this.strand[--i]
+		x1 = shape.x (shape.getWidth () - 1) - shape.x (0)
+		y1 = shape.y (shape.getWidth () - 1) - shape.y (0)
+		for (var j = 0; j < shape.getWidth (); j++) {
+			// calculate current vector
+			x0 = shape.x (j) - shape.x ((j + 1) % shape.getWidth ())
+			y0 = shape.y (j) - shape.y ((j + 1) % shape.getWidth ())
+			// calculate dot product, and add absolute of it
+			complexity += Math.abs (x0 * x1 + y0 * y1)
+			// store current vector for next cycle
+			x1 = x0
+			y1 = y0
+		}
+	}
+	return complexity
+}
 
 var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
@@ -186,16 +214,17 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,numPolysInput = document.getElementById ('num-polys')
 	,numVertsInput = document.getElementById ('num-verts')
 	
-	,elapsedTime = 0
-	,startTime
-	,evolutionTimer
-	,bestDifference
-	,maximumDifference
 	,bitsPP = 4
+	,startTime
+	,elapsedTime = 0
 	,evolutionCount
+	,consecutiveFailures
 	,lastRateEval = {time: 0, evolutions: 0}
 	,evolutionsPerSecond
-	,consecutiveFailures
+	,evolutionTimer
+	,maximumDifference
+	,bestDifference
+	,bestComplexity
 
 function initialize () {
 	var newLength = parseInt (numPolysInput.value)
@@ -204,6 +233,7 @@ function initialize () {
 		,height = inputCtx.canvas.height
 	bestDNA = new DNA (newLength, newWidth)
 	bestDifference = 1e+300
+	bestComplexity = 1e+300
 	// TODO: detect transparent/grayscale images and update bitsPP
 	maximumDifference = width * height * bitsPP * 255
 
@@ -328,18 +358,27 @@ function evolutionStep () {
 	drawDNA (testCtx, testDNA)
 
 	var difference = compareContextData (inputCtx, testCtx)
+		,complexity = testDNA.computeComplexity () * 100
+
 	if (bestDifference == 1e+300) {
 		bestDifference = difference
+		bestComplexity = complexity
 		return
 	}
 
 	// validation
 	switch (operation) {
 	case CHANGE_SHAPE:
+		if (difference + complexity < bestDifference + bestComplexity) {
+			success = true
+			bestDifference = difference
+			bestComplexity = complexity
+		}
 	case MOVE_SHAPE_TO_TOP:
 		if (difference < bestDifference) {
 			success = true
 			bestDifference = difference
+			// complexity doesn't change
 		}
 		break
 
@@ -347,6 +386,7 @@ function evolutionStep () {
 		if (difference == bestDifference) {
 			success = true
 			bestDifference = 1e+300
+			bestComplexity = 1e+300
 			targetShape.r = randInt (255)
 			targetShape.g = randInt (255)
 			targetShape.b = randInt (255)

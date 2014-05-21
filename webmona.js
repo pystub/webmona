@@ -232,8 +232,8 @@ function initialize () {
 		,width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
 	bestDNA = new DNA (newLength, newWidth)
-	bestDifference = 1e+300
-	bestComplexity = 1e+300
+	bestDifference = Infinity
+	bestComplexity = Infinity
 	// TODO: detect transparent/grayscale images and update bitsPP
 	maximumDifference = width * height * bitsPP * 255
 
@@ -358,13 +358,7 @@ function evolutionStep () {
 	drawDNA (testCtx, testDNA)
 
 	var difference = compareContextData (inputCtx, testCtx)
-		,complexity = testDNA.computeComplexity () * 100
-
-	if (bestDifference == 1e+300) {
-		bestDifference = difference
-		bestComplexity = complexity
-		return
-	}
+		,complexity = testDNA.computeComplexity ()
 
 	// validation
 	switch (operation) {
@@ -385,8 +379,6 @@ function evolutionStep () {
 	case NULL_CONTRIBUTION_CHECK:
 		if (difference == bestDifference) {
 			success = true
-			bestDifference = 1e+300
-			bestComplexity = 1e+300
 			targetShape.r = randInt (255)
 			targetShape.g = randInt (255)
 			targetShape.b = randInt (255)
@@ -398,6 +390,9 @@ function evolutionStep () {
 				verts[--i] = clamp (originY + randSignedInt (5), 0, height) // Y
 				verts[--i] = clamp (originX + randSignedInt (5), 0, width) // X
 			}
+			drawDNA (testCtx, testDNA)
+			bestDifference = compareContextData (inputCtx, testCtx)
+			bestComplexity = testDNA.computeComplexity ()
 		}
 		break
 
@@ -465,13 +460,13 @@ numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value)
 	bestDNA.changeLength (newLength)
 	drawDNA (bestCtx, bestDNA)
-	bestDifference = 1e+300
+	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 numVertsInput.addEventListener ('change', function (event) {
 	var newWidth = parseInt (numVertsInput.value)
 	bestDNA.changeWidth (newWidth)
 	drawDNA (bestCtx, bestDNA)
-	bestDifference = 1e+300
+	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 
 
@@ -519,5 +514,5 @@ importButton.addEventListener ('click', function (event) {
 		return
 	bestDNA = new DNA (clipboard.value)
 	drawDNA (bestCtx, bestDNA)
-	bestDifference = 1e+300
+	bestDifference = compareContextData (inputCtx, bestCtx)
 })

@@ -1,8 +1,52 @@
 function clamp (value, min, max) {
 	return Math.max (min, Math.min (max, value))
 }
+function randInt (n) {
+	return Math.floor (Math.random () * n)
+}
 function randSignedInt (n) {
 	return Math.floor (Math.random () * ((n << 1) + 1)) - n
+}
+/*
+ *     Splits millisecond count to collection of larger time units that
+ *     collectively represent the same time amount.
+ * arguments:
+ *     ms (Number) millisecond count to be converted
+ *     limit (Number) limits the variety possible resulting units. The last
+ *         allowed unit will contain the remainder of time value.
+ * returns:
+ *     Object {
+ *         ms (Number) count of milliseconds, from 0 to 999 (Infinity if limit
+ *             is less than 1)
+ *         s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
+ *         m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
+ *         h (Number) count of hours, from 0 to 23 (Infinity if limit is 3)
+ *         d (Number) count of days, from 0 to 6 (Infinity if limit is 4)
+ *         w (Number) count of weeks, from 0 to Infinity
+ *     }
+ */
+var timeUnits = [
+	/* name, modulo */
+	{n: 'ms', m: 1000},
+	{n: 's', m: 60},
+	{n: 'm', m: 60},
+	{n: 'h', m: 24},
+	{n: 'd', m: 7},
+	{n: 'w', m: Infinity},
+]
+function msToTimeInfo (ms, limit) {
+	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
+	if (limit === undefined)
+		limit = timeUnits.length - 1
+	for (var i = 0; i < limit; i++) {
+		// store the modulo remainder of this unit in a temp value
+		var thisUnit = ti[timeUnits[i].n] % timeUnits[i].m
+		// calculate the value of next unit
+		ti[timeUnits[i + 1].n] = (ti[timeUnits[i].n] - thisUnit) / timeUnits[i].m
+		// store the current unit's value
+		ti[timeUnits[i].n] = thisUnit
+	}
+	return ti
 }
 
 function Shape (r, g, b, a, n) {
@@ -42,20 +86,18 @@ function DNA (length, width) {
 	if (!(this && this instanceof DNA))
 		throw new TypeError ()
 	if (arguments.length == 1 && (typeof arguments[0] == 'string')) {
-		var ptrn = /\s*(\d+(?:\.\d+)?)/y
-			,string = arguments[0]
-			//,validator = 0
-		this.width = parseInt (ptrn.exec (string)[1])
-		this.strand = Array (parseInt (ptrn.exec (string)[1]))
+		var data = arguments[0].split (/\s/)
+		this.width = parseInt (data.shift ())
+		this.strand = Array (parseInt (data.shift ()))
 		for (var i = 0; i < this.strand.length; i++) {
 			this.strand[i] = new Shape (
-				parseInt (ptrn.exec (string)[1]),
-				parseInt (ptrn.exec (string)[1]),
-				parseInt (ptrn.exec (string)[1]),
-				parseFloat (ptrn.exec (string)[1]) * 255, 0
+				parseInt (data.shift ()),
+				parseInt (data.shift ()),
+				parseInt (data.shift ()),
+				parseFloat (data.shift ()) * 255, 0
 			)
 			for (var j = 0; j < this.width * 2; j++)
-				this.strand[i].verts.push (parseFloat (ptrn.exec (string)[1]))
+				this.strand[i].verts.push (parseFloat (data.shift ()))
 		}
 		return
 	}
@@ -127,15 +169,61 @@ DNA.prototype.toSVG = function DNA2SVG () {
 	string += '</svg>'
 	return string
 }
+/* complexity is sum of
+ *     all shapes'
+ *     neighbouring edges'
+ *     dot products'
+ *     absolute values
+ */
+DNA.prototype.computeComplexity = function computeDNAComplexity () {
+	var complexity = 0
+		,shape
+		,x0, y0, x1, y1
+	for (var i = this.strand.length; i > 0;) {
+		// calculate the vector that goes from the last point to the first
+		shape = this.strand[--i]
+		x1 = shape.x (shape.getWidth () - 1) - shape.x (0)
+		y1 = shape.y (shape.getWidth () - 1) - shape.y (0)
+		for (var j = 0; j < shape.getWidth (); j++) {
+			// calculate current vector
+			x0 = shape.x (j) - shape.x ((j + 1) % shape.getWidth ())
+			y0 = shape.y (j) - shape.y ((j + 1) % shape.getWidth ())
+			// calculate dot product, and add absolute of it
+			complexity += Math.abs (x0 * x1 + y0 * y1)
+			// store current vector for next cycle
+			x1 = x0
+			y1 = y0
+		}
+	}
+	return complexity
+}
+DNA.prototype.randomize = function randomizeDNA (width, height) {
+	for (var i = this.strand.length; i > 0;) {
+		var shape = this.strand[--i]
+		shape.r = randInt (255)
+		shape.g = randInt (255)
+		shape.b = randInt (255)
+		shape.a = randInt (128) + 127
+		for (var j = 0; j < shape.verts.length; j += 2) {
+			shape.verts[j] = randInt (bestCtx.canvas.width)
+			shape.verts[j + 1] = randInt (bestCtx.canvas.height)
+		}
+	}
+}
 
-var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
+var running = false
+	,inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
 	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
 
-	,differenceOut = document.getElementById ('difference')
+	,bestDNA
+	,testDNA
+
+	,fitnessOut = document.getElementById ('fitness')
 	,evolutionCountOut = document.getElementById ('evolution-count')
 	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
 	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	,timeElapsedOut = document.getElementById ('time-elapsed')
 
 	,startButton = document.getElementById ('start')
 	,pauseButton = document.getElementById ('stop')
@@ -143,14 +231,17 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,numPolysInput = document.getElementById ('num-polys')
 	,numVertsInput = document.getElementById ('num-verts')
 	
-	,elapsedTime = 0
+	,bitsPP = 4
 	,startTime
-	,evolutionTimer
-	,bestDifference
+	,elapsedTime = 0
 	,evolutionCount
+	,consecutiveFailures
 	,lastRateEval = {time: 0, evolutions: 0}
 	,evolutionsPerSecond
-	,consecutiveFailures
+	,evolutionTimer
+	,maximumDifference
+	,bestDifference
+	,bestComplexity
 
 	,numComparators = 8
 	,comparators
@@ -158,8 +249,14 @@ var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 function initialize () {
 	var newLength = parseInt (numPolysInput.value)
 		,newWidth = parseInt (numVertsInput.value)
+		,width = inputCtx.canvas.width
+		,height = inputCtx.canvas.height
 	bestDNA = new DNA (newLength, newWidth)
-	bestDifference = 1e+300
+	bestDNA.randomize (width, height)
+	bestDifference = Infinity
+	bestComplexity = Infinity
+	// TODO: detect transparent/grayscale images and update bitsPP
+	maximumDifference = width * height * bitsPP * 255
 
 	startTime = new Date ()
 	elapsedTime = 0
@@ -167,62 +264,131 @@ function initialize () {
 	evolutionCount = 0
 	consecutiveFailures = 0
 
-	for (var i = 0; i < bestDNA.strand.length; i++) {
-		var shape = bestDNA.strand[i]
-		for (var j = 0; j < shape.verts.length; j += 2) {
-			shape.verts[j] = Math.floor (Math.random () * bestCtx.canvas.width)
-			shape.verts[j + 1] = Math.floor (Math.random () * bestCtx.canvas.height)
-		}
-	}
-
 	drawDNA (bestCtx, bestDNA)
 }
 
 function startEvolution () {
-	if (!evolutionTimer)
-		evolutionTimer = setTimeout (evolutionStep, 0)
-	else
+	// if we are using comparators, check the value
+	// otherwise check if evolution timer is active
+	if (comparators ? running : evolutionTimer)
 		return
 
-	satrtTime = new Date ()
+	startTime = +new Date ()
 
-	startButton.classList.add ('unvisible')
-	pauseButton.classList.remove ('unvisible')
+	startButton.classList.add ('hidden')
+	pauseButton.classList.remove ('hidden')
 
 	lastRateEval.time = + new Date ()
+
+
+	if (comparators) {
+		running = true
+		evolutionStep ()
+	}
+	else
+		evolutionTimer = setInterval (evolutionStep, 0)
 
 	updateInfo ()
 }
 function pauseEvolution () {
-	clearTimeout (evolutionTimer)
-	evolutionTimer = null
+	// if we are using comparators, stop by setting the value
+	// otherwise stop the timer
+	if (comparators)
+		running = false
+	else {
+		clearTimeout (evolutionTimer)
+		evolutionTimer = null
+	}
 
-	elapsedTime += (new Date ()) - startTime
+	elapsedTime += (+new Date ()) - startTime
 
-	pauseButton.classList.add ('unvisible')
-	startButton.classList.remove ('unvisible')
+	pauseButton.classList.add ('hidden')
+	startButton.classList.remove ('hidden')
 }
 
-var testDNA
+function compareContextData (a, b) {
+	var difference = 0
+		,width = Math.min (a.canvas.width, b.canvas.width)
+		,height = Math.min (a.canvas.height, b.canvas.height)
+		,aData = a.getImageData (0, 0, width, height).data
+		,bData = b.getImageData (0, 0, width, height).data
+
+	for (var i = width * height * 4; i > 0;) {
+		// ITERATIONS ARE REVERSED
+		difference +=
+			Math.abs (aData[--i] - bData[i]) + // A
+			Math.abs (aData[--i] - bData[i]) + // B
+			Math.abs (aData[--i] - bData[i]) + // G
+			Math.abs (aData[--i] - bData[i])   // R
+	}
+	return difference
+}
+
+var CHANGE_SHAPE = 1
+	,NULL_CONTRIBUTION_CHECK = 2
+	,MOVE_SHAPE_TO_TOP = 3
+
+	,mutationType
+	,targetShapeIndex
+	,targetShape
+	,verts
+
 	,accumulatedDifference
 	,pendingComparatorResponses
 
 function evolutionStep () {
+	if (comparators && !running)
+		return
+	var rr = Math.random ()
+	if (rr < 0.9)
+		mutationType = CHANGE_SHAPE
+	else if (rr < 0.95)
+	 	mutationType = NULL_CONTRIBUTION_CHECK
+	else
+		mutationType = MOVE_SHAPE_TO_TOP
+
 	// mutation
 	testDNA = bestDNA.dupe ()
-	var targetShapeIndex = Math.floor (Math.random () * testDNA.strand.length)
-		,targetShape = testDNA.strand[targetShapeIndex]
-		,verts = targetShape.verts
-		,width = inputCtx.canvas.width
+	targetShapeIndex = randInt (testDNA.strand.length)
+	targetShape = testDNA.strand[targetShapeIndex]
+	verts = targetShape.verts
+	var width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
-	targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
-	targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
-	targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
-	targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
-	for (var i = verts.length; i > 0;) {
-		// ITERATIONS ARE REVERSED
-		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
-		verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+
+	switch (mutationType) {
+	case CHANGE_SHAPE:
+		if (rr < 0.4) {
+			targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
+			targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
+			targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
+			targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
+		}
+		else if (rr < 0.8) {
+			var targetVertIndex = randInt (verts.length >> 1) << 1
+			verts[targetVertIndex] = randInt (width)
+			verts[targetVertIndex + 1] = randInt (height)
+		}
+		else {
+			for (var i = verts.length; i > 0;) {
+				// ITERATIONS ARE REVERSED
+				verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
+				verts[--i] = clamp (verts[i] + randSignedInt (5), 0, width) // X
+			}
+		}
+		break
+
+	case NULL_CONTRIBUTION_CHECK:
+		for (var i = verts.length; i > 0;) {
+			// ITERATIONS ARE REVERSED
+			verts[--i] = 0 // Y
+			verts[--i] = 0 // X
+		}
+		break
+
+	case MOVE_SHAPE_TO_TOP:
+		testDNA.strand.push (testDNA.strand.splice (targetShapeIndex, 1)[0])
+		targetShapeIndex = testDNA.strand.length - 1
+		break 
 	}
 
 	// difference evaluation
@@ -236,44 +402,73 @@ function evolutionStep () {
 		for (var i = comparators.length; i > 0; i--) {
 			var slice = Math.floor ((width - scan) / i)
 				,data = testCtx.getImageData (scan, 0, slice, height).data
-			console.log (scan, slice)
 			scan += slice
 
 			comparators[i - 1].postMessage (data.buffer, [data.buffer])
 		}
+		// comparators have their data and will return with results so we need
+		// to end it here
 		return
+	} else {
+		// comparators are not enabled, calculate difference "manually"
+		var difference = compareContextData (inputCtx, testCtx)
+			,complexity = testDNA.computeComplexity ()
+
+		validateMutation (difference, complexity)
 	}
-
-	var difference = 0
-		,dataLength = width * height * 4
-		,inputData = inputCtx.getImageData (0, 0, width, height).data
-		,testData = testCtx.getImageData (0, 0, width, height).data
-
-	for (var i = dataLength; i > 0;) {
-		// ITERATIONS ARE REVERSED
-		difference +=
-			Math.abs (inputData[--i] - testData[i]) + // A
-			Math.abs (inputData[--i] - testData[i]) + // B
-			Math.abs (inputData[--i] - testData[i]) + // G
-			Math.abs (inputData[--i] - testData[i])   // R
-	}
-
-	validateMutation (newDifference)
 }
 
 function comparatorResponse (event) {
 	accumulatedDifference += event.data
 	--pendingComparatorResponses
 	if (pendingComparatorResponses == 0) 
-		validateMutation (accumulatedDifference)
+		validateMutation (accumulatedDifference, testDNA.computeComplexity ())
 }
 
-function validateMutation (newDifference) {
+function validateMutation (difference, complexity) {
+	var success = false
+		,width = inputCtx.canvas.width
+		,height = inputCtx.canvas.height
+	switch (mutationType) {
+	case CHANGE_SHAPE:
+		if (difference + complexity < bestDifference + bestComplexity) {
+			success = true
+			bestDifference = difference
+			bestComplexity = complexity
+		}
+	case MOVE_SHAPE_TO_TOP:
+		if (difference < bestDifference) {
+			success = true
+			bestDifference = difference
+			// complexity doesn't change
+		}
+		break
+
+	case NULL_CONTRIBUTION_CHECK:
+		if (difference == bestDifference) {
+			success = true
+			targetShape.r = randInt (255)
+			targetShape.g = randInt (255)
+			targetShape.b = randInt (255)
+			targetShape.a = randInt (255)
+			var originX = randInt (width)
+			var originY = randInt (height)
+			for (var i = verts.length; i > 0;) {
+				// ITERATIONS ARE REVERSED
+				verts[--i] = clamp (originY + randSignedInt (5), 0, height) // Y
+				verts[--i] = clamp (originX + randSignedInt (5), 0, width) // X
+			}
+			drawDNA (testCtx, testDNA)
+			bestDifference = compareContextData (inputCtx, testCtx)
+			bestComplexity = testDNA.computeComplexity ()
+		}
+		break
+	}
+
 	++evolutionCount
 	++consecutiveFailures
-	if (newDifference < bestDifference) {
+	if (success) {
 		bestDNA = testDNA
-		bestDifference = newDifference
 		drawDNA (bestCtx, bestDNA)
 		consecutiveFailures = 0
 	}
@@ -283,15 +478,29 @@ function validateMutation (newDifference) {
 		lastRateEval.time += 1000
 		lastRateEval.evolutions = evolutionCount
 	}
-	evolutionTimer = setTimeout (evolutionStep, 1)
+	if (comparators)
+		evolutionStep ()
 }
 
 function updateInfo () {
-	differenceOut.value = bestDifference
+	var fitness = (maximumDifference - bestDifference) / maximumDifference
+		,tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4)
+	fitnessOut.value = fitness.toLocaleString (navigator.language, {
+		style: 'percent',
+		maximumFractionDigits: '2',
+		minimumFractionDigits: '2',
+	})
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures
-	if (evolutionTimer)
+	timeElapsedOut.value =
+		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
+		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :
+		tInfo.m ? tInfo.m + ' minutes ' + tInfo.s + ' seconds':
+		tInfo.s + '.' + tInfo.ms + ' seconds'
+	// if the evolution is still running, schedule next info update with RAF
+	// because RAF fires only once per actual screen refresh
+	if (comparators ? running : evolutionTimer)
 		requestAnimationFrame (updateInfo)
 }
 
@@ -319,11 +528,13 @@ numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value)
 	bestDNA.changeLength (newLength)
 	drawDNA (bestCtx, bestDNA)
+	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 numVertsInput.addEventListener ('change', function (event) {
 	var newWidth = parseInt (numVertsInput.value)
 	bestDNA.changeWidth (newWidth)
 	drawDNA (bestCtx, bestDNA)
+	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 
 
@@ -338,9 +549,10 @@ reader.addEventListener ('load', function (event) {
 	proxyImage.src = event.target.result
 })
 proxyImage.addEventListener ('load', function (event) {
-	//make hiddenstuff visible
-	var div = document.getElementById('hiddenstuff');
-	div.style.display = 'block';
+	// show elements hidden by default
+	var hiddenElements = document.getElementsByClassName ('default-hidden');
+	for (var i = hiddenElements.length; i > 0;)
+		hiddenElements[--i].classList.remove ('default-hidden');
 	inputCtx.canvas.width =
 	testCtx.canvas.width = // congestionCtx.canvas.width =
 	bestCtx.canvas.width = event.target.width
@@ -352,25 +564,30 @@ proxyImage.addEventListener ('load', function (event) {
 	inputCtx.drawImage (event.target, 0, 0)
 
 	if (Worker) {
-		comparators = [] // TODO: reuse old comparators	
-		var width = inputCtx.canvas.width
-			,scan = 0
+		try {
+			comparators = [] // TODO: reuse old comparators	
+			var width = inputCtx.canvas.width
+				,scan = 0
 
-		for (var i = numComparators; i > 0; i--) {
-			var comparator = new Worker ('comparator.js')
-				,slice = Math.floor ((width - scan) / i)
-				,data = inputCtx.getImageData (scan, 0, slice, inputCtx.canvas.height).data
-			console.log (scan, slice)
-			scan += slice
+			for (var i = numComparators; i > 0; i--) {
+				var comparator = new Worker ('comparator.js')
+					,slice = Math.floor ((width - scan) / i)
+					,data = inputCtx.getImageData (scan, 0, slice, inputCtx.canvas.height).data
+				console.log (scan, slice)
+				scan += slice
 
-			comparator.onmessage = comparatorResponse
-			comparator.postMessage (data.buffer, [data.buffer])
-			if (data.byteLength) {  // no support for transferring
-				comparators = null
-				break
+				comparator.onmessage = comparatorResponse
+				comparator.postMessage (data.buffer, [data.buffer])
+				if (data.byteLength) {  // no support for transferring
+					comparators = null
+					break
+				}
+				else
+					comparators.unshift (comparator)
 			}
-			else
-				comparators.unshift (comparator)
+		} catch (ex) {
+			alert (ex)
+			comparators = null
 		}
 	}
 
@@ -396,5 +613,6 @@ importButton.addEventListener ('click', function (event) {
 	if (event.button != 0)
 		return
 	bestDNA = new DNA (clipboard.value)
-	bestDifference = 1e+300
+	drawDNA (bestCtx, bestDNA)
+	bestDifference = compareContextData (inputCtx, bestCtx)
 })

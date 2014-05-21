@@ -1,10 +1,15 @@
 
-body 	{
-	font-family:arial, sans-serif; padding:1em
-	}
+body {
+	font: normal 12pt/1 arial, sans-serif;
+	padding: 1em;
+}
 
-canvas 	{ 
-	border:solid 1px #000 
-	}
+.hidden, .default-hidden {
+	display: none;
+}
+
+canvas { 
+	border: solid 1px #000;
+}
 
 

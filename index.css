@@ -6,7 +6,16 @@ body 	{
 	}
 
 canvas 	{ 
-	border:solid 1px white;
+	border:solid 1px darkgrey;
 	}
 
+div
+{
+border:1px solid darkgrey;
+position:fixed;
+width: 33%;
+top: 5px;
+right: 5px;
+background: black;
+}
 

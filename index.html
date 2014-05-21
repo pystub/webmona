@@ -15,6 +15,11 @@
 <div id='toolbox'>
 <section id='info-output' class='default-hidden'>
 <p>
+&nbsp;&nbsp;&nbsp;&nbsp;<label for='image-input'>Source image</label>
+	<input type='file' id='image-input' /><br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<button id='start' class='default-hidden'>Start</button>
+	<button id='pause' class='default-hidden hidden'>Pause</button>
+</p>
 	&nbsp;&nbsp;&nbsp;&nbsp;Fitness <output id='fitness'></output><br/>
 	&nbsp;&nbsp;&nbsp;&nbsp;Mutations <output id='evolution-count'></output><br/>
 	&nbsp;&nbsp;&nbsp;&nbsp;Mutations/s <output id='evolutions-per-second'></output><br/>
@@ -25,15 +30,12 @@
 
 
 <p id='imgform'>
-	&nbsp;&nbsp;&nbsp;&nbsp;<label for='image-input'>Source image</label>
-	<input type='file' id='image-input' /><br/>
+	
 	&nbsp;&nbsp;&nbsp;&nbsp;<label for='num-polys' class='default-hidden'>Polygons</label>
 	<input id='num-polys' class='default-hidden' type='number' step='1' min='1' max='1000' value='64' /><br />
-	&nbsp;&nbsp;&nbsp;&nbsp;<label for='num-verts' class='default-hidden'>Vertices</label>
+	&nbsp;&nbsp;&nbsp;&nbsp;<label for='num-verts' class='default-hidden'>Vertices&nbsp;&nbsp;</label>
 	<input id='num-verts' class='default-hidden' type='number' step='1' min='3' max='30' value='3' /><br />
-	&nbsp;&nbsp;&nbsp;&nbsp;<button id='start' class='default-hidden'>Start</button>
-	<button id='pause' class='default-hidden hidden'>Pause</button>
-</p>
+	
 
 <p id='dnaformwrap' class='default-hidden'>
 	&nbsp;&nbsp;&nbsp;&nbsp;<textarea id='clipboard'></textarea><br>

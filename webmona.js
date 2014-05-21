@@ -197,6 +197,19 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	}
 	return complexity
 }
+DNA.prototype.randomize = function randomizeDNA (width, height) {
+	for (var i = this.strand.length; i > 0;) {
+		var shape = this.strand[--i]
+		shape.r = randInt (255)
+		shape.g = randInt (255)
+		shape.b = randInt (255)
+		shape.a = randInt (128) + 127
+		for (var j = 0; j < shape.verts.length; j += 2) {
+			shape.verts[j] = randInt (bestCtx.canvas.width)
+			shape.verts[j + 1] = randInt (bestCtx.canvas.height)
+		}
+	}
+}
 
 var inputCtx = document.getElementById ('input-canvas').getContext ('2d')
 	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
@@ -232,6 +245,7 @@ function initialize () {
 		,width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
 	bestDNA = new DNA (newLength, newWidth)
+	bestDNA.randomize (width, height)
 	bestDifference = Infinity
 	bestComplexity = Infinity
 	// TODO: detect transparent/grayscale images and update bitsPP
@@ -242,14 +256,6 @@ function initialize () {
 
 	evolutionCount = 0
 	consecutiveFailures = 0
-
-	for (var i = 0; i < bestDNA.strand.length; i++) {
-		var shape = bestDNA.strand[i]
-		for (var j = 0; j < shape.verts.length; j += 2) {
-			shape.verts[j] = randInt (bestCtx.canvas.width)
-			shape.verts[j + 1] = randInt (bestCtx.canvas.height)
-		}
-	}
 
 	drawDNA (bestCtx, bestDNA)
 }

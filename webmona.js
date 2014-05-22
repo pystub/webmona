@@ -66,7 +66,7 @@ Shape.prototype.x = function getX (i) {
 Shape.prototype.y = function getY (i) {
 	return this.verts [i * 2 + 1];
 }
-Shape.prototype.getWidth = function getShapeWidth () {
+Shape.prototype.getPolycount = function getShapePolycount () {
 	return this.verts.length / 2;
 }
 Shape.prototype.dupe = function dupeShape () {
@@ -75,19 +75,19 @@ Shape.prototype.dupe = function dupeShape () {
 		result.verts.unshift (this.verts[i]);
 	return result;
 }
-Shape.prototype.changeWidth = function changeShapeWidth (newWidth) {
-	while (newWidth * 2 > this.verts.length)
+Shape.prototype.changePolycount = function changeShapePolycount (newPolycount) {
+	while (newPolycount * 2 > this.verts.length)
 		this.verts.push (0);
-	while (newWidth * 2 < this.verts.length)
+	while (newPolycount * 2 < this.verts.length)
 		this.verts.pop ();
 }
 
-function DNA (length, width) {
+function DNA (length, polycount) {
 	if (!(this && this instanceof DNA))
 		throw new TypeError ();
 	if (arguments.length == 1 && (typeof arguments[0] == 'string')) {
 		var data = arguments[0].split (/[ \n\r\t]+/)
-		this.width = parseInt (data.shift ())
+		this.polycount = parseInt (data.shift ())
 		this.strand = Array (parseInt (data.shift ()))
 		for (var i = 0; i < this.strand.length; i++) {
 			this.strand[i] = new Shape (
@@ -96,40 +96,40 @@ function DNA (length, width) {
 				parseInt (data.shift ()),
 				parseFloat (data.shift ()) * 255, 0
 			)
-			for (var j = 0; j < this.width * 2; j++)
+			for (var j = 0; j < this.polycount * 2; j++)
 				this.strand[i].verts.push (parseFloat (data.shift ()))
 		}
 		return
 	}
 	this.strand = [];
-	this.width = width;
+	this.polycount = polycount;
 	for (var i = length - 1; i >= 0; --i)
-		this.strand.push (new Shape (0, 0, 0, 255, width));
+		this.strand.push (new Shape (0, 0, 0, 255, polycount));
 }
 DNA.prototype.dupe = function dupeDNA () {
-	var result = new DNA (0, this.width);
+	var result = new DNA (0, this.polycount);
 	for (var i = 0; i < this.strand.length; ++i)
 		result.strand.push (this.strand[i].dupe ());
 	return result
 }
 DNA.prototype.changeLength = function changeDNALength (newLength) {
-	//change dna length
+	//change DNA length
 	while (newLength > this.strand.length)
-		this.strand.push (new Shape (0, 0, 0, 255, this.width));
+		this.strand.push (new Shape (0, 0, 0, 255, this.polycount));
 	while (newLength < this.strand.length)
 		this.strand.pop ();
 }
-DNA.prototype.changeWidth = function changeDNAWidth (newWidth) {
-	//change dna width
+DNA.prototype.changePolycount = function changeDNAPolycount (newPolycount) {
+	//change DNA polycount
 	for (var i = this.strand.length - 1; i >= 0; --i)
-		this.strand[i].changeWidth (newWidth);
-	this.width = newWidth;
+		this.strand[i].changePolycount (newPolycount);
+	this.polycount = newPolycount;
 }
 
 DNA.prototype.toString = function serializeDNA () {
 	// header
 	var string =
-		this.width + ' ' +
+		this.polycount + ' ' +
 		this.strand.length
 	// shapes
 	for (var i = 0; i < this.strand.length; i++) {
@@ -138,7 +138,7 @@ DNA.prototype.toString = function serializeDNA () {
 			+ this.strand[i].g + ' '
 			+ this.strand[i].b + ' '
 			+ this.strand[i].a / 255
-		for (var j = 0; j < this.width; j++) {
+		for (var j = 0; j < this.polycount; j++) {
 			string +=
 				' ' + this.strand[i].x (j) +
 				' ' + this.strand[i].y (j)
@@ -162,7 +162,7 @@ DNA.prototype.toSVG = function DNA2SVG () {
 			+ this.strand[i].g + ','
 			+ this.strand[i].b + ')" opacity="'
 			+ this.strand[i].a / 255 + '" points="'
-		for (var j = 0; j < this.width; j++) {
+		for (var j = 0; j < this.strand[i].getPolycount (); j++) {
 			string += ' '
 				+ this.strand[i].x (j) + ' '
 				+ this.strand[i].y (j)
@@ -185,12 +185,12 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	for (var i = this.strand.length; i > 0;) {
 		// calculate the vector that goes from the last point to the first
 		shape = this.strand[--i]
-		x1 = shape.x (shape.getWidth () - 1) - shape.x (0)
-		y1 = shape.y (shape.getWidth () - 1) - shape.y (0)
-		for (var j = 0; j < shape.getWidth (); j++) {
+		x1 = shape.x (shape.getPolycount () - 1) - shape.x (0)
+		y1 = shape.y (shape.getPolycount () - 1) - shape.y (0)
+		for (var j = 0; j < shape.getPolycount (); j++) {
 			// calculate current vector
-			x0 = shape.x (j) - shape.x ((j + 1) % shape.getWidth ())
-			y0 = shape.y (j) - shape.y ((j + 1) % shape.getWidth ())
+			x0 = shape.x (j) - shape.x ((j + 1) % shape.getPolycount ())
+			y0 = shape.y (j) - shape.y ((j + 1) % shape.getPolycount ())
 			// calculate dot product, and add absolute of it
 			complexity += Math.abs (x0 * x1 + y0 * y1)
 			// store current vector for next cycle
@@ -261,10 +261,10 @@ var imageInput = document.getElementById ('image-input')
 function initialize () {
 	// add some random DNA to start
 	var newLength = parseInt (numPolysInput.value)
-		,newWidth = parseInt (numVertsInput.value)
+		,newPolycount = parseInt (numVertsInput.value)
 		,width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
-	bestDNA = new DNA (newLength, newWidth)
+	bestDNA = new DNA (newLength, newPolycount)
 	bestDNA.randomize (width, height)
 	bestDifference = Infinity
 	bestComplexity = Infinity
@@ -352,11 +352,11 @@ function evolutionStep () {
 	if (comparators && !running)
 		return
 	var rr = Math.random ()
-	if (rr < 0.9)
+	if (rr < 0.9) // 90%
 		mutationType = CHANGE_SHAPE
-	else if (rr < 0.95)
+	else if (rr < 0.95) // 5%
 	 	mutationType = NULL_CONTRIBUTION_CHECK
-	else
+	else // 5%
 		mutationType = MOVE_SHAPE_TO_TOP
 
 	// mutate DNA
@@ -366,22 +366,26 @@ function evolutionStep () {
 	verts = targetShape.verts
 	var width = inputCtx.canvas.width
 		,height = inputCtx.canvas.height
+		,panicRatio = Math.sqrt (consecutiveFailures / testDNA.strand.length)
 
 	switch (mutationType) {
 	case CHANGE_SHAPE:
-		if (rr < 0.4) {
+		if (rr < 0.4) { // 40%
+			// change one shape's colour slightly
 			targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255)
 			targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255)
 			targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255)
 			targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255)
 		}
-		else if (rr < 0.8) {
+		else if (rr < 0.8) { // 40%
+			// completely relocate one vertex
 			// TODO: fix/explain this
 			var targetVertIndex = randInt (verts.length >> 1) << 1
 			verts[targetVertIndex] = randInt (width)
 			verts[targetVertIndex + 1] = randInt (height)
 		}
-		else {
+		else { // 10%
+			// jitter all vertices of one shape
 			for (var i = verts.length; i > 0;) {
 				// ITERATIONS ARE REVERSED
 				verts[--i] = clamp (verts[i] + randSignedInt (5), 0, height) // Y
@@ -391,6 +395,8 @@ function evolutionStep () {
 		break
 
 	case NULL_CONTRIBUTION_CHECK:
+		// check whether a shape is completely obscured or transparent
+		// if it is, it will be re-added with random vertices and colour
 		for (var i = verts.length; i > 0;) {
 			// ITERATIONS ARE REVERSED
 			verts[--i] = 0 // Y
@@ -399,6 +405,7 @@ function evolutionStep () {
 		break
 
 	case MOVE_SHAPE_TO_TOP:
+		// check whether shape should be drawn on top
 		testDNA.strand.push (testDNA.strand.splice (targetShapeIndex, 1)[0])
 		targetShapeIndex = testDNA.strand.length - 1
 		break
@@ -545,8 +552,8 @@ numPolysInput.addEventListener ('change', function (event) {
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 numVertsInput.addEventListener ('change', function (event) {
-	var newWidth = parseInt (numVertsInput.value)
-	bestDNA.changeWidth (newWidth)
+	var newPolycount = parseInt (numVertsInput.value)
+	bestDNA.changePolycount (newPolycount)
 	drawDNA (bestCtx, bestDNA)
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })

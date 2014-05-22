@@ -1,15 +1,59 @@
-
 body {
 	font: normal 12pt/1 arial, sans-serif;
 	padding: 1em;
+	background-color: black;
+	color: white;
+	padding: 5px;
 }
 
 .hidden, .default-hidden {
 	display: none;
 }
 
-canvas { 
-	border: solid 1px #000;
+canvas {
+	border: solid 1px darkgrey;
 }
 
+#info-output {
+	border:1px solid darkgrey;
+	position:fixed;
+	width: 33%;
+	top: 5px;
+	right: 5px;
+	background: black;
+	padding:10px;
+}
+#start
+{
+width: 45%;
+}
+#pause
+{
+width: 45%;
+}
+#num-verts
+{
+width: 20%;
+}
+#num-polys
+{
+width: 20%;
+}
+#clipboard
+{
+width: 90%;
+}
+#b_export_dna
+{
+width: 30%;
+}
 
+#b_export_svg
+{
+width: 30%;
+}
+
+#b_import_dna
+{
+width: 30%;
+}

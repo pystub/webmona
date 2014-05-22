@@ -237,7 +237,7 @@ var imageInput = document.getElementById ('image-input')
 
 	,importButton = document.getElementById ('b_import_dna')
 	,clipboard = document.getElementById ('clipboard')
-	
+
 	,bitsPP = 4
 	,startTime
 	,elapsedTime = 0
@@ -411,7 +411,7 @@ function evolutionStep () {
 		var scan = 0;
 		accumulatedDifference = 0;
 		pendingComparatorResponses = comparators.length;
-		
+
 		for (var i = comparators.length; i > 0; i--) {
 			var slice = Math.floor ((width - scan) / i)
 				,data = testCtx.getImageData (scan, 0, slice, height).data

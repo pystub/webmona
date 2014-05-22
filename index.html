@@ -8,11 +8,13 @@
 
 <body>
 
-<canvas id="input-canvas" class='default-hidden'></canvas>
-<canvas id="best-canvas" class='default-hidden'></canvas>
-<canvas id="test-canvas" class='default-hidden'></canvas>
+<section id='canvases' class='default-hidden'>
+	<canvas id="input-canvas"></canvas>
+	<canvas id="best-canvas"></canvas>
+	<canvas id="test-canvas" class='hidden'></canvas>
+</section>
 
-<section id='info-output' class='default-hidden'>
+<aside id='info-output' class='default-hidden'>
 <p>
 	Fitness <output id='fitness'></output><br/>
 	Mutations <output id='evolution-count'></output><br/>
@@ -20,29 +22,36 @@
 	Consecutive failed mutations <output id='consecutive-failures'></output><br/>
 	Time elapsed <output id='time-elapsed'></output>
 </p>
+</aside>
+
+<section id='imgform'>
+<p>
+	<label for='image-input'>Source image</label>
+	<input type='file' id='image-input' />
+</p>
 </section>
 
-<p id='imgform'>
-	<label for='image-input'>Source image</label>
-	<input type='file' id='image-input' /><br/>
-	<label for='num-polys' class='default-hidden'>Polygons</label>
-	<input id='num-polys' class='default-hidden' type='number' step='1' min='1' max='1000' value='50' /><br />
-	<label for='num-verts' class='default-hidden'>Vertices</label>
-	<input id='num-verts' class='default-hidden' type='number' step='1' min='3' max='30' value='6' /><br />
-	<button id='start' class='default-hidden'>Start</button>
-	<button id='pause' class='default-hidden hidden'>Pause</button>
+<section id='controls' class='default-hidden'>
+<p>
+	<label for='num-polys'>Polygons</label>
+	<input id='num-polys' type='number' step='1' min='1' max='1000' value='50' /><br />
+	<label for='num-verts'>Vertices</label>
+	<input id='num-verts' type='number' step='1' min='3' max='30' value='6' /><br />
+	<button id='start'>Start</button>
+	<button id='pause' class='hidden'>Pause</button>
 </p>
+</section>
 
-<p id='dnaformwrap' class='default-hidden'>
+<section id='import-export' class='default-hidden'>
+<p>
 	<button id='b_export_dna'>Export DNA</button>
 	<button id='b_export_svg'>Export SVG</button>
 	<button id='b_import_dna'>Import DNA</button>
 	<textarea id='clipboard'></textarea>
 </p>
-
+</section>
 
 <script type="text/javascript" src="webmona.js"></script>
 
 </body>
 </html>
-

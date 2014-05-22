@@ -23,37 +23,26 @@ canvas {
 	background: black;
 	padding:10px;
 }
-#start
-{
+#start, #pause {
 width: 45%;
 }
-#pause
-{
-width: 45%;
-}
-#num-verts
-{
+#num-verts {
 width: 20%;
 }
-#num-polys
-{
+#num-polys {
 width: 20%;
 }
-#clipboard
-{
+#clipboard {
 width: 90%;
 }
-#b_export_dna
-{
+#b_export_dna {
 width: 30%;
 }
 
-#b_export_svg
-{
+#b_export_svg {
 width: 30%;
 }
 
-#b_import_dna
-{
+#b_import_dna {
 width: 30%;
 }

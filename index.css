@@ -13,6 +13,11 @@ body {
 canvas {
 	border: solid 1px darkgrey;
 }
+canvas:hover {
+	background-image: url('data:image/png;base64,\
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAKElEQVQoz2OcOXMmAzZw9uxZrOJM\
+DCSCUQ3EABZc4W1sbDwaSvTTAABS2wdUfD43jQAAAABJRU5ErkJggg==');
+}
 
 #info-output {
 	border:1px solid darkgrey;

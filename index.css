@@ -9,7 +9,14 @@ canvas
 	{ 
 	border:solid 1px darkgrey;
 	}
-div
+#minmaxdiv
+	{
+	position:fixed;
+	z-index: 9999;
+	top: 5px;
+	right: 5px;
+	}
+#toolbox
 	{
 	border:1px solid darkgrey;
 	position:fixed;

@@ -610,3 +610,15 @@ importButton.addEventListener ('click', function (event) {
 	drawDNA (bestCtx, bestDNA)
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })
+
+var button = document.getElementById('minmax'); // Assumes element with id='button'
+ 
+button.onclick = function() {
+    var div = document.getElementById('toolbox');
+    if (div.style.display !== 'none') {
+        div.style.display = 'none';
+    }
+    else {
+        div.style.display = 'block';
+    }
+};

@@ -3,7 +3,8 @@
 	<head>
 		<meta charset='utf-8' />
 		<title>webmona</title>
-		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="stylesheet" type="text/css" href="index.css" />
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	</head>
 	<body>
 		<canvas id="input-canvas" class='default-hidden'></canvas><br>
@@ -17,13 +18,13 @@
 			<input type='file' id='image-input' /><br><br>
 			<button id='start'>Start</button>
 			<button id='pause'>Pause</button><br><br>
-			Fitness <output id='fitness'></output><br/>
-			Mutations <output id='evolution-count'></output><br/>
-			Mutations/s <output id='evolutions-per-second'></output><br/>
-			Consecutive failed mutations <output id='consecutive-failures'></output><br/>
+			Fitness <output id='fitness'></output><br>
+			Mutations <output id='evolution-count'></output><br>
+			Mutations/s <output id='evolutions-per-second'></output><br>
+			Consecutive failed mutations <output id='consecutive-failures'></output><br>
 			Time elapsed <output id='time-elapsed'></output><br><br>
 			<label for='num-polys'>Polygons</label>
-			<input id='num-polys' type='number' step='1' min='1' max='1000' value='64' /><br />
+			<input id='num-polys' type='number' step='1' min='1' max='1000' value='64' /><br>
 			<label for='num-verts'>Vertices&nbsp;&nbsp;</label>
 			<input id='num-verts' type='number' step='1' min='3' max='30' value='3' /><br><br>
 			<textarea id='clipboard'></textarea><br>

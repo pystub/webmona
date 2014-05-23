@@ -1,10 +1,59 @@
-function clamp (value, min, max) {
+//set up variables
+var imageInput = document.getElementById ('image-input')
+	,inputCtx = document.getElementById ('input-canvas').getContext ('2d')
+	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
+	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
+
+	,bestDNA
+	,testDNA
+
+	,fitnessOut = document.getElementById ('fitness')
+	,evolutionCountOut = document.getElementById ('evolution-count')
+	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
+	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	,timeElapsedOut = document.getElementById ('time-elapsed')
+
+	,startButton = document.getElementById ('start')
+	,pauseButton = document.getElementById ('pause')
+
+	,numPolysInput = document.getElementById ('num-polys')
+	,numVertsInput = document.getElementById ('num-verts')
+
+	,importButton = document.getElementById ('b_import_dna')
+	,minmaxButton = document.getElementById ('minmax')
+	,clipboard = document.getElementById ('clipboard')
+
+	,bitsPP = 4
+	,startTime
+	,elapsedTime = 0
+	,evolutionCount
+	,consecutiveFailures
+	,lastRateEval = {time: 0, evolutions: 0}
+	,evolutionsPerSecond
+	,running = false
+	,evolutionTimer
+	,maximumDifference
+	,bestDifference
+	,bestComplexity
+
+	,numComparators = 8
+	,comparators
+
+	,reader = new FileReader ()
+	,proxyImage = new Image ();
+
+function clamp (value, min, max) 
+{
 	return Math.max (min, Math.min (max, value));
 }
-function randInt (n) {
+
+function randInt (n) 
+{
 	return Math.floor (Math.random () * n)
 }
-function randSignedInt (n) {
+
+function randSignedInt (n) 
+{
 	return Math.floor (Math.random () * ((n << 1) + 1)) - n;
 }
 /*
@@ -214,50 +263,6 @@ DNA.prototype.randomize = function randomizeDNA (width, height) {
 	}
 }
 
-//set up variables
-var imageInput = document.getElementById ('image-input')
-	,inputCtx = document.getElementById ('input-canvas').getContext ('2d')
-	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
-	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
-
-	,bestDNA
-	,testDNA
-
-	,fitnessOut = document.getElementById ('fitness')
-	,evolutionCountOut = document.getElementById ('evolution-count')
-	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
-	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
-	,timeElapsedOut = document.getElementById ('time-elapsed')
-
-	,startButton = document.getElementById ('start')
-	,pauseButton = document.getElementById ('pause')
-
-	,numPolysInput = document.getElementById ('num-polys')
-	,numVertsInput = document.getElementById ('num-verts')
-
-	,importButton = document.getElementById ('b_import_dna')
-	,clipboard = document.getElementById ('clipboard')
-
-	,bitsPP = 4
-	,startTime
-	,elapsedTime = 0
-	,evolutionCount
-	,consecutiveFailures
-	,lastRateEval = {time: 0, evolutions: 0}
-	,evolutionsPerSecond
-	,running = false
-	,evolutionTimer
-	,maximumDifference
-	,bestDifference
-	,bestComplexity
-
-	,numComparators = 8
-	,comparators
-
-	,reader = new FileReader ()
-	,proxyImage = new Image ();
-
-
 function initialize () {
 	// add some random DNA to start
 	var newLength = parseInt (numPolysInput.value)
@@ -302,6 +307,7 @@ function startEvolution () {
 
 	updateInfo ()
 }
+
 function pauseEvolution () {
 	// if we are using comparators, stop by setting the value
 	// otherwise stop the timer
@@ -611,14 +617,13 @@ importButton.addEventListener ('click', function (event) {
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 
-var button = document.getElementById('minmax'); // Assumes element with id='button'
- 
-button.onclick = function() {
-    var div = document.getElementById('toolbox');
+minmaxButton.addEventListener ('click', function (event) {
+	var div = document.getElementById('toolbox');
     if (div.style.display !== 'none') {
         div.style.display = 'none';
     }
     else {
         div.style.display = 'block';
     }
-};
+})
+

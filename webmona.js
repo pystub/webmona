@@ -1,108 +1,108 @@
-//set up variables
-var //image input file picker
-	imageInput = document.getElementById ('image-input')
+//initialise variables
+	//image input file picker
+	var	imageInput = document.getElementById('image-input');
 	//image canvas
-	,inputCtx = document.getElementById ('input-canvas').getContext ('2d')
+	var	inputCtx = document.getElementById('input-canvas').getContext ('2d');
 	//test canvas
-	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
+	var	testCtx = document.getElementById('test-canvas').getContext ('2d');
 	//best match canvas
-	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
+	var	bestCtx = document.getElementById('best-canvas').getContext ('2d');
 	//best match dna
-	,bestDNA
+	var bestDNA;
 	//dna to be tested against best match dna
-	,testDNA
+	var testDNA;
 	//fitness displayed on html page
-	,fitnessOut = document.getElementById ('fitness')
+	var fitnessOut = document.getElementById('fitness');
 	//evolution count displayed on html page
-	,evolutionCountOut = document.getElementById ('evolution-count')
+	var evolutionCountOut = document.getElementById('evolution-count');
 	//evolutions per second displayed on html page
-	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
+	var evolutionsPerSecondOut = document.getElementById('evolutions-per-second');
 	//consecutive failures displayed on html page
-	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	var consecutiveFailuresOut = document.getElementById('consecutive-failures');
 	//consecutive wins displayed on html page
-	,consecutiveWinsOut = document.getElementById ('consecutive-wins')
+	var consecutiveWinsOut = document.getElementById('consecutive-wins');
 	//fail streak displayed on html page
-	,failStreakOut = document.getElementById ('fail-streak')
+	var failStreakOut = document.getElementById('fail-streak');
 	//win streak displayed on html page
-	,winStreakOut = document.getElementById ('win-streak')
+	var winStreakOut = document.getElementById('win-streak');
 	//fails per second displayed on html page
-	,failsPerSecondOut = document.getElementById ('fails-per-second')
+	var failsPerSecondOut = document.getElementById('fails-per-second');
 	//win streak displayed on html page
-	,winsPerSecondOut = document.getElementById ('wins-per-second')
+	var winsPerSecondOut = document.getElementById('wins-per-second');
 	//time elapsed displayed on html page
-	,timeElapsedOut = document.getElementById ('time-elapsed')
+	var timeElapsedOut = document.getElementById('time-elapsed');
 	//start button on html page
-	,startButton = document.getElementById ('start')
+	var startButton = document.getElementById('start');
 	//pause button on html page
-	,pauseButton = document.getElementById ('pause')
+	var pauseButton = document.getElementById('pause');
 	//export dna button on html page
-	,exportButton = document.getElementById ('b_export_dna')
+	var exportButton = document.getElementById('b_export_dna');
 	//export svg button on html page
-	,exportSVGButton = document.getElementById ('b_export_svg')
+	var exportSVGButton = document.getElementById('b_export_svg');
 	//number of polygons displayed on html page
-	,numPolysInput = document.getElementById ('num-polys')
+	var numPolysInput = document.getElementById('num-polys');
 	//number of vertices displayed on html page
-	,numVertsInput = document.getElementById ('num-verts')
+	var numVertsInput = document.getElementById('num-verts');
 	//import dna button on html page
-	,importButton = document.getElementById ('b_import_dna')
+	var importButton = document.getElementById('b_import_dna');
 	//minimise/maximise toolbox button on html page
-	,minmaxButton = document.getElementById ('minmax')
+	var minmaxButton = document.getElementById('minmax');
 	//clipboard on html page
-	,clipboard = document.getElementById ('clipboard')
-	,bitsPP = 4
+	var clipboard = document.getElementById('clipboard');
+	var bitsPP = 4;
 	//time when evolution started
-	,startTime
+	var startTime;
 	//how long has evolution been running?
-	,elapsedTime = 0
+	var elapsedTime = 0;
 	//how many different dna combinations have been tried?
-	,evolutionCount
+	var evolutionCount;
 	//how many times has mutated dna been less fit than leader dna?
-	,consecutiveFailures
+	var consecutiveFailures;
 	//how many times has mutated dna been more fit than leader dna?
-	,consecutiveWins = 0
+	var consecutiveWins = 0;
 	//largest streak of unsuccessful mutations.
-	,failStreak = 0
+	var failStreak = 0;
 	//largest streak of successful mutations.
-	,winStreak = 0
-	,lastRateEval = {time: 0, evolutions: 0}
+	var winStreak = 0;
+	var lastRateEval = {time: 0var  evolutions: 0};
 	//how many mutations per second are happening?
-	,evolutionsPerSecond
+	var evolutionsPerSecond;
 	//is the evolution running?
-	,running = false
+	var running = false;
 	//how long has the evolution been running?
-	,evolutionTimer
+	var evolutionTimer;
 	//what's the maximum difference between a mutation and the input image?
-	,maximumDifference
+	var maximumDifference;
 	//what's the best difference between a mutation and the input image?
-	,bestDifference
+	var bestDifference;
 	//what's the best complexity?
-	,bestComplexity
+	var bestComplexity;
 	//how many comparator webworkers should be started?
-	,numComparators = 8
+	var numComparators = 8;
 	//comparator webworkers
-	,comparators
+	var comparators;
 	//file reader
-	,reader = new FileReader ()
+	var reader = new FileReader ();
 	//proxy image
-	,proxyImage = new Image ()
+	var proxyImage = new Image ();
 	//change shape mutation
-	,CHANGE_SHAPE = 1
+	var CHANGE_SHAPE = 1;
 	//null contribution mutation
-	,NULL_CONTRIBUTION_CHECK = 2
+	var NULL_CONTRIBUTION_CHECK = 2;
 	//move shape to top of stack mutation
-	,MOVE_SHAPE_TO_TOP = 3
+	var MOVE_SHAPE_TO_TOP = 3;
 	//which type of mutation?
-	,mutationType
+	var mutationType;
 	//index of target shape
-	,targetShapeIndex
+	var targetShapeIndex;
 	//target shape
-	,targetShape
+	var targetShape;
 	//number of vertices
-	,verts
+	var verts;
 	//accumulated difference
-	,accumulatedDifference
+	var accumulatedDifference;
 	//comparator responces
-	,pendingComparatorResponses
+	var pendingComparatorResponses;
 	/*
 	 *     Splits millisecond count to collection of larger time units that
 	 *     collectively represent the same time amount.
@@ -112,7 +112,7 @@ var //image input file picker
 	 *         allowed unit will contain the remainder of time value.
 	 * returns:
 	 *     Object {
-	 *         ms (Number) count of milliseconds, from 0 to 999 (Infinity if limit
+	 *         ms (Number) count of millisecondsvar  from 0 to 999 (Infinity if limit
 	 *             is less than 1)
 	 *         s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
 	 *         m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
@@ -122,7 +122,7 @@ var //image input file picker
  	 *     }
 	 */
 	//set up time units
-	,timeUnits = [
+	var timeUnits = [
 		//milliseconds
 		{n: 'ms', m: 1000},
 		//seconds
@@ -134,7 +134,7 @@ var //image input file picker
 		//days
 		{n: 'd', m: 7},
 		//weeks
-		{n: 'w', m: Infinity},
+		{n: 'w', m: Infinity}
 	];
 
 function clamp (value, min, max) 
@@ -160,7 +160,7 @@ function randSignedInt (n)
 function msToTimeInfo (ms, limit) {
 	//go from milliseconds to properly formatted time
 	//set up time variable
-	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
+	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0};
 	//if limit is undefined, set it to something sensible
 	if (limit === undefined){limit = timeUnits.length - 1;}
 	//for under limit
@@ -194,30 +194,30 @@ function Shape (r, g, b, a, n) {
 
 Shape.prototype.x = function getX (i) {
 	return this.verts [i * 2];
-}
+};
 
 Shape.prototype.y = function getY (i) {
 	return this.verts [i * 2 + 1];
-}
+};
 
 Shape.prototype.setX = function setX (i, value) {
  	return this.verts [i * 2] = value;
-}
+};
  
 Shape.prototype.setY = function setY (i, value) {
  	return this.verts [i * 2 + 1] = value;
-}
+};
 
 Shape.prototype.getPolycount = function getShapePolycount () {
 	return this.verts.length / 2;
-}
+};
 
 Shape.prototype.dupe = function dupeShape () {
 	//duplicate shape
 	var result = new Shape (this.r, this.g, this.b, this.a, 0);
 	for (var i = this.verts.length - 1; i >= 0; --i){result.verts.unshift (this.verts[i]);}
 	return result;
-}
+};
 
 Shape.prototype.changePolycount = function changeShapePolycount (newPolycount) {
 	//change number of polygons
@@ -239,7 +239,7 @@ function DNA (length, polycount) {
 			);
 			for (var j = 0; j < this.polycount * 2; j++){this.strand[i].verts.push (parseFloat (data.shift ()));}
 		}
-		return
+		return;
 	}
 	this.strand = [];
 	this.width = width;
@@ -253,7 +253,7 @@ DNA.prototype.dupe = function dupeDNA () {
 	for (var i = 0; i < this.strand.length; ++i){result.strand.push (this.strand[i].dupe ());}
 	//return the result
 	return result;
-}
+};
 
 DNA.prototype.changeLength = function changeDNALength (newLength, factory) {
 	//change dna length
@@ -264,7 +264,7 @@ DNA.prototype.changeLength = function changeDNALength (newLength, factory) {
  		);}
 	//pop
 	while (newLength < this.strand.length){this.strand.pop ();}
-}
+};
 
 DNA.prototype.changePolycount = function changeDNAPolycount (newPolycount) {
 	//change dna polycount
@@ -272,7 +272,7 @@ DNA.prototype.changePolycount = function changeDNAPolycount (newPolycount) {
 	for (var i = this.strand.length - 1; i >= 0; --i){this.width = newWidth;this.strand[i].changePolycount (newPolycount);;}
 	//set new width
  	this.polycount = newPolycount;
-}
+};
 
 DNA.prototype.toString = function serializeDNA () {
 	//make dna into a string
@@ -299,7 +299,7 @@ DNA.prototype.toString = function serializeDNA () {
 		}
 	}
 	return string;
-}
+};
 
 DNA.prototype.toSVG = function DNA2SVG () {
 	// output DNA string in SVG format
@@ -338,7 +338,7 @@ DNA.prototype.toSVG = function DNA2SVG () {
 	string += '</svg>';
 	//return svg file
 	return string;
-}
+};
 /* complexity is sum of
  *     all shapes'
  *     neighbouring edges'
@@ -355,9 +355,9 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	for (var i = this.strand.length; i > 0;) {
 		// calculate the vector that goes from the last point to the first
 		shape = this.strand[--i];
-		x1 = shape.x (shape.getPolycount () - 1) - shape.x (0)
- +		y1 = shape.y (shape.getPolycount () - 1) - shape.y (0)
- +		for (var j = 0; j < shape.getPolycount (); j++) {
+		x1 = shape.x (shape.getPolycount () - 1) - shape.x (0);
+ 		y1 = shape.y (shape.getPolycount () - 1) - shape.y (0);
+ 		for (var j = 0; j < shape.getPolycount (); j++) {
 			// calculate current vector
 			x0 = shape.x (j) - shape.x ((j + 1) % shape.getPolycount ());
 			y0 = shape.y (j) - shape.y ((j + 1) % shape.getPolycount ());

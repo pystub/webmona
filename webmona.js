@@ -235,20 +235,27 @@ function DNA (length, width) {
 }
 
 DNA.prototype.dupe = function dupeDNA () {
+	//duplicate dna
 	var result = new DNA (0, this.width);
+	//for each element in strand
 	for (var i = 0; i < this.strand.length; ++i){result.strand.push (this.strand[i].dupe ());}
+	//return the result
 	return result;
 }
 
 DNA.prototype.changeLength = function changeDNALength (newLength) {
 	//change dna length
+	//push
 	while (newLength > this.strand.length){this.strand.push (new Shape (0, 0, 0, 255, this.width));}
+	//pop
 	while (newLength < this.strand.length){this.strand.pop ();}
 }
 
 DNA.prototype.changeWidth = function changeDNAWidth (newWidth) {
 	//change dna width
+	//for each element in strand
 	for (var i = this.strand.length - 1; i >= 0; --i){this.strand[i].changeWidth (newWidth);}
+	//set new width
 	this.width = newWidth;
 }
 
@@ -281,27 +288,40 @@ DNA.prototype.toString = function serializeDNA () {
 
 DNA.prototype.toSVG = function DNA2SVG () {
 	// output DNA string in SVG format
+	//header
 	var string = '<?xml version="1.0" encoding="utf-8"?>\n<svg version="1.1"'
 		+ ' baseProfile="full" xmlns="http://www.w3.org/2000/svg"'
+		//width
 		+ ' width="' + inputCtx.canvas.width + 'px"'
+		//height
 		+ ' height="' + inputCtx.canvas.height + 'px"'
 		+ ' viewBox="0 0 '
 		+ inputCtx.canvas.width + ' ' + inputCtx.canvas.height + '">\n';
-
+	//for each polygon
 	for (var i = 0; i < this.strand.length; i++) {
 		string += '<polygon fill="rgb('
+			//red
 			+ this.strand[i].r + ','
+			//green
 			+ this.strand[i].g + ','
+			//blue
 			+ this.strand[i].b + ')" opacity="'
+			//opacity
 			+ this.strand[i].a / 255 + '" points="';
+		//for each vertex
 		for (var j = 0; j < this.width; j++) {
 			string += ' '
+				//x value
 				+ this.strand[i].x (j) + ' '
+				//y value
 				+ this.strand[i].y (j);
 		}
+		//close bracket in svg file
 		string += '" />\n';
 	}
+	//terminate svg file
 	string += '</svg>';
+	//return svg file
 	return string;
 }
 /* complexity is sum of
@@ -312,9 +332,11 @@ DNA.prototype.toSVG = function DNA2SVG () {
  */
 
 DNA.prototype.computeComplexity = function computeDNAComplexity () {
+	//find the complexity of a certain dna
 	var complexity = 0
 		,shape
 		,x0, y0, x1, y1;
+	//for each element in dna strand
 	for (var i = this.strand.length; i > 0;) {
 		// calculate the vector that goes from the last point to the first
 		shape = this.strand[--i];
@@ -331,10 +353,12 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 			y1 = y0;
 		}
 	}
+	//return the complexity of input dna
 	return complexity;
 }
 
 DNA.prototype.randomize = function randomizeDNA (width, height) {
+	//make some random dna
 	for (var i = this.strand.length; i > 0;) {
 		var shape = this.strand[--i];
 		//red
@@ -357,13 +381,21 @@ DNA.prototype.randomize = function randomizeDNA (width, height) {
 
 function initialize () {
 	//add some random DNA to start
+	//set number of polygons
 	var newLength = parseInt (numPolysInput.value)
+		//set number of vertices
 		,newWidth = parseInt (numVertsInput.value)
+		//set image width
 		,width = inputCtx.canvas.width
+		//set image height
 		,height = inputCtx.canvas.height;
+	//make some empty new dna
 	bestDNA = new DNA (newLength, newWidth);
+	//put random data into new dna
 	bestDNA.randomize (width, height);
+	//initialise best difference
 	bestDifference = Infinity;
+	//initialise best complexity
 	bestComplexity = Infinity;
 	//TODO: detect transparent/grayscale images and update bitsPP
 	maximumDifference = width * height * bitsPP * 255;
@@ -384,17 +416,20 @@ function startEvolution () {
 	// otherwise check if evolution timer is active
 	if (comparators ? running : evolutionTimer){return;}
 
+	//record time that evolution started
 	startTime = +new Date ();
-
 	lastRateEval.time = + new Date ();
 
 	if (comparators) {
+		//mutations are running
 		running = true;
+		//step through evolution
 		evolutionStep ();
 	}
-	else
+	else {
 		evolutionTimer = setInterval (evolutionStep, 0);
-
+	}
+	//update information displayed on html page
 	updateInfo ();
 }
 

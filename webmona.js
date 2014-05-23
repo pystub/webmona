@@ -148,27 +148,38 @@ function msToTimeInfo (ms, limit) {
 
 function Shape (r, g, b, a, n) {
 	if (!(this && this instanceof Shape)){throw new TypeError ();}
+	//red
 	this.r = r;
+	//green
 	this.g = g;
+	//blue
 	this.b = b;
+	//alpha
 	this.a = a;
+	//vertices
 	this.verts = [];
+	//push vertices
 	for (var i = n * 2 - 1; i >= 0; --i){this.verts.push (0);}
 }
+
 Shape.prototype.x = function getX (i) {
 	return this.verts [i * 2];
 }
+
 Shape.prototype.y = function getY (i) {
 	return this.verts [i * 2 + 1];
 }
+
 Shape.prototype.getWidth = function getShapeWidth () {
 	return this.verts.length / 2;
 }
+
 Shape.prototype.dupe = function dupeShape () {
 	var result = new Shape (this.r, this.g, this.b, this.a, 0);
 	for (var i = this.verts.length - 1; i >= 0; --i){result.verts.unshift (this.verts[i]);}
 	return result;
 }
+
 Shape.prototype.changeWidth = function changeShapeWidth (newWidth) {
 	while (newWidth * 2 > this.verts.length){this.verts.push (0);}
 	while (newWidth * 2 < this.verts.length){this.verts.pop ();}
@@ -394,16 +405,23 @@ function evolutionStep () {
 	if (comparators && !running){return;}
 	//randomly choose a mutation type
 	var rr = Math.random ();
+	//change shape
 	if (rr < 0.9){mutationType = CHANGE_SHAPE;}
+	//null contribution check
 	else if (rr < 0.95){mutationType = NULL_CONTRIBUTION_CHECK;}
+	//move shape to top of stack
 	else {mutationType = MOVE_SHAPE_TO_TOP;}
 
 	// mutate DNA
 	//duplicate the leading dna
 	testDNA = bestDNA.dupe ();
+	//select random target shape
 	targetShapeIndex = randInt (testDNA.strand.length);
+	//get target shape
 	targetShape = testDNA.strand[targetShapeIndex];
+	//set number of vertices
 	verts = targetShape.verts;
+	//set width
 	var width = inputCtx.canvas.width, height = inputCtx.canvas.height;
 
 	switch (mutationType) {
@@ -532,19 +550,29 @@ function validateMutation (difference, complexity) {
 	case NULL_CONTRIBUTION_CHECK:
 		if (difference == bestDifference) {
 			success = true;
+			//random red
 			targetShape.r = randInt (255);
+			//random green
 			targetShape.g = randInt (255);
+			//random blue
 			targetShape.b = randInt (255);
+			//random alpha
 			targetShape.a = randInt (255);
+			//random start x
 			var originX = randInt (width);
+			//random start y
 			var originY = randInt (height);
+			//for each vertex
 			for (var i = verts.length; i > 0;) {
 				// ITERATIONS ARE REVERSED
 				verts[--i] = clamp (originY + randSignedInt (5), 0, height); // Y
 				verts[--i] = clamp (originX + randSignedInt (5), 0, width); // X
 			}
+			//draw test dna
 			drawDNA (testCtx, testDNA);
+			//get best difference
 			bestDifference = compareContextData (inputCtx, testCtx);
+			//get best complexity
 			bestComplexity = testDNA.computeComplexity ();
 		}
 		break;
@@ -585,18 +613,26 @@ function validateMutation (difference, complexity) {
 }
 
 function updateInfo () {
+	//calculate fitness as a %
 	var fitness = (maximumDifference - bestDifference) / maximumDifference
 		,tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4);
+	//update the fitness % value on html page
 	fitnessOut.value = fitness.toLocaleString (navigator.language, {
 		style: 'percent',
 		maximumFractionDigits: '2',
 		minimumFractionDigits: '2',
 	});
+	//update evolution count on html page
 	evolutionCountOut.value = evolutionCount;
+	//update evolution per second on html page
 	evolutionsPerSecondOut.value = evolutionsPerSecond;
+	//update consecutive failures count on html page
 	consecutiveFailuresOut.value = consecutiveFailures;
+	//update consecutive wins count on html page
 	consecutiveWinsOut.value = consecutiveWins;
+	//update win streak count on html page
 	winStreakOut.value = failStreak;
+	//update fail streak count on html page
 	failStreakOut.value = winStreak;
 	//winsPerSecondOut.value = winsPerSecond;
 	//failsPerSecondOut.value = failsPerSecond;
@@ -613,9 +649,12 @@ function updateInfo () {
 function drawDNA (ctx, dna) {
 	//draw input dna
 	ctx.clearRect (0, 0, ctx.canvas.width, ctx.canvas.height);
+	//for each shape
 	for (var i = 0; i < dna.strand.length; i++) {
 		var shape = dna.strand[i];
+		//begin the shape
 		ctx.beginPath ();
+		//set the fill style
 		ctx.fillStyle = 'rgba('
 			//red
 			+ shape.r + ','
@@ -631,6 +670,7 @@ function drawDNA (ctx, dna) {
 			//draw line to next vertex
 			ctx.lineTo (shape.x (j), shape.y (j));
 		}
+		//fill the shape
 		ctx.fill ();
 	}
 }
@@ -641,31 +681,43 @@ startButton.addEventListener ('click', startEvolution);
 pauseButton.addEventListener ('click', pauseEvolution);
 //when the number of polygons is changed
 numPolysInput.addEventListener ('change', function (event) {
+	//set new number of polygons
 	var newLength = parseInt (numPolysInput.value);
+	//change number of polygons in leader dna
 	bestDNA.changeLength (newLength);
+	//draw the modified dna
 	drawDNA (bestCtx, bestDNA);
+	//calculate the best difference
 	bestDifference = compareContextData (inputCtx, bestCtx);
 })
 //when the number of vertices is changed
 numVertsInput.addEventListener ('change', function (event) {
+	//set new number of vertices
 	var newWidth = parseInt (numVertsInput.value);
+	//change number of vertices in leader dna
 	bestDNA.changeWidth (newWidth);
+	//draw the modified dna
 	drawDNA (bestCtx, bestDNA);
+	//calculate the best difference
 	bestDifference = compareContextData (inputCtx, bestCtx);
 })
 //when the input image is changes
 imageInput.addEventListener ('change', function (event) {
+	//read the new input image
 	reader.readAsDataURL (event.target.files[0]);
 }, false)
 //prepare for loading image
 reader.addEventListener ('load', function (event) {
+	//set the image source
 	proxyImage.src = event.target.result;
 })
 //load the image
 proxyImage.addEventListener ('load', function (event) {
+	//setup image width
 	inputCtx.canvas.width =
 	testCtx.canvas.width =
 	bestCtx.canvas.width = event.target.width;
+	//setup image height
 	inputCtx.canvas.height = 
 	testCtx.canvas.height =
 	bestCtx.canvas.height = event.target.height;

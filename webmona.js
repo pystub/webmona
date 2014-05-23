@@ -31,6 +31,10 @@ var 	//image input file picker
 	,startButton = document.getElementById ('start')
 	//pause button on html page
 	,pauseButton = document.getElementById ('pause')
+	//export dna button on html page
+	,exportButton = document.getElementById ('b_export_dna')
+	//export svg button on html page
+	,exportSVGButton = document.getElementById ('b_export_svg')
 	//number of polygons displayed on html page
 	,numPolysInput = document.getElementById ('num-polys')
 	//number of vertices displayed on html page
@@ -78,7 +82,34 @@ var 	//image input file picker
 	,targetShape
 	,verts
 	,accumulatedDifference
-	,pendingComparatorResponses;
+	,pendingComparatorResponses
+	/*
+	 *     Splits millisecond count to collection of larger time units that
+	 *     collectively represent the same time amount.
+	 * arguments:
+	 *     ms (Number) millisecond count to be converted
+	 *     limit (Number) limits the variety possible resulting units. The last
+	 *         allowed unit will contain the remainder of time value.
+	 * returns:
+	 *     Object {
+	 *         ms (Number) count of milliseconds, from 0 to 999 (Infinity if limit
+	 *             is less than 1)
+	 *         s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
+	 *         m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
+ 	 *         h (Number) count of hours, from 0 to 23 (Infinity if limit is 3)
+	 *         d (Number) count of days, from 0 to 6 (Infinity if limit is 4)
+ 	 *         w (Number) count of weeks, from 0 to Infinity
+ 	 *     }
+	 */
+	,timeUnits = [
+		/* name, modulo */
+		{n: 'ms', m: 1000},
+		{n: 's', m: 60},
+		{n: 'm', m: 60},
+		{n: 'h', m: 24},
+		{n: 'd', m: 7},
+		{n: 'w', m: Infinity},
+	];
 
 function clamp (value, min, max) 
 {
@@ -94,33 +125,8 @@ function randSignedInt (n)
 {
 	return Math.floor (Math.random () * ((n << 1) + 1)) - n;
 }
-/*
- *     Splits millisecond count to collection of larger time units that
- *     collectively represent the same time amount.
- * arguments:
- *     ms (Number) millisecond count to be converted
- *     limit (Number) limits the variety possible resulting units. The last
- *         allowed unit will contain the remainder of time value.
- * returns:
- *     Object {
- *         ms (Number) count of milliseconds, from 0 to 999 (Infinity if limit
- *             is less than 1)
- *         s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
- *         m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
- *         h (Number) count of hours, from 0 to 23 (Infinity if limit is 3)
- *         d (Number) count of days, from 0 to 6 (Infinity if limit is 4)
- *         w (Number) count of weeks, from 0 to Infinity
- *     }
- */
-var timeUnits = [
-	/* name, modulo */
-	{n: 'ms', m: 1000},
-	{n: 's', m: 60},
-	{n: 'm', m: 60},
-	{n: 'h', m: 24},
-	{n: 'd', m: 7},
-	{n: 'w', m: Infinity},
-]
+
+
 
 function msToTimeInfo (ms, limit) {
 	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
@@ -666,6 +672,22 @@ importButton.addEventListener ('click', function (event) {
 	bestDNA = new DNA (clipboard.value)
 	drawDNA (bestCtx, bestDNA)
 	bestDifference = compareContextData (inputCtx, bestCtx)
+})
+
+//when dna export button is clicked
+exportButton.addEventListener ('click', function (event) {
+	//export dna
+	if (event.button != 0)
+		return
+	clipboard.value = bestDNA
+})
+
+//when svg export button is clicked
+exportSVGButton.addEventListener ('click', function (event) {
+	//export svg
+	if (event.button != 0)
+		return
+	clipboard.value = bestDNA.toSVG ()
 })
 
 //when toolbox minimise/maximise button is clicked

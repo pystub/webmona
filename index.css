@@ -1,56 +1,53 @@
-
-body 	{
+body 	
+	{
 	font-family:arial, sans-serif; padding:1em;
 	background-color: black;
 	color: white;
-padding: 5px;
+	padding: 5px;
 	}
-
-canvas 	{ 
+canvas 	
+	{ 
 	border:solid 1px darkgrey;
 	}
-
 div
-{
-border:1px solid darkgrey;
-position:fixed;
-width: 33%;
-top: 5px;
-right: 5px;
-background: black;
-padding:20px;
-}
+	{
+	border:1px solid darkgrey;
+	position:fixed;
+	top: 5px;
+	right: 5px;
+	background: black;
+	padding:20px;
+	}
 #start
-{
-width: 45%;
-}
+	{
+	width: 45%;
+	}
 #pause
-{
-width: 45%;
-}
+	{
+	width: 45%;
+	}
 #num-verts
-{
-width: 20%;
-}
+	{
+	width: 20%;
+	}
 #num-polys
-{
-width: 20%;
-}
+	{
+	width: 20%;
+	}
 #clipboard
-{
-width: 90%;
-}
+	{
+	width: 90%;
+	}
 #b_export_dna
-{
-width: 30%;
-}
-
+	{
+	width: 30%;
+	}
 #b_export_svg
-{
-width: 30%;
-}
+	{
+	width: 30%;
+	}
 
 #b_import_dna
-{
-width: 30%;
-}
+	{
+	width: 30%;
+	}

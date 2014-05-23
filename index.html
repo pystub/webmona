@@ -1,52 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset='utf-8' />
-<title>webmona</title>
-<link rel="stylesheet" type="text/css" href="index.css">
-</head>
-
-<body>
-
-<canvas id="input-canvas" class='default-hidden'></canvas><br>
-<canvas id="best-canvas" class='default-hidden'></canvas><br>
-<canvas id="test-canvas" class='default-hidden'></canvas><br>
-
-<div id='toolbox'>
-<section id='info-output' class='default-hidden'>
-<p>
-<label for='image-input'>Source image</label>
-	<input type='file' id='image-input' /><br><br>
-<button id='start' class='default-hidden'>Start</button>
-	<button id='pause' class='default-hidden hidden'>Pause</button>
-</p>
-	Fitness <output id='fitness'></output><br/>
-	Mutations <output id='evolution-count'></output><br/>
-	Mutations/s <output id='evolutions-per-second'></output><br/>
-	Consecutive failed mutations <output id='consecutive-failures'></output><br/>
-	Time elapsed <output id='time-elapsed'></output>
-</p>
-</section>
-
-
-<p id='imgform'>
-	
-	<label for='num-polys' class='default-hidden'>Polygons</label>
-	<input id='num-polys' class='default-hidden' type='number' step='1' min='1' max='1000' value='64' /><br />
-	<label for='num-verts' class='default-hidden'>Vertices&nbsp;&nbsp;</label>
-	<input id='num-verts' class='default-hidden' type='number' step='1' min='3' max='30' value='3' /><br />
-	
-
-<p id='dnaformwrap' class='default-hidden'>
-	<textarea id='clipboard'></textarea><br>
-	<button id='b_export_dna'>Export DNA</button>
-	<button id='b_export_svg'>Export SVG</button>
-	<button id='b_import_dna'>Import DNA</button>
-	
-</p>
-</div>
-
-<script type="text/javascript" src="webmona.js"></script>
-
-</body>
+	<head>
+		<meta charset='utf-8' />
+		<title>webmona</title>
+		<link rel="stylesheet" type="text/css" href="index.css">
+	</head>
+	<body>
+		<canvas id="input-canvas" class='default-hidden'></canvas><br>
+		<canvas id="best-canvas" class='default-hidden'></canvas><br>
+		<canvas id="test-canvas" class='default-hidden'></canvas><br>
+		<div id='toolbox'>
+			<label>Source image</label>
+			<input type='file' id='image-input' /><br><br>
+			<button id='start'>Start</button>
+			<button id='pause'>Pause</button><br><br>
+			Fitness <output id='fitness'></output><br/>
+			Mutations <output id='evolution-count'></output><br/>
+			Mutations/s <output id='evolutions-per-second'></output><br/>
+			Consecutive failed mutations <output id='consecutive-failures'></output><br/>
+			Time elapsed <output id='time-elapsed'></output><br><br>
+			<label for='num-polys'>Polygons</label>
+			<input id='num-polys' type='number' step='1' min='1' max='1000' value='64' /><br />
+			<label for='num-verts'>Vertices&nbsp;&nbsp;</label>
+			<input id='num-verts' type='number' step='1' min='3' max='30' value='3' /><br><br>
+			<textarea id='clipboard'></textarea><br>
+			<button id='b_export_dna'>Export DNA</button>
+			<button id='b_export_svg'>Export SVG</button>
+			<button id='b_import_dna'>Import DNA</button>
+		</div>
+		<script type="text/javascript" src="webmona.js"></script>
+	</body>
 </html>

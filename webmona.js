@@ -558,10 +558,6 @@ reader.addEventListener ('load', function (event) {
 	proxyImage.src = event.target.result;
 })
 proxyImage.addEventListener ('load', function (event) {
-	// show elements hidden by default
-	var hiddenElements = document.getElementsByClassName ('default-hidden');
-	for (var i = hiddenElements.length; i > 0;)
-		hiddenElements[--i].classList.remove ('default-hidden');
 	inputCtx.canvas.width =
 	testCtx.canvas.width =
 	bestCtx.canvas.width = event.target.width;

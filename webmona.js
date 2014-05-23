@@ -247,7 +247,7 @@ function DNA (length, polycount) {
 	}
 	this.strand = [];
 	this.width = width;
-	for (var j = length - 1; j >= 0; --j){this.strand.push (new Shape (0, 0, 0, 255, polycount));}
+	for (var m = length - 1; m >= 0; --m){this.strand.push (new Shape (0, 0, 0, 255, polycount));}
 }
 
 DNA.prototype.dupe = function dupeDNA () {
@@ -406,7 +406,7 @@ function initialize () {
 
 function startEvolution () {
 	//check if an image has been loaded
-	if (proxyImage.src == '') {return;}
+	if (proxyImage.src === '') {return;}
 	// if we are using comparators, check the value
 	// otherwise check if evolution timer is active
 	if (comparators ? running : evolutionTimer){return;}
@@ -506,20 +506,20 @@ function evolutionStep () {
 			}
 			else
 			{
-				var subrand = Math.random ();
-				if (subrand <= 0.25){
+				var subrandb = Math.random ();
+				if (subrandb <= 0.25){
 					//red decrease
 					targetShape.r = clamp (targetShape.r - randInt (15), 0, 255);
 				}
-				if (subrand <= 0.5 && subrand > 0.25){
+				if (subrandb <= 0.5 && subrandb > 0.25){
 					//green decrease
 					targetShape.g = clamp (targetShape.g - randInt (15), 0, 255);
 				}
-				if (subrand <= 0.75 && subrand > 0.5){
+				if (subrandb <= 0.75 && subrandb > 0.5){
 					//blue decrease
 					targetShape.b = clamp (targetShape.b - randInt (15), 0, 255);
 				}
-				if (subrand > 0.75){
+				if (subrandb > 0.75){
 					//alpha decrease
 					targetShape.a = clamp (targetShape.a - randInt (15), 0, 255);
 				}
@@ -541,10 +541,10 @@ function evolutionStep () {
 		break;
 
 	case NULL_CONTRIBUTION_CHECK:
-		for (var i = verts.length; i > 0;) {
+		for (var k = verts.length; k > 0;) {
 			// ITERATIONS ARE REVERSED
-			verts[--i] = 0; // Y
-			verts[--i] = 0; // X
+			verts[--k] = 0; // Y
+			verts[--k] = 0; // X
 		}
 		break;
 
@@ -562,11 +562,11 @@ function evolutionStep () {
 		accumulatedDifference = 0;
 		pendingComparatorResponses = comparators.length;
 
-		for (var i = comparators.length; i > 0; i--) {
-			var slice = Math.floor ((width - scan) / i);
+		for (var l = comparators.length; l > 0; l--) {
+			var slice = Math.floor ((width - scan) / l);
 			var data = testCtx.getImageData (scan, 0, slice, height).data;
 			scan += slice;
-			comparators[i - 1].postMessage (data.buffer, [data.buffer]);
+			comparators[l - 1].postMessage (data.buffer, [data.buffer]);
 		}
 		// comparators have their data and will return with results so we need
 		// to end it here

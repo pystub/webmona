@@ -1,46 +1,72 @@
 //set up variables
-var imageInput = document.getElementById ('image-input')
+var 	//image input file picker
+	imageInput = document.getElementById ('image-input')
+	//image canvas
 	,inputCtx = document.getElementById ('input-canvas').getContext ('2d')
+	//test canvas
 	,testCtx = document.getElementById ('test-canvas').getContext ('2d')
+	//best match canvas
 	,bestCtx = document.getElementById ('best-canvas').getContext ('2d')
-
+	//best match dna
 	,bestDNA
+	//dna to be tested against best match dna
 	,testDNA
-
+	//fitness displayed on html page
 	,fitnessOut = document.getElementById ('fitness')
+	//evolution count displayed on html page
 	,evolutionCountOut = document.getElementById ('evolution-count')
+	//evolutions per second displayed on html page
 	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
+	//consecutive failures displayed on html page
 	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	//time elapsed displayed on html page
 	,timeElapsedOut = document.getElementById ('time-elapsed')
-
+	//start button on html page
 	,startButton = document.getElementById ('start')
+	//pause button on html page
 	,pauseButton = document.getElementById ('pause')
-
+	//number of polygons displayed on html page
 	,numPolysInput = document.getElementById ('num-polys')
+	//number of vertices displayed on html page
 	,numVertsInput = document.getElementById ('num-verts')
-
+	//import dna button on html page
 	,importButton = document.getElementById ('b_import_dna')
+	//minimise/maximise toolbox button on html page
 	,minmaxButton = document.getElementById ('minmax')
+	//clipboard on html page
 	,clipboard = document.getElementById ('clipboard')
-
 	,bitsPP = 4
+	//time when evolution started
 	,startTime
+	//how long has evolution been running?
 	,elapsedTime = 0
+	//how many different dna combinations have been tried?
 	,evolutionCount
+	//how many times has mutated dna been less fit than leader dna?
 	,consecutiveFailures
 	,lastRateEval = {time: 0, evolutions: 0}
+	//how many mutations per second are happening?
 	,evolutionsPerSecond
+	//is the evolution running?
 	,running = false
 	,evolutionTimer
 	,maximumDifference
 	,bestDifference
 	,bestComplexity
-
+	//how many comparator webworkers should be started?
 	,numComparators = 8
 	,comparators
-
 	,reader = new FileReader ()
-	,proxyImage = new Image ();
+	,proxyImage = new Image ()
+	,CHANGE_SHAPE = 1
+	,NULL_CONTRIBUTION_CHECK = 2
+	,MOVE_SHAPE_TO_TOP = 3
+	,mutationType
+	,targetShapeIndex
+	,targetShape
+	,verts
+	,accumulatedDifference
+	,pendingComparatorResponses;
 
 function clamp (value, min, max) 
 {
@@ -49,7 +75,7 @@ function clamp (value, min, max)
 
 function randInt (n) 
 {
-	return Math.floor (Math.random () * n)
+	return Math.floor (Math.random () * n);
 }
 
 function randSignedInt (n) 
@@ -83,6 +109,7 @@ var timeUnits = [
 	{n: 'd', m: 7},
 	{n: 'w', m: Infinity},
 ]
+
 function msToTimeInfo (ms, limit) {
 	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
 	if (limit === undefined)
@@ -155,12 +182,14 @@ function DNA (length, width) {
 	for (var i = length - 1; i >= 0; --i)
 		this.strand.push (new Shape (0, 0, 0, 255, width));
 }
+
 DNA.prototype.dupe = function dupeDNA () {
 	var result = new DNA (0, this.width);
 	for (var i = 0; i < this.strand.length; ++i)
 		result.strand.push (this.strand[i].dupe ());
 	return result
 }
+
 DNA.prototype.changeLength = function changeDNALength (newLength) {
 	//change dna length
 	while (newLength > this.strand.length)
@@ -168,6 +197,7 @@ DNA.prototype.changeLength = function changeDNALength (newLength) {
 	while (newLength < this.strand.length)
 		this.strand.pop ();
 }
+
 DNA.prototype.changeWidth = function changeDNAWidth (newWidth) {
 	//change dna width
 	for (var i = this.strand.length - 1; i >= 0; --i)
@@ -176,17 +206,23 @@ DNA.prototype.changeWidth = function changeDNAWidth (newWidth) {
 }
 
 DNA.prototype.toString = function serializeDNA () {
-	// header
+	//make dna into a string
+	//header
 	var string =
 		this.width + ' ' +
 		this.strand.length
-	// shapes
+	//for each shape in dna
 	for (var i = 0; i < this.strand.length; i++) {
 		string += ' '
+			//red
 			+ this.strand[i].r + ' '
+			//green
 			+ this.strand[i].g + ' '
+			//blue
 			+ this.strand[i].b + ' '
+			//alpha
 			+ this.strand[i].a / 255
+		//co-ordinates
 		for (var j = 0; j < this.width; j++) {
 			string +=
 				' ' + this.strand[i].x (j) +
@@ -227,6 +263,7 @@ DNA.prototype.toSVG = function DNA2SVG () {
  *     dot products'
  *     absolute values
  */
+
 DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	var complexity = 0
 		,shape
@@ -249,6 +286,7 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	}
 	return complexity
 }
+
 DNA.prototype.randomize = function randomizeDNA (width, height) {
 	for (var i = this.strand.length; i > 0;) {
 		var shape = this.strand[--i]
@@ -264,7 +302,7 @@ DNA.prototype.randomize = function randomizeDNA (width, height) {
 }
 
 function initialize () {
-	// add some random DNA to start
+	//add some random DNA to start
 	var newLength = parseInt (numPolysInput.value)
 		,newWidth = parseInt (numVertsInput.value)
 		,width = inputCtx.canvas.width
@@ -273,15 +311,15 @@ function initialize () {
 	bestDNA.randomize (width, height)
 	bestDifference = Infinity
 	bestComplexity = Infinity
-	// TODO: detect transparent/grayscale images and update bitsPP
+	//TODO: detect transparent/grayscale images and update bitsPP
 	maximumDifference = width * height * bitsPP * 255
-
+	//record the time evolution started
 	startTime = new Date ()
+	//initialise elapsed time variable
 	elapsedTime = 0
-
+	//initialise number of generations variable
 	evolutionCount = 0
-
-
+	//draw the dna
 	drawDNA (bestCtx, bestDNA)
 }
 
@@ -292,9 +330,6 @@ function startEvolution () {
 		return
 
 	startTime = +new Date ()
-
-	startButton.classList.add ('hidden')
-	pauseButton.classList.remove ('hidden')
 
 	lastRateEval.time = + new Date ()
 
@@ -342,18 +377,6 @@ function compareContextData (a, b) {
 	return difference
 }
 
-var CHANGE_SHAPE = 1
-	,NULL_CONTRIBUTION_CHECK = 2
-	,MOVE_SHAPE_TO_TOP = 3
-
-	,mutationType
-	,targetShapeIndex
-	,targetShape
-	,verts
-
-	,accumulatedDifference
-	,pendingComparatorResponses
-
 function evolutionStep () {
 	if (comparators && !running)
 		return
@@ -366,12 +389,12 @@ function evolutionStep () {
 		mutationType = MOVE_SHAPE_TO_TOP
 
 	// mutate DNA
+	//duplicate the leading dna
 	testDNA = bestDNA.dupe ()
 	targetShapeIndex = randInt (testDNA.strand.length)
 	targetShape = testDNA.strand[targetShapeIndex]
 	verts = targetShape.verts
-	var width = inputCtx.canvas.width
-		,height = inputCtx.canvas.height
+	var width = inputCtx.canvas.width, height = inputCtx.canvas.height;
 
 	switch (mutationType) {
 	case CHANGE_SHAPE:
@@ -541,28 +564,33 @@ function drawDNA (ctx, dna) {
 	}
 }
 
+//start evolution when the start button is clicked
 startButton.addEventListener ('click', startEvolution)
+//pause evolution when the pause button is clicked
 pauseButton.addEventListener ('click', pauseEvolution)
-
+//when the number of polygons is changed
 numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value)
 	bestDNA.changeLength (newLength)
 	drawDNA (bestCtx, bestDNA)
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })
+//when the number of vertices is changed
 numVertsInput.addEventListener ('change', function (event) {
 	var newWidth = parseInt (numVertsInput.value)
 	bestDNA.changeWidth (newWidth)
 	drawDNA (bestCtx, bestDNA)
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })
-
+//when the input image is changes
 imageInput.addEventListener ('change', function (event) {
 	reader.readAsDataURL (event.target.files[0]);
 }, false)
+//prepare for loading image
 reader.addEventListener ('load', function (event) {
 	proxyImage.src = event.target.result;
 })
+//load the image
 proxyImage.addEventListener ('load', function (event) {
 	inputCtx.canvas.width =
 	testCtx.canvas.width =
@@ -604,10 +632,11 @@ proxyImage.addEventListener ('load', function (event) {
 
 	//add random DNA to start with
 	initialize ();
-
+	//start evolving the image
 	startEvolution ();
 })
 
+//when dna import button is clicked
 importButton.addEventListener ('click', function (event) {
 	//import DNA
 	if (event.button != 0)
@@ -617,13 +646,17 @@ importButton.addEventListener ('click', function (event) {
 	bestDifference = compareContextData (inputCtx, bestCtx)
 })
 
+//when toolbox minimise/maximise button is clicked
 minmaxButton.addEventListener ('click', function (event) {
 	var div = document.getElementById('toolbox');
-    if (div.style.display !== 'none') {
-        div.style.display = 'none';
-    }
-    else {
-        div.style.display = 'block';
-    }
+	//if toolbox is not hidden
+   	if (div.style.display !== 'none') {
+		//hide toolbox
+        	div.style.display = 'none';
+    	}
+    	else {
+		//show toolbox
+        	div.style.display = 'block';
+    	}
 })
 

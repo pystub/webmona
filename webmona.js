@@ -271,7 +271,7 @@ DNA.prototype.changePolycount = function changeDNAPolycount (newPolycount) {
 	//for each element in strand
 	for (var i = this.strand.length - 1; i >= 0; --i){this.width = newWidth;this.strand[i].changePolycount (newPolycount);}
 	//set new width
- 	this.polycount = newPolycount;
+	this.polycount = newPolycount;
 };
 
 DNA.prototype.toString = function serializeDNA () {
@@ -302,11 +302,7 @@ DNA.prototype.toSVG = function DNA2SVG () {
 		string += '<polygon fill="rgb('	+ this.strand[i].r + ',' + this.strand[i].g + ',' + this.strand[i].b + ')" opacity="' + this.strand[i].a / 255 + '" points="';
 		//for each vertex
 		for (var j = 0; j < this.strand[i].getPolycount (); j++) {
-			string += ' '
-				//x value
-				+ this.strand[i].x (j) + ' '
-				//y value
-				+ this.strand[i].y (j);
+			string += ' ' + this.strand[i].x (j) + ' ' + this.strand[i].y (j);
 		}
 		//close bracket in svg file
 		string += '" />\n';
@@ -336,8 +332,8 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 		// calculate the vector that goes from the last point to the first
 		shape = this.strand[--i];
 		x1 = shape.x (shape.getPolycount () - 1) - shape.x (0);
- 		y1 = shape.y (shape.getPolycount () - 1) - shape.y (0);
- 		for (var j = 0; j < shape.getPolycount (); j++) {
+		y1 = shape.y (shape.getPolycount () - 1) - shape.y (0);
+		for (var j = 0; j < shape.getPolycount (); j++) {
 			// calculate current vector
 			x0 = shape.x (j) - shape.x ((j + 1) % shape.getPolycount ());
 			y0 = shape.y (j) - shape.y ((j + 1) % shape.getPolycount ());
@@ -573,7 +569,7 @@ function evolutionStep () {
 		return;
 	} else {
 		// comparators are not enabled, calculate difference "manually"
-		var difference = compareContextData (inputCtx, testCtx)
+		var difference = compareContextData (inputCtx, testCtx);
 		var complexity = testDNA.computeComplexity ();
 		validateMutation (difference, complexity);
 	}
@@ -679,8 +675,8 @@ function validateMutation (difference, complexity) {
 
 function updateInfo () {
 	//calculate fitness as a %
-	var fitness = (maximumDifference - bestDifference) / maximumDifference
-		,tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4);
+	var fitness = (maximumDifference - bestDifference) / maximumDifference;
+	var tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4);
 	//update the fitness % value on html page
 	fitnessOut.value = fitness.toLocaleString (navigator.language, {
 		style: 'percent',
@@ -876,4 +872,4 @@ minmaxButton.addEventListener ('click', function (event) {
 		//show toolbox
 			div.style.display = 'block';
 		}
-});
+};);

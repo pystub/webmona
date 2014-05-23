@@ -295,12 +295,10 @@ function startEvolution () {
 	if (comparators ? running : evolutionTimer)
 		return
 
-	startTime = +new Date ()
+	startTime = lastRateEval.time = + new Date ()
 
 	startButton.classList.add ('hidden')
 	pauseButton.classList.remove ('hidden')
-
-	lastRateEval.time = + new Date ()
 
 	if (comparators) {
 		running = true
@@ -513,7 +511,7 @@ function validateMutation (difference, complexity) {
 
 function updateInfo () {
 	var fitness = (maximumDifference - bestDifference) / maximumDifference
-		,tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4)
+		,timeFromStart = 0
 	fitnessOut.value = fitness.toLocaleString (navigator.language, {
 		style: 'percent',
 		maximumFractionDigits: '2',
@@ -522,15 +520,20 @@ function updateInfo () {
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures
+
+	// if the evolution is still running, schedule next info update with RAF
+	// because RAF fires only once per actual screen refresh
+	if (comparators ? running : evolutionTimer) {
+		requestAnimationFrame (updateInfo)
+		timeFromStart = +new Date () - startTime
+	}
+	var tInfo = msToTimeInfo (elapsedTime + timeFromStart, 4)
+	
 	timeElapsedOut.value =
 		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
 		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :
 		tInfo.m ? tInfo.m + ' minutes ' + tInfo.s + ' seconds':
 		tInfo.s + '.' + tInfo.ms + ' seconds'
-	// if the evolution is still running, schedule next info update with RAF
-	// because RAF fires only once per actual screen refresh
-	if (comparators ? running : evolutionTimer)
-		requestAnimationFrame (updateInfo)
 }
 
 function drawDNA (ctx, dna) {

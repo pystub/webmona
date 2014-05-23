@@ -590,6 +590,7 @@ function validateMutation (difference, complexity) {
 			//overwrite best complexity
 			bestComplexity = complexity;
 		}
+		break;
 	//move shape to top
 	case MOVE_SHAPE_TO_TOP:
 		if (difference < bestDifference) {

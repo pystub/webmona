@@ -158,8 +158,12 @@ function randSignedInt (n)
 
 
 function msToTimeInfo (ms, limit) {
+	//go from milliseconds to properly formatted time
+	//set up time variable
 	var ti = {ms: ms, s: 0, m: 0, h: 0, d: 0, w: 0}
+	//if limit is undefined, set it to something sensible
 	if (limit === undefined){limit = timeUnits.length - 1;}
+	//for under limit
 	for (var i = 0; i < limit; i++) {
 		// store the modulo remainder of this unit in a temp value
 		var thisUnit = ti[timeUnits[i].n] % timeUnits[i].m;
@@ -168,6 +172,7 @@ function msToTimeInfo (ms, limit) {
 		// store the current unit's value
 		ti[timeUnits[i].n] = thisUnit;
 	}
+	//return formatted time
 	return ti;
 }
 
@@ -583,24 +588,31 @@ function evolutionStep () {
 		validateMutation (difference, complexity);
 	}
 }
-
+//comparator response
 function comparatorResponse (event) {
 	accumulatedDifference += event.data;
 	--pendingComparatorResponses;
 	if (pendingComparatorResponses == 0){validateMutation (accumulatedDifference, testDNA.computeComplexity ());}
 }
-
+//validate mutation
 function validateMutation (difference, complexity) {
 	var success = false
+		//set width to input image width
 		,width = inputCtx.canvas.width
+		//set height to input image height
 		,height = inputCtx.canvas.height;
 	switch (mutationType) {
+	//change shape
 	case CHANGE_SHAPE:
 		if (difference + complexity < bestDifference + bestComplexity) {
+			//win
 			success = true;
+			//overwrite best difference
 			bestDifference = difference;
+			//overwrite best complexity
 			bestComplexity = complexity;
 		}
+	//move shape to top
 	case MOVE_SHAPE_TO_TOP:
 		if (difference < bestDifference) {
 			success = true;
@@ -608,7 +620,7 @@ function validateMutation (difference, complexity) {
 			// complexity doesn't change
 		}
 		break;
-
+	//null contribution check
 	case NULL_CONTRIBUTION_CHECK:
 		if (difference == bestDifference) {
 			success = true;

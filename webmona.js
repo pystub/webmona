@@ -530,18 +530,25 @@ function validateMutation (difference, complexity) {
 		}
 		break
 	}
-
+	//increment number of mutations
 	++evolutionCount
+	//increment number of consecutive fails
 	++consecutiveFailures
+	//if the mutated dna is better than the leader dna
 	if (success) {
+		//overwrite leader dna
 		bestDNA = testDNA;
+		//draw leader dna
 		drawDNA (bestCtx, bestDNA);
+		//reset number of consecutive fails to 0
 		consecutiveFailures = 0;
+		//increment number of consecutive wins
 		++consecutiveWins;
 	}
+	//if the mutated dna is worse than the leader dna
 	else {
+	//reset number of consecutive wins to 0
 	consecutiveWins = 0;
-
 	}
 
 	if (new Date () - lastRateEval.time >= 1000) {
@@ -551,7 +558,9 @@ function validateMutation (difference, complexity) {
 		lastRateEval.time += 1000;
 		lastRateEval.evolutions = evolutionCount;
 	}
+	//if the current number of consecutive failures beats the streak, overwrite it
 	if (consecutiveFailures>failStreak) {failStreak = consecutiveFailures}	
+	//if the current number of consecutive wins beats the streak, overwrite it
 	if (consecutiveWins>winStreak) {winStreak = consecutiveWins}
 	if (comparators)
 		evolutionStep ()
@@ -573,8 +582,6 @@ function updateInfo () {
 	failStreakOut.value = winStreak;
 	//winsPerSecondOut.value = winsPerSecond;
 	//failsPerSecondOut.value = failsPerSecond;
-
-	
 	timeElapsedOut.value =
 		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
 		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :
@@ -593,17 +600,23 @@ function drawDNA (ctx, dna) {
 		var shape = dna.strand[i]
 		ctx.beginPath ()
 		ctx.fillStyle = 'rgba('
+			//red
 			+ shape.r + ','
+			//green
 			+ shape.g + ','
+			//blue
 			+ shape.b + ','
+			//alpha
 			+ shape.a / 255 + ')';
 		ctx.moveTo (shape.x (0), shape.y (0))
+		//for each vertex in shape
 		for (var j = 1; j < shape.verts.length / 2; j += 1)
+			//draw line to next vertex
 			ctx.lineTo (shape.x (j), shape.y (j));
 		ctx.fill ()
 	}
 }
-
+//event listeners
 //start evolution when the start button is clicked
 startButton.addEventListener ('click', startEvolution)
 //pause evolution when the pause button is clicked

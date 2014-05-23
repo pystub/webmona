@@ -200,6 +200,14 @@ Shape.prototype.y = function getY (i) {
 	return this.verts [i * 2 + 1];
 }
 
+Shape.prototype.setX = function setX (i, value) {
+ 	return this.verts [i * 2] = value;
+}
+ 
+Shape.prototype.setY = function setY (i, value) {
+ 	return this.verts [i * 2 + 1] = value;
+}
+
 Shape.prototype.getPolycount = function getShapePolycount () {
 	return this.verts.length / 2;
 }
@@ -247,10 +255,13 @@ DNA.prototype.dupe = function dupeDNA () {
 	return result;
 }
 
-DNA.prototype.changeLength = function changeDNALength (newLength) {
+DNA.prototype.changeLength = function changeDNALength (newLength, factory) {
 	//change dna length
 	//push
-	while (newLength > this.strand.length){this.strand.push (new Shape (0, 0, 0, 255, this.polycount));}
+	while (newLength > this.strand.length){this.strand.push (factory instanceof Function ?
+ 			factory (this.polycount) :
+ 			new Shape (0, 0, 0, 255, this.polycount)
+ 		);}
 	//pop
 	while (newLength < this.strand.length){this.strand.pop ();}
 }
@@ -758,7 +769,20 @@ numPolysInput.addEventListener ('change', function (event) {
 	//set new number of polygons
 	var newLength = parseInt (numPolysInput.value);
 	//change number of polygons in leader dna
-	bestDNA.changeLength (newLength);
+	bestDNA.changeLength (newLength, function (polycount) {
+ 		var result = new Shape (
+ 			randInt (255),
+ 			randInt (255),
+ 			randInt (255),
+ 			randInt (255),
+ 			polycount
+ 		);
+ 		for (var i = 0; i < polycount; i++) {
+ 			result.setX (i, randInt (inputCtx.canvas.width));
+ 			result.setY (i, randInt (inputCtx.canvas.height));
+ 		}
+ 		return result;
+ 	})
 	//draw the modified dna
 	drawDNA (bestCtx, bestDNA);
 	//calculate the best difference

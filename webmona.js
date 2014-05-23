@@ -99,6 +99,9 @@
 	var targetShape;
 	//number of vertices
 	var verts;
+	var width;
+	var newWidth;
+	var evolutionsPerSecond;
 	//accumulated difference
 	var accumulatedDifference;
 	//comparator responces

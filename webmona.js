@@ -849,6 +849,8 @@ importButton.addEventListener ('click', function (event) {
 
 //when dna export button is clicked
 exportButton.addEventListener ('click', function (event) {
+	//check if an image has been loaded
+	if (proxyImage.src == '') {return;}
 	//if not left click then return
 	if (event.button != 0){return;}
 	//export dna
@@ -857,6 +859,8 @@ exportButton.addEventListener ('click', function (event) {
 
 //when svg export button is clicked
 exportSVGButton.addEventListener ('click', function (event) {
+	//check if an image has been loaded
+	if (proxyImage.src == '') {return;}
 	//if not left click then return
 	if (event.button != 0) {return;}
 	//export svg

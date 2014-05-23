@@ -25,6 +25,10 @@ var 	//image input file picker
 	,failStreakOut = document.getElementById ('fail-streak')
 	//win streak displayed on html page
 	,winStreakOut = document.getElementById ('win-streak')
+	//fails per second displayed on html page
+	//,failsPerSecondOut = document.getElementById ('fails-per-second')
+	//win streak displayed on html page
+	//,winsPerSecondOut = document.getElementById ('wins-per-second')
 	//time elapsed displayed on html page
 	,timeElapsedOut = document.getElementById ('time-elapsed')
 	//start button on html page
@@ -342,6 +346,8 @@ function initialize () {
 }
 
 function startEvolution () {
+	//check if an image has been loaded
+	if (proxyImage.src == '') {return;}
 	// if we are using comparators, check the value
 	// otherwise check if evolution timer is active
 	if (comparators ? running : evolutionTimer)
@@ -539,6 +545,8 @@ function validateMutation (difference, complexity) {
 	}
 
 	if (new Date () - lastRateEval.time >= 1000) {
+		//failsPerSecond = 0;
+		//winsPerSecond = 0;
 		evolutionsPerSecond = evolutionCount - lastRateEval.evolutions;
 		lastRateEval.time += 1000;
 		lastRateEval.evolutions = evolutionCount;
@@ -560,9 +568,13 @@ function updateInfo () {
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures
+	consecutiveWinsOut.value = consecutiveWins;
 	winStreakOut.value = failStreak;
 	failStreakOut.value = winStreak;
-	consecutiveWinsOut.value = consecutiveWins;
+	//winsPerSecondOut.value = winsPerSecond;
+	//failsPerSecondOut.value = failsPerSecond;
+
+	
 	timeElapsedOut.value =
 		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
 		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :

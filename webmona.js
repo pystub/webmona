@@ -26,9 +26,9 @@ var 	//image input file picker
 	//win streak displayed on html page
 	,winStreakOut = document.getElementById ('win-streak')
 	//fails per second displayed on html page
-	//,failsPerSecondOut = document.getElementById ('fails-per-second')
+	,failsPerSecondOut = document.getElementById ('fails-per-second')
 	//win streak displayed on html page
-	//,winsPerSecondOut = document.getElementById ('wins-per-second')
+	,winsPerSecondOut = document.getElementById ('wins-per-second')
 	//time elapsed displayed on html page
 	,timeElapsedOut = document.getElementById ('time-elapsed')
 	//start button on html page
@@ -299,12 +299,19 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 DNA.prototype.randomize = function randomizeDNA (width, height) {
 	for (var i = this.strand.length; i > 0;) {
 		var shape = this.strand[--i];
+		//red
 		shape.r = randInt (255);
+		//green
 		shape.g = randInt (255);
+		//blue
 		shape.b = randInt (255);
+		//alpha
 		shape.a = randInt (128) + 127;
+		//for each vertex
 		for (var j = 0; j < shape.verts.length; j += 2) {
+			//x
 			shape.verts[j] = randInt (width);
+			//y
 			shape.verts[j + 1] = randInt (height);
 		}
 	}
@@ -402,10 +409,46 @@ function evolutionStep () {
 	switch (mutationType) {
 	case CHANGE_SHAPE:
 		if (rr < 0.4) {
-			targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255);
-			targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255);
-			targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255);
-			targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255);
+			var rand = Math.random ();
+			if (rand <= 0.5){
+				var subrand = Math.random ();
+				if (subrand <= 0.25){
+					//red increase
+					targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255);
+				}
+				if (subrand <= 0.5 && subrand > 0.25){
+					//green increase
+					targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255);
+				}
+				if (subrand <= 0.75 && subrand > 0.5){
+					//blue increase
+					targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255);
+				}
+				if (subrand > 0.75){
+					//alpha increase
+					targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255);
+				}
+			}
+			else
+			{
+				var subrand = Math.random ();
+				if (subrand <= 0.25){
+					//red decrease
+					targetShape.r = clamp (targetShape.r - randSignedInt (15), 0, 255);
+				}
+				if (subrand <= 0.5 && subrand > 0.25){
+					//green decrease
+					targetShape.g = clamp (targetShape.g - randSignedInt (15), 0, 255);
+				}
+				if (subrand <= 0.75 && subrand > 0.5){
+					//blue decrease
+					targetShape.b = clamp (targetShape.b - randSignedInt (15), 0, 255);
+				}
+				if (subrand > 0.75){
+					//alpha decrease
+					targetShape.a = clamp (targetShape.a - randSignedInt (15), 0, 255);
+				}
+			}
 		}
 		else if (rr < 0.8) {
 			// TODO: fix/explain this

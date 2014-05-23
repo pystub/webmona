@@ -824,7 +824,7 @@ proxyImage.addEventListener ('load', function (event) {
 //when dna import button is clicked
 importButton.addEventListener ('click', function (event) {
 	//if not left click then return
-	if (event.button != 0){return;}
+	if (event.button !== 0){return;}
 	//import DNA
 	bestDNA = new DNA (clipboard.value);
 	//draw imported dna
@@ -836,9 +836,9 @@ importButton.addEventListener ('click', function (event) {
 //when dna export button is clicked
 exportButton.addEventListener ('click', function (event) {
 	//check if an image has been loaded
-	if (proxyImage.src == '') {return;}
+	if (proxyImage.src === '') {return;}
 	//if not left click then return
-	if (event.button != 0){return;}
+	if (event.button !== 0){return;}
 	//export dna
 	clipboard.value = bestDNA;
 });
@@ -846,9 +846,9 @@ exportButton.addEventListener ('click', function (event) {
 //when svg export button is clicked
 exportSVGButton.addEventListener ('click', function (event) {
 	//check if an image has been loaded
-	if (proxyImage.src == '') {return;}
+	if (proxyImage.src === '') {return;}
 	//if not left click then return
-	if (event.button != 0) {return;}
+	if (event.button !== 0) {return;}
 	//export svg
 	clipboard.value = bestDNA.toSVG ();
 });
@@ -856,7 +856,7 @@ exportSVGButton.addEventListener ('click', function (event) {
 //when toolbox minimise/maximise button is clicked
 minmaxButton.addEventListener ('click', function (event) {
 	//if not left click then return
-	if (event.button != 0){return;}
+	if (event.button !== 0){return;}
 	//get toolbox div
 	var div = document.getElementById('toolbox');
 	//if toolbox is not hidden
@@ -872,4 +872,4 @@ minmaxButton.addEventListener ('click', function (event) {
 		//show toolbox
 			div.style.display = 'block';
 		}
-};);
+});

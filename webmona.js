@@ -247,7 +247,7 @@ function DNA (length, polycount) {
 	}
 	this.strand = [];
 	this.width = width;
-	for (var i = length - 1; i >= 0; --i){this.strand.push (new Shape (0, 0, 0, 255, polycount));}
+	for (var j = length - 1; j >= 0; --j){this.strand.push (new Shape (0, 0, 0, 255, polycount));}
 }
 
 DNA.prototype.dupe = function dupeDNA () {

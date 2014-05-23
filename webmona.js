@@ -19,6 +19,12 @@ var 	//image input file picker
 	,evolutionsPerSecondOut = document.getElementById ('evolutions-per-second')
 	//consecutive failures displayed on html page
 	,consecutiveFailuresOut = document.getElementById ('consecutive-failures')
+	//consecutive wins displayed on html page
+	,consecutiveWinsOut = document.getElementById ('consecutive-wins')
+	//fail streak displayed on html page
+	,failStreakOut = document.getElementById ('fail-streak')
+	//win streak displayed on html page
+	,winStreakOut = document.getElementById ('win-streak')
 	//time elapsed displayed on html page
 	,timeElapsedOut = document.getElementById ('time-elapsed')
 	//start button on html page
@@ -44,6 +50,12 @@ var 	//image input file picker
 	,evolutionCount
 	//how many times has mutated dna been less fit than leader dna?
 	,consecutiveFailures
+	//how many times has mutated dna been more fit than leader dna?
+	,consecutiveWins = 0
+	//largest streak of unsuccessful mutations.
+	,failStreak = 0
+	//largest streak of successful mutations.
+	,winStreak = 0
 	,lastRateEval = {time: 0, evolutions: 0}
 	//how many mutations per second are happening?
 	,evolutionsPerSecond
@@ -510,9 +522,14 @@ function validateMutation (difference, complexity) {
 	++evolutionCount
 	++consecutiveFailures
 	if (success) {
-		bestDNA = testDNA
-		drawDNA (bestCtx, bestDNA)
-		consecutiveFailures = 0
+		bestDNA = testDNA;
+		drawDNA (bestCtx, bestDNA);
+		consecutiveFailures = 0;
+		++consecutiveWins;
+	}
+	else {
+	consecutiveWins = 0;
+
 	}
 
 	if (new Date () - lastRateEval.time >= 1000) {
@@ -520,6 +537,8 @@ function validateMutation (difference, complexity) {
 		lastRateEval.time += 1000;
 		lastRateEval.evolutions = evolutionCount;
 	}
+	if (consecutiveFailures>failStreak) {failStreak = consecutiveFailures}	
+	if (consecutiveWins>winStreak) {winStreak = consecutiveWins}
 	if (comparators)
 		evolutionStep ()
 }
@@ -535,6 +554,9 @@ function updateInfo () {
 	evolutionCountOut.value = evolutionCount
 	evolutionsPerSecondOut.value = evolutionsPerSecond
 	consecutiveFailuresOut.value = consecutiveFailures
+	winStreakOut.value = failStreak;
+	failStreakOut.value = winStreak;
+	consecutiveWinsOut.value = consecutiveWins;
 	timeElapsedOut.value =
 		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
 		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :

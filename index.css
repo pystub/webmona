@@ -3,7 +3,7 @@ body
 	font-family:arial, sans-serif; padding:1em;
 	background-color: black;
 	color: white;
-	padding: 5px;
+	padding: 0px;
 	}
 canvas 	
 	{ 
@@ -19,15 +19,15 @@ canvas:hover
 	{
 	position:fixed;
 	z-index: 9999;
-	top: 5px;
-	right: 5px;
+	top: 8px;
+	right: 8px;
 	}
 #toolbox
 	{
 	border:1px solid darkgrey;
 	position:fixed;
-	top: 5px;
-	right: 5px;
+	top: 8px;
+	right: 8px;
 	background: black;
 	padding:20px;
 	}

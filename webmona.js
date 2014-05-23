@@ -69,23 +69,39 @@ var 	//image input file picker
 	,evolutionsPerSecond
 	//is the evolution running?
 	,running = false
+	//how long has the evolution been running?
 	,evolutionTimer
+	//what's the maximum difference between a mutation and the input image?
 	,maximumDifference
+	//what's the best difference between a mutation and the input image?
 	,bestDifference
+	//what's the best complexity?
 	,bestComplexity
 	//how many comparator webworkers should be started?
 	,numComparators = 8
+	//comparator webworkers
 	,comparators
+	//file reader
 	,reader = new FileReader ()
+	//proxy image
 	,proxyImage = new Image ()
+	//change shape mutation
 	,CHANGE_SHAPE = 1
+	//null contribution mutation
 	,NULL_CONTRIBUTION_CHECK = 2
+	//move shape to top of stack mutation
 	,MOVE_SHAPE_TO_TOP = 3
+	//which type of mutation?
 	,mutationType
+	//index of target shape
 	,targetShapeIndex
+	//target shape
 	,targetShape
+	//number of vertices
 	,verts
+	//accumulated difference
 	,accumulatedDifference
+	//comparator responces
 	,pendingComparatorResponses
 	/*
 	 *     Splits millisecond count to collection of larger time units that
@@ -105,28 +121,37 @@ var 	//image input file picker
  	 *         w (Number) count of weeks, from 0 to Infinity
  	 *     }
 	 */
+	//set up time units
 	,timeUnits = [
-		/* name, modulo */
+		//milliseconds
 		{n: 'ms', m: 1000},
+		//seconds
 		{n: 's', m: 60},
+		//minutes
 		{n: 'm', m: 60},
+		//hours
 		{n: 'h', m: 24},
+		//days
 		{n: 'd', m: 7},
+		//weeks
 		{n: 'w', m: Infinity},
 	];
 
 function clamp (value, min, max) 
 {
+	//return a clamped value
 	return Math.max (min, Math.min (max, value));
 }
 
 function randInt (n) 
 {
+	//return a random integer
 	return Math.floor (Math.random () * n);
 }
 
 function randSignedInt (n) 
 {
+	//return a random signed integer
 	return Math.floor (Math.random () * ((n << 1) + 1)) - n;
 }
 
@@ -175,12 +200,14 @@ Shape.prototype.getWidth = function getShapeWidth () {
 }
 
 Shape.prototype.dupe = function dupeShape () {
+	//duplicate shape
 	var result = new Shape (this.r, this.g, this.b, this.a, 0);
 	for (var i = this.verts.length - 1; i >= 0; --i){result.verts.unshift (this.verts[i]);}
 	return result;
 }
 
 Shape.prototype.changeWidth = function changeShapeWidth (newWidth) {
+	//change width of shape
 	while (newWidth * 2 > this.verts.length){this.verts.push (0);}
 	while (newWidth * 2 < this.verts.length){this.verts.pop ();}
 }
@@ -432,19 +459,19 @@ function evolutionStep () {
 				var subrand = Math.random ();
 				if (subrand <= 0.25){
 					//red increase
-					targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255);
+					targetShape.r = clamp (targetShape.r + randInt (15), 0, 255);
 				}
 				if (subrand <= 0.5 && subrand > 0.25){
 					//green increase
-					targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255);
+					targetShape.g = clamp (targetShape.g + randInt (15), 0, 255);
 				}
 				if (subrand <= 0.75 && subrand > 0.5){
 					//blue increase
-					targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255);
+					targetShape.b = clamp (targetShape.b + randInt (15), 0, 255);
 				}
 				if (subrand > 0.75){
 					//alpha increase
-					targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255);
+					targetShape.a = clamp (targetShape.a + randInt (15), 0, 255);
 				}
 			}
 			else
@@ -452,19 +479,19 @@ function evolutionStep () {
 				var subrand = Math.random ();
 				if (subrand <= 0.25){
 					//red decrease
-					targetShape.r = clamp (targetShape.r - randSignedInt (15), 0, 255);
+					targetShape.r = clamp (targetShape.r - randInt (15), 0, 255);
 				}
 				if (subrand <= 0.5 && subrand > 0.25){
 					//green decrease
-					targetShape.g = clamp (targetShape.g - randSignedInt (15), 0, 255);
+					targetShape.g = clamp (targetShape.g - randInt (15), 0, 255);
 				}
 				if (subrand <= 0.75 && subrand > 0.5){
 					//blue decrease
-					targetShape.b = clamp (targetShape.b - randSignedInt (15), 0, 255);
+					targetShape.b = clamp (targetShape.b - randInt (15), 0, 255);
 				}
 				if (subrand > 0.75){
 					//alpha decrease
-					targetShape.a = clamp (targetShape.a - randSignedInt (15), 0, 255);
+					targetShape.a = clamp (targetShape.a - randInt (15), 0, 255);
 				}
 			}
 		}

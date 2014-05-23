@@ -14,15 +14,7 @@ onmessage = function (event) {
 	var delta = 0
 	for (var i = refData.length; i > 0;) {
 		// tricky reverse cycles again
-		delta +=
-			//alpha
-			Math.abs (refData[--i] - newData[i]) + 
-			//blue
-			Math.abs (refData[--i] - newData[i]) + 
-			//green
-			Math.abs (refData[--i] - newData[i]) + 	
-			//red
-			Math.abs (refData[--i] - newData[i]);   
+		delta += Math.abs (refData[--i] - newData[i]) + Math.abs (refData[--i] - newData[i]) + Math.abs (refData[--i] - newData[i]) + Math.abs (refData[--i] - newData[i]);
 	}
 	//post message back to main script
 	postMessage (delta)

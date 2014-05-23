@@ -223,6 +223,7 @@ Shape.prototype.changePolycount = function changeShapePolycount (newPolycount) {
 	//change number of polygons
 	while (newPolycount * 2 > this.verts.length){this.verts.push (0);}
 	while (newPolycount * 2 < this.verts.length){this.verts.pop ();}
+};
 
 function DNA (length, polycount) {
 	if (!(this && this instanceof DNA)){throw new TypeError ();}

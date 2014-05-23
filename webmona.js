@@ -64,7 +64,7 @@
 	var failStreak = 0;
 	//largest streak of successful mutations.
 	var winStreak = 0;
-	var lastRateEval = {time: 0var  evolutions: 0};
+	var lastRateEval = {time: 0var  evolutions: 0 };
 	//how many mutations per second are happening?
 	var evolutionsPerSecond;
 	//is the evolution running?
@@ -104,23 +104,23 @@
 	//comparator responces
 	var pendingComparatorResponses;
 	/*
-	 *     Splits millisecond count to collection of larger time units that
-	 *     collectively represent the same time amount.
-	 * arguments:
-	 *     ms (Number) millisecond count to be converted
-	 *     limit (Number) limits the variety possible resulting units. The last
-	 *         allowed unit will contain the remainder of time value.
-	 * returns:
-	 *     Object {
-	 *         ms (Number) count of millisecondsvar  from 0 to 999 (Infinity if limit
-	 *             is less than 1)
-	 *         s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
-	 *         m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
- 	 *         h (Number) count of hours, from 0 to 23 (Infinity if limit is 3)
-	 *         d (Number) count of days, from 0 to 6 (Infinity if limit is 4)
- 	 *         w (Number) count of weeks, from 0 to Infinity
- 	 *     }
-	 */
+		Splits millisecond count to collection of larger time units that
+		collectively represent the same time amount.
+		arguments:
+			ms (Number) millisecond count to be converted
+			limit (Number) limits the variety possible resulting units. The last
+				allowed unit will contain the remainder of time value.
+		returns:
+			Object {
+				ms (Number) count of millisecondsvar  from 0 to 999 (Infinity if limit
+					is less than 1)
+				s (Number) count of seconds, from 0 to 59 (Infinity if limit is 1)
+				m (Number) count of minutes, from 0 to 59 (Infinity if limit is 2)
+				h (Number) count of hours, from 0 to 23 (Infinity if limit is 3)
+				d (Number) count of days, from 0 to 6 (Infinity if limit is 4)
+				w (Number) count of weeks, from 0 to Infinity
+			}
+	*/
 	//set up time units
 	var timeUnits = [
 		//milliseconds
@@ -201,11 +201,11 @@ Shape.prototype.y = function getY (i) {
 };
 
 Shape.prototype.setX = function setX (i, value) {
- 	return this.verts [i * 2] = value;
+	return this.verts [i * 2] = value;
 };
  
 Shape.prototype.setY = function setY (i, value) {
- 	return this.verts [i * 2 + 1] = value;
+	return this.verts [i * 2 + 1] = value;
 };
 
 Shape.prototype.getPolycount = function getShapePolycount () {
@@ -259,9 +259,9 @@ DNA.prototype.changeLength = function changeDNALength (newLength, factory) {
 	//change dna length
 	//push
 	while (newLength > this.strand.length){this.strand.push (factory instanceof Function ?
- 			factory (this.polycount) :
- 			new Shape (0, 0, 0, 255, this.polycount)
- 		);}
+			factory (this.polycount) :
+			new Shape (0, 0, 0, 255, this.polycount)
+		);}
 	//pop
 	while (newLength < this.strand.length){this.strand.pop ();}
 };
@@ -269,7 +269,7 @@ DNA.prototype.changeLength = function changeDNALength (newLength, factory) {
 DNA.prototype.changePolycount = function changeDNAPolycount (newPolycount) {
 	//change dna polycount
 	//for each element in strand
-	for (var i = this.strand.length - 1; i >= 0; --i){this.width = newWidth;this.strand[i].changePolycount (newPolycount);;}
+	for (var i = this.strand.length - 1; i >= 0; --i){this.width = newWidth;this.strand[i].changePolycount (newPolycount);}
 	//set new width
  	this.polycount = newPolycount;
 };
@@ -282,15 +282,7 @@ DNA.prototype.toString = function serializeDNA () {
 		this.strand.length;
 	//for each shape in dna
 	for (var i = 0; i < this.strand.length; i++) {
-		string += ' '
-			//red
-			+ this.strand[i].r + ' '
-			//green
-			+ this.strand[i].g + ' '
-			//blue
-			+ this.strand[i].b + ' '
-			//alpha
-			+ this.strand[i].a / 255;
+		string += ' '+ this.strand[i].r + ' ' + this.strand[i].g + ' ' + this.strand[i].b + ' '	+ this.strand[i].a / 255;
 		//co-ordinates
 		for (var j = 0; j < this.polycount; j++) {
 			string +=
@@ -304,25 +296,10 @@ DNA.prototype.toString = function serializeDNA () {
 DNA.prototype.toSVG = function DNA2SVG () {
 	// output DNA string in SVG format
 	//header
-	var string = '<?xml version="1.0" encoding="utf-8"?>\n<svg version="1.1"'
-		+ ' baseProfile="full" xmlns="http://www.w3.org/2000/svg"'
-		//width
-		+ ' width="' + inputCtx.canvas.width + 'px"'
-		//height
-		+ ' height="' + inputCtx.canvas.height + 'px"'
-		+ ' viewBox="0 0 '
-		+ inputCtx.canvas.width + ' ' + inputCtx.canvas.height + '">\n';
+	var string = '<?xml version="1.0" encoding="utf-8"?>\n<svg version="1.1"' + ' baseProfile="full" xmlns="http://www.w3.org/2000/svg"' + ' width="' + inputCtx.canvas.width + 'px"' + ' height="' + inputCtx.canvas.height + 'px"' + ' viewBox="0 0 ' + inputCtx.canvas.width + ' ' + inputCtx.canvas.height + '">\n';
 	//for each polygon
 	for (var i = 0; i < this.strand.length; i++) {
-		string += '<polygon fill="rgb('
-			//red
-			+ this.strand[i].r + ','
-			//green
-			+ this.strand[i].g + ','
-			//blue
-			+ this.strand[i].b + ')" opacity="'
-			//opacity
-			+ this.strand[i].a / 255 + '" points="';
+		string += '<polygon fill="rgb('	+ this.strand[i].r + ',' + this.strand[i].g + ',' + this.strand[i].b + ')" opacity="' + this.strand[i].a / 255 + '" points="';
 		//for each vertex
 		for (var j = 0; j < this.strand[i].getPolycount (); j++) {
 			string += ' '
@@ -348,9 +325,12 @@ DNA.prototype.toSVG = function DNA2SVG () {
 
 DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	//find the complexity of a certain dna
-	var complexity = 0
-		,shape
-		,x0, y0, x1, y1;
+	var complexity = 0;
+	var shape;
+	var x0;
+	var y0;
+	var x1;
+	var y1;
 	//for each element in dna strand
 	for (var i = this.strand.length; i > 0;) {
 		// calculate the vector that goes from the last point to the first
@@ -370,7 +350,7 @@ DNA.prototype.computeComplexity = function computeDNAComplexity () {
 	}
 	//return the complexity of input dna
 	return complexity;
-}
+};
 
 DNA.prototype.randomize = function randomizeDNA (width, height) {
 	//make some random dna
@@ -392,20 +372,20 @@ DNA.prototype.randomize = function randomizeDNA (width, height) {
 			shape.verts[j + 1] = randInt (height);
 		}
 	}
-}
+};
 
 function initialize () {
 	//add some random DNA to start
 	//set number of polygons
-	var newLength = parseInt (numPolysInput.value)
+	var newLength = parseInt (numPolysInput.value);
 		//set number of vertices
-		,newPolycount = parseInt (numVertsInput.value)
+	var newPolycount = parseInt (numVertsInput.value);
 		//set image width
-		,width = inputCtx.canvas.width
+	var width = inputCtx.canvas.width;
 		//set image height
-		,height = inputCtx.canvas.height;
+	var height = inputCtx.canvas.height;
 	//make some empty new dna
-	bestDNA = new DNA (newLength, newPolycount)
+	bestDNA = new DNA (newLength, newPolycount);
 	//put random data into new dna
 	bestDNA.randomize (width, height);
 	//initialise best difference
@@ -461,11 +441,11 @@ function pauseEvolution () {
 }
 
 function compareContextData (a, b) {
-	var difference = 0
-		,width = Math.min (a.canvas.width, b.canvas.width)
-		,height = Math.min (a.canvas.height, b.canvas.height)
-		,aData = a.getImageData (0, 0, width, height).data
-		,bData = b.getImageData (0, 0, width, height).data;
+	var difference = 0;
+	var width = Math.min (a.canvas.width, b.canvas.width);
+	var height = Math.min (a.canvas.height, b.canvas.height);
+	var aData = a.getImageData (0, 0, width, height).data;
+	var bData = b.getImageData (0, 0, width, height).data;
 
 	for (var i = width * height * 4; i > 0;) {
 		// ITERATIONS ARE REVERSED
@@ -583,8 +563,8 @@ function evolutionStep () {
 		pendingComparatorResponses = comparators.length;
 
 		for (var i = comparators.length; i > 0; i--) {
-			var slice = Math.floor ((width - scan) / i)
-				,data = testCtx.getImageData (scan, 0, slice, height).data;
+			var slice = Math.floor ((width - scan) / i);
+			var data = testCtx.getImageData (scan, 0, slice, height).data;
 			scan += slice;
 			comparators[i - 1].postMessage (data.buffer, [data.buffer]);
 		}
@@ -594,7 +574,7 @@ function evolutionStep () {
 	} else {
 		// comparators are not enabled, calculate difference "manually"
 		var difference = compareContextData (inputCtx, testCtx)
-			,complexity = testDNA.computeComplexity ();
+		var complexity = testDNA.computeComplexity ();
 		validateMutation (difference, complexity);
 	}
 }
@@ -606,12 +586,12 @@ function comparatorResponse (event) {
 }
 //validate mutation
 function validateMutation (difference, complexity) {
-	var success = false
-		//set width to input image width
-		,width = inputCtx.canvas.width
-		//set height to input image height
-		,height = inputCtx.canvas.height
-		,panicRatio = Math.sqrt (consecutiveFailures / testDNA.strand.length);
+	var success = false;
+	//set width to input image width
+	var width = inputCtx.canvas.width;
+	//set height to input image height
+	var height = inputCtx.canvas.height;
+	var panicRatio = Math.sqrt (consecutiveFailures / testDNA.strand.length);
 	switch (mutationType) {
 	//change shape
 	case CHANGE_SHAPE:
@@ -728,7 +708,7 @@ function updateInfo () {
 		tInfo.s + '.' + tInfo.ms + ' seconds';
 	// if the evolution is still running, schedule next info update with RAF
 	// because RAF fires only once per actual screen refresh
-	if (comparators ? running : evolutionTimer){requestAnimationFrame (updateInfo)}
+	if (comparators ? running : evolutionTimer){requestAnimationFrame (updateInfo);}
 }
 
 function drawDNA (ctx, dna) {
@@ -740,15 +720,7 @@ function drawDNA (ctx, dna) {
 		//begin the shape
 		ctx.beginPath ();
 		//set the fill style
-		ctx.fillStyle = 'rgba('
-			//red
-			+ shape.r + ','
-			//green
-			+ shape.g + ','
-			//blue
-			+ shape.b + ','
-			//alpha
-			+ shape.a / 255 + ')';
+		ctx.fillStyle = 'rgba('	+ shape.r + ','	+ shape.g + ','	+ shape.b + ','	+ shape.a / 255 + ')';
 		ctx.moveTo (shape.x (0), shape.y (0));
 		//for each vertex in shape
 		for (var j = 1; j < shape.verts.length / 2; j += 1){
@@ -770,24 +742,18 @@ numPolysInput.addEventListener ('change', function (event) {
 	var newLength = parseInt (numPolysInput.value);
 	//change number of polygons in leader dna
 	bestDNA.changeLength (newLength, function (polycount) {
- 		var result = new Shape (
- 			randInt (255),
- 			randInt (255),
- 			randInt (255),
- 			randInt (255),
- 			polycount
- 		);
- 		for (var i = 0; i < polycount; i++) {
- 			result.setX (i, randInt (inputCtx.canvas.width));
- 			result.setY (i, randInt (inputCtx.canvas.height));
- 		}
- 		return result;
- 	})
+		var result = new Shape (randInt (255), randInt (255), randInt (255), randInt (255),	polycount);
+		for (var i = 0; i < polycount; i++) {
+			result.setX (i, randInt (inputCtx.canvas.width));
+			result.setY (i, randInt (inputCtx.canvas.height));
+		}
+		return result;
+	});
 	//draw the modified dna
 	drawDNA (bestCtx, bestDNA);
 	//calculate the best difference
 	bestDifference = compareContextData (inputCtx, bestCtx);
-})
+});
 //when the number of vertices is changed
 numVertsInput.addEventListener ('change', function (event) {
 	//set new number of vertices
@@ -798,17 +764,17 @@ numVertsInput.addEventListener ('change', function (event) {
 	drawDNA (bestCtx, bestDNA);
 	//calculate the best difference
 	bestDifference = compareContextData (inputCtx, bestCtx);
-})
+});
 //when the input image is changes
 imageInput.addEventListener ('change', function (event) {
 	//read the new input image
 	reader.readAsDataURL (event.target.files[0]);
-}, false)
+}, false);
 //prepare for loading image
 reader.addEventListener ('load', function (event) {
 	//set the image source
 	proxyImage.src = event.target.result;
-})
+});
 //load the image
 proxyImage.addEventListener ('load', function (event) {
 	//setup image width
@@ -826,13 +792,13 @@ proxyImage.addEventListener ('load', function (event) {
 	if (Worker) {
 		try {
 			comparators = []; // TODO: reuse old comparators	
-			var width = inputCtx.canvas.width
-				,scan = 0;
+			var width = inputCtx.canvas.width;
+			var scan = 0;
 
 			for (var i = numComparators; i > 0; i--) {
-				var comparator = new Worker ('comparator.js')
-					,slice = Math.floor ((width - scan) / i)
-					,data = inputCtx.getImageData (scan, 0, slice, inputCtx.canvas.height).data;
+				var comparator = new Worker ('comparator.js');
+				var slice = Math.floor ((width - scan) / i);
+				var data = inputCtx.getImageData (scan, 0, slice, inputCtx.canvas.height).data;
 				console.log (scan, slice);
 				scan += slice;
 
@@ -857,7 +823,7 @@ proxyImage.addEventListener ('load', function (event) {
 	initialize ();
 	//start evolving the image
 	startEvolution ();
-})
+});
 
 //when dna import button is clicked
 importButton.addEventListener ('click', function (event) {
@@ -869,7 +835,7 @@ importButton.addEventListener ('click', function (event) {
 	drawDNA (bestCtx, bestDNA);
 	//update best difference for imported dna
 	bestDifference = compareContextData (inputCtx, bestCtx);
-})
+});
 
 //when dna export button is clicked
 exportButton.addEventListener ('click', function (event) {
@@ -879,7 +845,7 @@ exportButton.addEventListener ('click', function (event) {
 	if (event.button != 0){return;}
 	//export dna
 	clipboard.value = bestDNA;
-})
+});
 
 //when svg export button is clicked
 exportSVGButton.addEventListener ('click', function (event) {
@@ -889,7 +855,7 @@ exportSVGButton.addEventListener ('click', function (event) {
 	if (event.button != 0) {return;}
 	//export svg
 	clipboard.value = bestDNA.toSVG ();
-})
+});
 
 //when toolbox minimise/maximise button is clicked
 minmaxButton.addEventListener ('click', function (event) {
@@ -898,17 +864,16 @@ minmaxButton.addEventListener ('click', function (event) {
 	//get toolbox div
 	var div = document.getElementById('toolbox');
 	//if toolbox is not hidden
-   	if (div.style.display !== 'none') {
+		if (div.style.display !== 'none') {
 		//change minmax button to down arrow
 		document.getElementById("minmax").innerText = '▼';
 		//hide toolbox
-        	div.style.display = 'none';
-    	}
-    	else {
+		div.style.display = 'none';
+		}
+		else {
 		//change minmax button to up arrow
 		document.getElementById("minmax").innerText = '▲';
 		//show toolbox
-        	div.style.display = 'block';
-    	}
-})
-
+			div.style.display = 'block';
+		}
+});

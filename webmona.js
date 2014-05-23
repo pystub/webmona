@@ -64,7 +64,7 @@
 	var failStreak = 0;
 	//largest streak of successful mutations.
 	var winStreak = 0;
-	var lastRateEval = {time: 0var  evolutions: 0 };
+	var lastRateEval = {time: 0,  evolutions: 0 };
 	//how many mutations per second are happening?
 	var evolutionsPerSecond;
 	//is the evolution running?

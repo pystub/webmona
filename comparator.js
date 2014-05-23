@@ -8,7 +8,6 @@ onmessage = function (event) {
 	if (!refData || refData.length != newData.length) {
 		//set ref data to new data
 		refData = newData;
-		//return nothing
 		return;
 	}
 	var delta = 0

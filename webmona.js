@@ -651,10 +651,12 @@ minmaxButton.addEventListener ('click', function (event) {
 	var div = document.getElementById('toolbox');
 	//if toolbox is not hidden
    	if (div.style.display !== 'none') {
+		document.getElementById("minmax").innerText = '▼';
 		//hide toolbox
         	div.style.display = 'none';
     	}
     	else {
+		document.getElementById("minmax").innerText = '▲';
 		//show toolbox
         	div.style.display = 'block';
     	}

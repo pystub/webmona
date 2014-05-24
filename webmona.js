@@ -382,7 +382,7 @@ function initialize () {
 	//TODO: detect transparent/grayscale images and update bitsPP
 	maximumDifference = width * height * bitsPP * 255;
 	//record the time evolution started
-	startTime = new Date ();
+	startTime = lastRateEval.time = + new Date ();
 	//initialise elapsed time variable
 	elapsedTime = 0;
 	//initialise number of generations variable
@@ -399,8 +399,7 @@ function startEvolution () {
 	if (comparators ? running : evolutionTimer){return;}
 
 	//record time that evolution started
-	startTime = +new Date ();
-	lastRateEval.time = + new Date ();
+	startTime = lastRateEval.time = + new Date ();
 
 	if (comparators) {
 		//mutations are running
@@ -668,7 +667,7 @@ function validateMutation (difference, complexity) {
 function updateInfo () {
 	//calculate fitness as a %
 	var fitness = (maximumDifference - bestDifference) / maximumDifference;
-	var tInfo = msToTimeInfo (elapsedTime + (+new Date ()) - startTime, 4);
+	var timeFromStart = 0;
 	//update the fitness % value on html page
 	fitnessOut.value = fitness.toLocaleString (navigator.language, {
 		style: 'percent',
@@ -689,14 +688,18 @@ function updateInfo () {
 	failStreakOut.value = winStreak;
 	//winsPerSecondOut.value = winsPerSecond;
 	//failsPerSecondOut.value = failsPerSecond;
+	// if the evolution is still running, schedule next info update with RAF
+	// because RAF fires only once per actual screen refresh
+	if (comparators ? running : evolutionTimer) {
+		requestAnimationFrame (updateInfo);
+		timeFromStart = +new Date () - startTime;
+	}
+	var tInfo = msToTimeInfo (elapsedTime + timeFromStart, 4);
 	timeElapsedOut.value =
 		tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
 		tInfo.h ? tInfo.h + ' hours ' + tInfo.m + ' minutes ' + tInfo.s + ' seconds' :
 		tInfo.m ? tInfo.m + ' minutes ' + tInfo.s + ' seconds':
 		tInfo.s + '.' + tInfo.ms + ' seconds';
-	// if the evolution is still running, schedule next info update with RAF
-	// because RAF fires only once per actual screen refresh
-	if (comparators ? running : evolutionTimer){requestAnimationFrame (updateInfo);}
 }
 
 function drawDNA (ctx, dna) {

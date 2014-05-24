@@ -901,7 +901,10 @@ proxyImage.addEventListener ('load', function (event)
 importButton.addEventListener ('click', function (event) 
 	{
 		//if not left click then return
-		if (event.button !== 0){return;}
+		if (event.button !== 0)
+			{
+				return;
+			}
 		//import DNA
 		bestDNA = new DNA (clipboard.value);
 		//draw imported dna
@@ -914,9 +917,15 @@ importButton.addEventListener ('click', function (event)
 exportButton.addEventListener ('click', function (event) 
 	{
 		//check if an image has been loaded
-		if (proxyImage.src === '') {return;}
+		if (proxyImage.src === '') 
+			{
+				return;
+			}
 		//if not left click then return
-		if (event.button !== 0){return;}
+		if (event.button !== 0)
+			{
+				return;
+			}
 		//export dna
 		clipboard.value = bestDNA;
 	});

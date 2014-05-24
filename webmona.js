@@ -17,6 +17,8 @@
 	var evolutionCountOut = document.getElementById('evolution-count');
 	//evolutions per second displayed on html page
 	var evolutionsPerSecondOut = document.getElementById('evolutions-per-second');
+	//average evolutions per second displayed on html page
+	var evolutionsPerSecondAverageOut = document.getElementById('average-evolutions-per-second');
 	//consecutive failures displayed on html page
 	var consecutiveFailuresOut = document.getElementById('consecutive-failures');
 	//consecutive wins displayed on html page
@@ -80,6 +82,8 @@
 	var failsPerSecond;
 	//wins per second
 	var winsPerSecond;
+	//average mutations per second
+	var evolutionsPerSecondAverage;
 	var lastRateEval = {time: 0,  evolutions: 0 };
 	//how many mutations per second are happening?
 	var evolutionsPerSecond;
@@ -808,6 +812,10 @@ function updateInfo ()
 		evolutionCountOut.value = evolutionCount;
 		//update evolution per second on html page
 		evolutionsPerSecondOut.value = evolutionsPerSecond;
+		//update evolution per second average on html page
+		timeFromStart = +new Date () - startTime;
+		evolutionsPerSecondAverage = (evolutionCount / timeFromStart)*1000;
+		evolutionsPerSecondAverageOut.value = evolutionsPerSecondAverage.toFixed(2);
 		//update consecutive failures count on html page
 		consecutiveFailuresOut.value = consecutiveFailures;
 		//update consecutive wins count on html page

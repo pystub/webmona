@@ -350,19 +350,21 @@ DNA.prototype.toSVG = function DNA2SVG ()
 			+ 'px"' + ' viewBox="0 0 ' + inputCtx.canvas.width + ' ' 
 			+ inputCtx.canvas.height + '">\n';
 		//for each polygon
-		for (var i = 0; i < this.strand.length; i++) {
-			string += '<polygon fill="rgb('	
-				+ this.strand[i].r + ',' 
-				+ this.strand[i].g + ',' 
-				+ this.strand[i].b + ')" opacity="' 
-				+ this.strand[i].a / 255 + '" points="';
-			//for each vertex
-			for (var j = 0; j < this.strand[i].getPolycount (); j++) {
-				string += ' ' + this.strand[i].x (j) + ' ' + this.strand[i].y (j);
+		for (var i = 0; i < this.strand.length; i++) 
+			{
+				string += '<polygon fill="rgb('	
+					+ this.strand[i].r + ',' 
+					+ this.strand[i].g + ',' 
+					+ this.strand[i].b + ')" opacity="' 
+					+ this.strand[i].a / 255 + '" points="';
+				//for each vertex
+				for (var j = 0; j < this.strand[i].getPolycount (); j++) 
+					{
+						string += ' ' + this.strand[i].x (j) + ' ' + this.strand[i].y (j);
+					}
+				//close bracket in svg file
+				string += '" />\n';
 			}
-			//close bracket in svg file
-			string += '" />\n';
-		}
 		//terminate svg file
 		string += '</svg>';
 		//return svg file
@@ -391,16 +393,17 @@ DNA.prototype.computeComplexity = function computeDNAComplexity ()
 			shape = this.strand[--i];
 			x1 = shape.x (shape.getPolycount () - 1) - shape.x (0);
 			y1 = shape.y (shape.getPolycount () - 1) - shape.y (0);
-			for (var j = 0; j < shape.getPolycount (); j++) {
-				// calculate current vector
-				x0 = shape.x (j) - shape.x ((j + 1) % shape.getPolycount ());
-				y0 = shape.y (j) - shape.y ((j + 1) % shape.getPolycount ());
-				// calculate dot product, and add absolute of it
-				complexity += Math.abs (x0 * x1 + y0 * y1);
-				// store current vector for next cycle
-				x1 = x0;
-				y1 = y0;
-			}
+			for (var j = 0; j < shape.getPolycount (); j++) 
+				{
+					// calculate current vector
+					x0 = shape.x (j) - shape.x ((j + 1) % shape.getPolycount ());
+					y0 = shape.y (j) - shape.y ((j + 1) % shape.getPolycount ());
+					// calculate dot product, and add absolute of it
+					complexity += Math.abs (x0 * x1 + y0 * y1);
+					// store current vector for next cycle
+					x1 = x0;
+					y1 = y0;
+				}
 		}
 		//return the complexity of input dna
 		return complexity;
@@ -409,24 +412,26 @@ DNA.prototype.computeComplexity = function computeDNAComplexity ()
 DNA.prototype.randomize = function randomizeDNA (width, height) 
 	{
 		//make some random dna
-		for (var i = this.strand.length; i > 0;) {
-			var shape = this.strand[--i];
-			//red
-			shape.r = randInt (255);
-			//green
-			shape.g = randInt (255);
-			//blue
-			shape.b = randInt (255);
-			//alpha
-			shape.a = randInt (128) + 127;
-			//for each vertex
-			for (var j = 0; j < shape.verts.length; j += 2) {
-				//x
-				shape.verts[j] = randInt (width);
-				//y
-				shape.verts[j + 1] = randInt (height);
+		for (var i = this.strand.length; i > 0;) 
+			{
+				var shape = this.strand[--i];
+				//red
+				shape.r = randInt (255);
+				//green
+				shape.g = randInt (255);
+				//blue
+				shape.b = randInt (255);
+				//alpha
+				shape.a = randInt (128) + 127;
+				//for each vertex
+				for (var j = 0; j < shape.verts.length; j += 2) 
+					{
+						//x
+						shape.verts[j] = randInt (width);
+						//y
+						shape.verts[j + 1] = randInt (height);
+					}
 			}
-		}
 	};
 
 function initialize () 
@@ -463,23 +468,31 @@ function initialize ()
 function startEvolution () 
 	{
 		//check if an image has been loaded
-		if (proxyImage.src === '') {return;}
+		if (proxyImage.src === '') 
+			{
+				return;
+			}
 		// if we are using comparators, check the value
 		// otherwise check if evolution timer is active
-		if (comparators ? running : evolutionTimer){return;}
+		if (comparators ? running : evolutionTimer)
+			{
+				return;
+			}
 
 		//record time that evolution started
 		startTime = lastRateEval.time = + new Date ();
 
-		if (comparators) {
-			//mutations are running
-			running = true;
-			//step through evolution
-			evolutionStep ();
-		}
-		else {
-			evolutionTimer = setInterval (evolutionStep, 0);
-		}
+		if (comparators) 
+			{
+				//mutations are running
+				running = true;
+				//step through evolution
+				evolutionStep ();
+			}
+		else 
+			{
+				evolutionTimer = setInterval (evolutionStep, 0);
+			}
 		//update information displayed on html page
 		updateInfo ();
 	}
@@ -488,11 +501,15 @@ function pauseEvolution ()
 	{
 		// if we are using comparators, stop by setting the value
 		// otherwise stop the timer
-		if (comparators){running = false;}
-		else {
-			clearTimeout (evolutionTimer);
-			evolutionTimer = null;
-		}
+		if (comparators)
+			{
+				running = false;
+			}
+		else 
+			{
+				clearTimeout (evolutionTimer);
+				evolutionTimer = null;
+			}
 
 		elapsedTime += (+new Date ()) - startTime;
 	}
@@ -505,14 +522,15 @@ function compareContextData (a, b)
 		var aData = a.getImageData (0, 0, width, height).data;
 		var bData = b.getImageData (0, 0, width, height).data;
 
-		for (var i = width * height * 4; i > 0;) {
-			// ITERATIONS ARE REVERSED
-			difference +=
-				Math.abs (aData[--i] - bData[i]) + // A
-				Math.abs (aData[--i] - bData[i]) + // B
-				Math.abs (aData[--i] - bData[i]) + // G
-				Math.abs (aData[--i] - bData[i]);  // R
-		}
+		for (var i = width * height * 4; i > 0;) 
+			{
+				// ITERATIONS ARE REVERSED
+				difference +=
+					Math.abs (aData[--i] - bData[i]) + // A
+					Math.abs (aData[--i] - bData[i]) + // B
+					Math.abs (aData[--i] - bData[i]) + // G
+					Math.abs (aData[--i] - bData[i]);  // R
+			}
 		return difference;
 	}
 
@@ -522,11 +540,20 @@ function evolutionStep ()
 		//randomly choose a mutation type
 		var rr = Math.random ();
 		//change shape
-		if (rr < 0.9){mutationType = CHANGE_SHAPE;}
+		if (rr < 0.9)
+			{
+				mutationType = CHANGE_SHAPE;
+			}
 		//null contribution check
-		else if (rr < 0.95){mutationType = NULL_CONTRIBUTION_CHECK;}
+		else if (rr < 0.95)
+			{
+				mutationType = NULL_CONTRIBUTION_CHECK;
+			}
 		//move shape to top of stack
-		else {mutationType = MOVE_SHAPE_TO_TOP;}
+		else 
+			{
+				mutationType = MOVE_SHAPE_TO_TOP;
+			}
 
 		// mutate DNA
 		//duplicate the leading dna
@@ -609,12 +636,13 @@ function evolutionStep ()
 				accumulatedDifference = 0;
 				pendingComparatorResponses = comparators.length;
 
-				for (var l = comparators.length; l > 0; l--) {
-					var slice = Math.floor ((width - scan) / l);
-					var data = testCtx.getImageData (scan, 0, slice, height).data;
-					scan += slice;
-					comparators[l - 1].postMessage (data.buffer, [data.buffer]);
-				}
+				for (var l = comparators.length; l > 0; l--) 
+					{
+						var slice = Math.floor ((width - scan) / l);
+						var data = testCtx.getImageData (scan, 0, slice, height).data;
+						scan += slice;
+						comparators[l - 1].postMessage (data.buffer, [data.buffer]);
+					}
 				// comparators have their data and will return with results so we need
 				// to end it here
 				return;
@@ -647,52 +675,55 @@ function validateMutation (difference, complexity)
 		switch (mutationType) {
 		//change shape
 		case CHANGE_SHAPE:
-			if (difference + complexity < bestDifference + bestComplexity) {
-				//win
-				success = true;
-				//overwrite best difference
-				bestDifference = difference;
-				//overwrite best complexity
-				bestComplexity = complexity;
-			}
+			if (difference + complexity < bestDifference + bestComplexity) 
+				{
+					//win
+					success = true;
+					//overwrite best difference
+					bestDifference = difference;
+					//overwrite best complexity
+					bestComplexity = complexity;
+				}
 			break;
 		//move shape to top
 		case MOVE_SHAPE_TO_TOP:
-			if (difference < bestDifference) {
-				success = true;
-				bestDifference = difference;
-				// complexity doesn't change
-			}
+			if (difference < bestDifference) 
+				{
+					success = true;
+					bestDifference = difference;
+					// complexity doesn't change
+				}
 			break;
 		//null contribution check
 		case NULL_CONTRIBUTION_CHECK:
-			if (difference == bestDifference) {
-				success = true;
-				//random red
-				targetShape.r = randInt (255);
-				//random green
-				targetShape.g = randInt (255);
-				//random blue
-				targetShape.b = randInt (255);
-				//random alpha
-				targetShape.a = randInt (255);
-				//random start x
-				var originX = randInt (width);
-				//random start y
-				var originY = randInt (height);
-				//for each vertex
-				for (var i = verts.length; i > 0;) {
-					// ITERATIONS ARE REVERSED
-					verts[--i] = clamp (originY + randSignedInt (5), 0, height); // Y
-					verts[--i] = clamp (originX + randSignedInt (5), 0, width); // X
+			if (difference == bestDifference) 
+				{
+					success = true;
+					//random red
+					targetShape.r = randInt (255);
+					//random green
+					targetShape.g = randInt (255);
+					//random blue
+					targetShape.b = randInt (255);
+					//random alpha
+					targetShape.a = randInt (255);
+					//random start x
+					var originX = randInt (width);
+					//random start y
+					var originY = randInt (height);
+					//for each vertex
+					for (var i = verts.length; i > 0;) {
+						// ITERATIONS ARE REVERSED
+						verts[--i] = clamp (originY + randSignedInt (5), 0, height); // Y
+						verts[--i] = clamp (originX + randSignedInt (5), 0, width); // X
+					}
+					//draw test dna
+					drawDNA (testCtx, testDNA);
+					//get best difference
+					bestDifference = compareContextData (inputCtx, testCtx);
+					//get best complexity
+					bestComplexity = testDNA.computeComplexity ();
 				}
-				//draw test dna
-				drawDNA (testCtx, testDNA);
-				//get best difference
-				bestDifference = compareContextData (inputCtx, testCtx);
-				//get best complexity
-				bestComplexity = testDNA.computeComplexity ();
-			}
 			break;
 		}
 		//increment number of mutations
@@ -700,34 +731,46 @@ function validateMutation (difference, complexity)
 		//increment number of consecutive fails
 		++consecutiveFailures;
 		//if the mutated dna is better than the leader dna
-		if (success) {
-			//overwrite leader dna
-			bestDNA = testDNA;
-			//draw leader dna
-			drawDNA (bestCtx, bestDNA);
-			//reset number of consecutive fails to 0
-			consecutiveFailures = 0;
-			//increment number of consecutive wins
-			++consecutiveWins;
-		}
+		if (success) 
+			{
+				//overwrite leader dna
+				bestDNA = testDNA;
+				//draw leader dna
+				drawDNA (bestCtx, bestDNA);
+				//reset number of consecutive fails to 0
+				consecutiveFailures = 0;
+				//increment number of consecutive wins
+				++consecutiveWins;
+			}
 		//if the mutated dna is worse than the leader dna
-		else {
-		//reset number of consecutive wins to 0
-		consecutiveWins = 0;
-		}
+		else 
+			{
+			//reset number of consecutive wins to 0
+			consecutiveWins = 0;
+			}
 
-		if (new Date () - lastRateEval.time >= 1000) {
-			//failsPerSecond = 0;
-			//winsPerSecond = 0;
-			evolutionsPerSecond = evolutionCount - lastRateEval.evolutions;
-			lastRateEval.time += 1000;
-			lastRateEval.evolutions = evolutionCount;
-		}
+		if (new Date () - lastRateEval.time >= 1000) 
+			{
+				//failsPerSecond = 0;
+				//winsPerSecond = 0;
+				evolutionsPerSecond = evolutionCount - lastRateEval.evolutions;
+				lastRateEval.time += 1000;
+				lastRateEval.evolutions = evolutionCount;
+			}
 		//if the current number of consecutive failures beats the streak, overwrite it
-		if (consecutiveFailures>failStreak) {failStreak = consecutiveFailures;}	
+		if (consecutiveFailures>failStreak) 
+			{
+				failStreak = consecutiveFailures;
+			}	
 		//if the current number of consecutive wins beats the streak, overwrite it
-		if (consecutiveWins>winStreak) {winStreak = consecutiveWins;}
-		if (comparators) {evolutionStep ();}
+		if (consecutiveWins>winStreak) 
+			{
+				winStreak = consecutiveWins;
+			}
+		if (comparators) 
+			{
+				evolutionStep ();
+			}
 	}
 
 function updateInfo () 
@@ -757,10 +800,11 @@ function updateInfo ()
 		//failsPerSecondOut.value = failsPerSecond;
 		// if the evolution is still running, schedule next info update with RAF
 		// because RAF fires only once per actual screen refresh
-		if (comparators ? running : evolutionTimer) {
-			requestAnimationFrame (updateInfo);
-			timeFromStart = +new Date () - startTime;
-		}
+		if (comparators ? running : evolutionTimer) 
+			{
+				requestAnimationFrame (updateInfo);
+				timeFromStart = +new Date () - startTime;
+			}
 		var tInfo = msToTimeInfo (elapsedTime + timeFromStart, 4);
 		timeElapsedOut.value =
 			tInfo.d ? tInfo.d + ' days ' + tInfo.h + ' hours ' + tInfo.m + ' minutes' :
@@ -774,21 +818,23 @@ function drawDNA (ctx, dna)
 		//draw input dna
 		ctx.clearRect (0, 0, ctx.canvas.width, ctx.canvas.height);
 		//for each shape
-		for (var i = 0; i < dna.strand.length; i++) {
-			var shape = dna.strand[i];
-			//begin the shape
-			ctx.beginPath ();
-			//set the fill style
-			ctx.fillStyle = 'rgba('	+ shape.r + ','	+ shape.g + ','	+ shape.b + ','	+ shape.a / 255 + ')';
-			ctx.moveTo (shape.x (0), shape.y (0));
-			//for each vertex in shape
-			for (var j = 1; j < shape.verts.length / 2; j += 1){
-				//draw line to next vertex
-				ctx.lineTo (shape.x (j), shape.y (j));
+		for (var i = 0; i < dna.strand.length; i++) 
+			{
+				var shape = dna.strand[i];
+				//begin the shape
+				ctx.beginPath ();
+				//set the fill style
+				ctx.fillStyle = 'rgba('	+ shape.r + ','	+ shape.g + ','	+ shape.b + ','	+ shape.a / 255 + ')';
+				ctx.moveTo (shape.x (0), shape.y (0));
+				//for each vertex in shape
+				for (var j = 1; j < shape.verts.length / 2; j += 1)
+					{
+						//draw line to next vertex
+						ctx.lineTo (shape.x (j), shape.y (j));
+					}
+				//fill the shape
+				ctx.fill ();
 			}
-			//fill the shape
-			ctx.fill ();
-		}
 	}
 
 //event listeners
@@ -802,15 +848,16 @@ numPolysInput.addEventListener ('change', function (event)
 		//set new number of polygons
 		var newLength = parseInt (numPolysInput.value);
 		//change number of polygons in leader dna
-		bestDNA.changeLength (newLength, function (polycount) {
-			var result = new Shape (randInt (255), randInt (255), randInt (255), randInt (255),	polycount);
-			for (var i = 0; i < polycount; i++) 
-				{
-					result.setX (i, randInt (inputCtx.canvas.width));
-					result.setY (i, randInt (inputCtx.canvas.height));
-				}
-			return result;
-		});
+		bestDNA.changeLength (newLength, function (polycount) 
+			{
+				var result = new Shape (randInt (255), randInt (255), randInt (255), randInt (255),	polycount);
+				for (var i = 0; i < polycount; i++) 
+					{
+						result.setX (i, randInt (inputCtx.canvas.width));
+						result.setY (i, randInt (inputCtx.canvas.height));
+					}
+				return result;
+			});
 		//draw the modified dna
 		drawDNA (bestCtx, bestDNA);
 		//calculate the best difference

@@ -265,6 +265,7 @@ Shape.prototype.changePolycount = function changeShapePolycount (newPolycount)
 
 function DNA (length, polycount) 
 	{
+		//defining dna
 		if (!(this && this instanceof DNA))
 			{
 				throw new TypeError ();
@@ -536,6 +537,7 @@ function pauseEvolution ()
 
 function compareContextData (a, b) 
 	{
+		//compare for browsers without webworker support
 		var difference = 0;
 		var width = Math.min (a.canvas.width, b.canvas.width);
 		var height = Math.min (a.canvas.height, b.canvas.height);
@@ -556,6 +558,7 @@ function compareContextData (a, b)
 
 function evolutionStep () 
 	{
+		//perform a mutation
 		if (comparators && !running){return;}
 		//randomly choose a mutation type
 		var rr = Math.random ();
@@ -590,7 +593,7 @@ function evolutionStep ()
 		switch (mutationType) 
 			{
 			case CHANGE_SHAPE:
-				if (rr < 0.4) 
+				if (rr < 0.49) //49% chance - change one shape's colour slightly
 					{
 						var rand = Math.random ();
 						if (rand <= 0.25)
@@ -614,15 +617,16 @@ function evolutionStep ()
 								targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255);
 							}	
 					}
-				else if (rr < 0.8) 
+				if (rr < 0.98 && rr >= 0.49) 
 					{
-						// TODO: fix/explain this
+						//49% chance - completely relocate one vertexTODO: fix/explain this
 						var targetVertIndex = randInt (verts.length >> 1) << 1;
 						verts[targetVertIndex] = randInt (width);
 						verts[targetVertIndex + 1] = randInt (height);
 					}
-				else 
+				if (rr >= 0.98)
 					{
+						//2% chance - jitter all vertices of one shape
 						for (var i = verts.length; i > 0;) 
 							{
 								// ITERATIONS ARE REVERSED

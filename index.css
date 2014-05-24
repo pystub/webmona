@@ -9,7 +9,7 @@ body
 canvas 	
 	{ 
 		/*images*/
-		border:solid 1px darkgrey;
+		border:solid 2px darkgrey;
 	}
 canvas:hover
  	{
@@ -34,14 +34,14 @@ canvas:hover
 #toolbox
 	{
 		/*side toolbox*/
-		border:1px solid darkgrey;
+		border:2px solid darkgrey;
 		position:fixed;
 		top: 8px;
 		right: 8px;
-		background: darkgrey;
+		background: black;
 		padding:20px;
 		height:100%;
-		color:black;
+		color:white;
 		border-radius:8px;
 	}
 #image-input

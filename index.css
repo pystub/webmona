@@ -1,66 +1,85 @@
 body 	
 	{
-	font-family:arial, sans-serif; padding:1em;
-	background-color: black;
-	color: white;
-	padding: 0px;
+		font-family:arial, sans-serif; padding:1em;
+		background-color: black;
+		color: white;
+		padding: 0px;
 	}
 canvas 	
 	{ 
-	border:solid 1px darkgrey;
+		border:solid 1px darkgrey;
 	}
 canvas:hover
  	{
-	background-image: url('data:image/png;base64,\
-	iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAKElEQVQoz2OcOXMmAzZw9uxZrOJM\
-	DCSCUQ3EABZc4W1sbDwaSvTTAABS2wdUfD43jQAAAABJRU5ErkJggg==');
+		background-image: url('data:image/png;base64,\
+		iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAKElEQVQoz2OcOXMmAzZw9uxZrOJM\
+		DCSCUQ3EABZc4W1sbDwaSvTTAABS2wdUfD43jQAAAABJRU5ErkJggg==');
+	}
+#image-input
+	{
+		border-radius:8px;
+	}
+#minmax
+	{
+		border-radius:8px;
 	}
 #minmaxdiv
 	{
-	position:fixed;
-	z-index: 9999;
-	top: 8px;
-	right: 8px;
+		position:fixed;
+		z-index: 9999;
+		top: 8px;
+		right: 8px;
 	}
 #toolbox
 	{
-	border:1px solid darkgrey;
-	position:fixed;
-	top: 8px;
-	right: 8px;
-	background: black;
-	padding:20px;
+		border:1px solid darkgrey;
+		position:fixed;
+		top: 8px;
+		right: 8px;
+		background: darkgrey;
+		padding:20px;
+		height:100%;
+		color:black;
+		border-radius:8px;
 	}
 #start
 	{
-	width: 45%;
+		width: 45%;
+		border-radius:8px;
 	}
 #pause
 	{
-	width: 45%;
+		width: 45%;
+		border-radius:8px;
 	}
 #num-verts
 	{
-	width: 20%;
+		width: 20%;
+		border-radius:8px;
 	}
 #num-polys
 	{
-	width: 20%;
+		width: 20%;
+		border-radius:8px;
 	}
 #clipboard
 	{
-	width: 90%;
+		width: 90%;
+		border-radius:8px;
 	}
 #b_export_dna
 	{
-	width: 30%;
+		width: 30%;
+		border-radius:8px;
 	}
 #b_export_svg
 	{
-	width: 30%;
+		width: 30%;
+		border-radius:8px;
 	}
 
 #b_import_dna
 	{
-	width: 30%;
+		width: 30%;
+		border-radius:8px;
 	}

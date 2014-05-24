@@ -838,7 +838,8 @@ function updateInfo ()
 		evolutionsPerSecondOut.value = evolutionsPerSecond;
 		//update evolution per second average on html page
 		timeFromStart = +new Date () - startTime;
-		evolutionsPerSecondAverage = (evolutionCount / timeFromStart)*1000;
+		timeTotal = elapsedTime + timeFromStart;
+		evolutionsPerSecondAverage = (evolutionCount / timeTotal)*1000;
 		evolutionsPerSecondAverageOut.value = evolutionsPerSecondAverage.toFixed(2);
 		//update consecutive failures count on html page
 		consecutiveFailuresOut.value = consecutiveFailures;
@@ -857,10 +858,10 @@ function updateInfo ()
 		winFailRatioOut.value = winFailRatio.toFixed(2);
 		//update fails per second displayed on html page
 		timeFromStart = +new Date () - startTime;
-		failsPerSecond = (failTotal / timeFromStart)*1000;
+		failsPerSecond = (failTotal / timeTotal)*1000;
 		failsPerSecondOut.value = failsPerSecond.toFixed(2);
 		//update wins per second displayed on html page
-		winsPerSecond = (winTotal / timeFromStart)*1000;
+		winsPerSecond = (winTotal / timeTotal)*1000;
 		winsPerSecondOut.value = winsPerSecond.toFixed(2);
 		// if the evolution is still running, schedule next info update with RAF
 		// because RAF fires only once per actual screen refresh

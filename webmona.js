@@ -599,30 +599,50 @@ function evolutionStep ()
 						if (rand <= 0.25)
 							{
 								//red de/increase
-								targetShape.r = clamp (targetShape.r + randSignedInt (15), 0, 255);
+								targetShape.r = clamp (targetShape.r + randSignedInt (5), 0, 255);
 							}
 						if (rand <= 0.5 && rand > 0.25)
 							{
 								//green de/increase
-								targetShape.g = clamp (targetShape.g + randSignedInt (15), 0, 255);
+								targetShape.g = clamp (targetShape.g + randSignedInt (5), 0, 255);
 							}
 						if (rand <= 0.75 && rand > 0.5)
 							{
 								//blue de/increase
-								targetShape.b = clamp (targetShape.b + randSignedInt (15), 0, 255);
+								targetShape.b = clamp (targetShape.b + randSignedInt (5), 0, 255);
 							}
 						if (rand > 0.75)
 							{
 								//alpha de/increase
-								targetShape.a = clamp (targetShape.a + randSignedInt (15), 0, 255);
+								targetShape.a = clamp (targetShape.a + randSignedInt (5), 0, 255);
 							}	
 					}
 				if (rr < 0.98 && rr >= 0.49) 
 					{
-						//49% chance - completely relocate one vertexTODO: fix/explain this
+						//49% chance - relocate one vertex
+						//randomly chose a vertex
 						var targetVertIndex = randInt (verts.length >> 1) << 1;
-						verts[targetVertIndex] = randInt (width);
-						verts[targetVertIndex + 1] = randInt (height);
+						var rand2 = Math.random ();
+						if (rand2<0.25)
+							{
+								//25% chance - randomly set x value
+								verts[targetVertIndex] = randInt (width);
+							}
+						if (rand2>=0.25 && rand2<0.5)
+							{
+								//25% chance - randomly set y value
+								verts[targetVertIndex + 1] = randInt (height);
+							}
+						if (rand2>=0.5 && rand2<0.75)
+							{
+								//25% chance - randomly inc/decrement x value
+								verts[targetVertIndex] += randSignedInt (5);
+							}
+						if (rand2>=0.75)
+							{
+								//25% chance - randomly inc/decrement y value
+								verts[targetVertIndex + 1] += randSignedInt (5);
+							}
 					}
 				if (rr >= 0.98)
 					{

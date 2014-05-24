@@ -25,6 +25,12 @@
 	var failStreakOut = document.getElementById('fail-streak');
 	//win streak displayed on html page
 	var winStreakOut = document.getElementById('win-streak');
+	//fail total displayed on html page
+	var failTotalOut = document.getElementById('fail-total');
+	//win total displayed on html page
+	var winTotalOut = document.getElementById('win-total');
+	//win / fail ratio displayed on html page
+	var winFailRatioOut = document.getElementById('win-fail-ratio');
 	//fails per second displayed on html page
 	var failsPerSecondOut = document.getElementById('fails-per-second');
 	//win streak displayed on html page
@@ -64,6 +70,16 @@
 	var failStreak = 0;
 	//largest streak of successful mutations.
 	var winStreak = 0;
+	//total number of failed mutations
+	var failTotal = 0;
+	//total number of successful mutations
+	var winTotal = 0;
+	//win/fail ratio
+	var winFailRatio;
+	//fails per second
+	var failsPerSecond;
+	//wins per second
+	var winsPerSecond;
 	var lastRateEval = {time: 0,  evolutions: 0 };
 	//how many mutations per second are happening?
 	var evolutionsPerSecond;
@@ -741,12 +757,16 @@ function validateMutation (difference, complexity)
 				consecutiveFailures = 0;
 				//increment number of consecutive wins
 				++consecutiveWins;
+				//increment total wins
+				++winTotal;
 			}
 		//if the mutated dna is worse than the leader dna
 		else 
 			{
 			//reset number of consecutive wins to 0
 			consecutiveWins = 0;
+			//increment total fails
+			++failTotal;
 			}
 
 		if (new Date () - lastRateEval.time >= 1000) 
@@ -796,8 +816,20 @@ function updateInfo ()
 		winStreakOut.value = failStreak;
 		//update fail streak count on html page
 		failStreakOut.value = winStreak;
-		//winsPerSecondOut.value = winsPerSecond;
-		//failsPerSecondOut.value = failsPerSecond;
+		//update fail total displayed on html page
+		failTotalOut.value = failTotal;
+		//update win total displayed on html page
+		winTotalOut.value = winTotal;
+		//update win / fail ratio displayed on html page
+		winFailRatio = winTotal / failTotal;
+		winFailRatioOut.value = winFailRatio.toFixed(2);
+		//update fails per second displayed on html page
+		timeFromStart = +new Date () - startTime;
+		failsPerSecond = (failTotal / timeFromStart)*1000;
+		failsPerSecondOut.value = failsPerSecond.toFixed(2);
+		//update wins per second displayed on html page
+		winsPerSecond = (winTotal / timeFromStart)*1000;
+		winsPerSecondOut.value = winsPerSecond.toFixed(2);
 		// if the evolution is still running, schedule next info update with RAF
 		// because RAF fires only once per actual screen refresh
 		if (comparators ? running : evolutionTimer) 

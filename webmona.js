@@ -53,6 +53,8 @@
 	var numVertsInput = document.getElementById('num-verts');
 	//import dna button on html page
 	var importButton = document.getElementById('b_import_dna');
+	//upload to imgur button on html page
+	var uploadButton = document.getElementById('b_upload_image');
 	//minimise/maximise toolbox button on html page
 	var minmaxButton = document.getElementById('minmax');
 	//clipboard on html page
@@ -1046,6 +1048,23 @@ exportButton.addEventListener ('click', function (event)
 		clipboard.value = bestDNA;
 	});
 
+//when upload best to imgur button is clicked
+uploadButton.addEventListener ('click', function (event) 
+	{
+		//check if an image has been loaded
+		if (proxyImage.src === '') 
+			{
+				return;
+			}
+		//if not left click then return
+		if (event.button !== 0)
+			{
+				return;
+			}
+		//upload best image to imgur
+		share();
+	});
+
 //when svg export button is clicked
 exportSVGButton.addEventListener ('click', function (event) 
 	{
@@ -1089,3 +1108,40 @@ minmaxButton.addEventListener ('click', function (event)
 			div.style.display = 'block';
 			}
 	});
+function share(){
+
+    var img;
+    try 
+	    {
+	        img = bestCtx.toDataURL('image/jpeg', 0.9).split(',')[1];
+	    } 
+    catch(e) 
+	    {
+	        img = bestCtx.toDataURL().split(',')[1];
+	    }
+    var w = window.open();
+    w.document.write('Uploading to imgur.com...');
+    $.ajax({
+        url: 'https://api.imgur.com/3/upload.json',
+        type: 'POST',
+        headers: {
+            Authorization: 'Client-ID cc01e3195c1adc2'
+        },
+        data: {
+            type: 'base64',
+            name: 'webmonarender.jpg',
+            title: 'Webmona Render',
+            description: 'Made using http://infoburp.github.io/webmona/',
+            image: img
+        },
+        dataType: 'json'
+    }).success(function(data) {
+        var url = 'http://imgur.com/' + data.data.id + '?tags';
+        _gaq.push(['_trackEvent', 'neonflames', 'share', url]);
+        w.location.href = url;
+    }).error(function() {
+        alert('Could not reach api.imgur.com. Sorry :(');
+        w.close();
+        _gaq.push(['_trackEvent', 'neonflames', 'share', 'fail']);
+    });
+}

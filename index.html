@@ -5,6 +5,9 @@
 		<title>webmona</title>
 		<link rel="stylesheet" type="text/css" href="index.css" />
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="http://platform.twitter.com/widgets.js" async defer></script>
+		<script type="text/javascript" src="https://apis.google.com/js/plusone.js" async defer></script>
 	</head>
 	<body>
 		<canvas id="input-canvas" class='default-hidden'></canvas><br>
@@ -14,8 +17,29 @@
 			<button id='minmax'>▲</button>
 		</div>
 		<div id='toolbox'>
+			<div id="social">
+			  	<a href="http://twitter.com/share" class="twitter-share-button"
+	    			data-url="http://infoburp.github.io/webmona/"
+	    			data-text="Evolve a match to an image from random polygons"
+	    			data-count="horizontal" data-via="29a_ch">Tweet</a>
+				<div class="fb-like" data-href="http://infoburp.github.io/webmona/" data-send="true" data-layout="button_count" data-width="145" data-	show-faces="true" data-font="arial" data-colorscheme="light"></div>
+				&nbsp;
+	 			<div class="g-plusone" data-size="medium"
+	   				data-href="http://infoburp.github.io/webmona/" data-count="true"></div>
+	   			<div id="fb-root"></div>
+	   			<script>(function(d, s, id) 
+	   				{
+		   				var js, fjs = d.getElementsByTagName(s)[0];
+		   				if (d.getElementById(id)) return;
+		   				js = d.createElement(s); js.id = id;
+		   				js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+		   				fjs.parentNode.insertBefore(js, fjs);
+	   				}(document, 'script', 'facebook-jssdk'));
+	   			</script>
+   			</div><br>
 			<label>Source image</label>
 			<input type='file' id='image-input' /><br><br>
+			<button id='b_upload_image'>Upload to imgur</button><br><br>
 			<button id='start'>Start</button>
 			<button id='pause'>Pause</button><br><br>
 			Fitness <output id='fitness'></output><br><br>

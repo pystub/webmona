@@ -44,9 +44,29 @@ canvas:hover
 		color:white;
 		border-radius:8px;
 	}
+#social {
+  position: fixed;
+  right: 30px;
+  top: 10px;
+  height: 10px;
+  
+}
+#social > * {
+  float: left;
+  opacity: 0.5;
+}
+#social > *:hover {
+  opacity: 1.0;
+}
 #image-input
 	{
 		/*import image button*/
+		border-radius:8px;
+	}
+#b_upload_image
+	{
+		/*import dna button*/
+		width: 90%;
 		border-radius:8px;
 	}
 #start
@@ -97,3 +117,4 @@ canvas:hover
 		width: 30%;
 		border-radius:8px;
 	}
+

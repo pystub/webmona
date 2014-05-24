@@ -344,7 +344,11 @@ DNA.prototype.toSVG = function DNA2SVG ()
 	{
 		// output DNA string in SVG format
 		//header
-		var string = '<?xml version="1.0" encoding="utf-8"?>\n<svg version="1.1"' + ' baseProfile="full" xmlns="http://www.w3.org/2000/svg"' + ' width="' + inputCtx.canvas.width + 'px"' + ' height="' + inputCtx.canvas.height + 'px"' + ' viewBox="0 0 ' + inputCtx.canvas.width + ' ' + inputCtx.canvas.height + '">\n';
+		var string = '<?xml version="1.0" encoding="utf-8"?>\n<svg version="1.1"' 
+			+ ' baseProfile="full" xmlns="http://www.w3.org/2000/svg"' + ' width="' 
+			+ inputCtx.canvas.width + 'px"' + ' height="' + inputCtx.canvas.height 
+			+ 'px"' + ' viewBox="0 0 ' + inputCtx.canvas.width + ' ' 
+			+ inputCtx.canvas.height + '">\n';
 		//for each polygon
 		for (var i = 0; i < this.strand.length; i++) {
 			string += '<polygon fill="rgb('	

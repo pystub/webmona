@@ -1,5 +1,6 @@
 body 	
 	{
+		/*main body of site*/
 		font-family:arial, sans-serif; padding:1em;
 		background-color: black;
 		color: white;
@@ -7,31 +8,32 @@ body
 	}
 canvas 	
 	{ 
+		/*images*/
 		border:solid 1px darkgrey;
 	}
 canvas:hover
  	{
+ 		/*images-mouseover*/
 		background-image: url('data:image/png;base64,\
 		iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAKElEQVQoz2OcOXMmAzZw9uxZrOJM\
 		DCSCUQ3EABZc4W1sbDwaSvTTAABS2wdUfD43jQAAAABJRU5ErkJggg==');
 	}
-#image-input
-	{
-		border-radius:8px;
-	}
-#minmax
-	{
-		border-radius:8px;
-	}
 #minmaxdiv
 	{
+		/*minimise/maximise toolbox button div*/
 		position:fixed;
 		z-index: 9999;
 		top: 8px;
 		right: 8px;
 	}
+#minmax
+	{
+		/*minimise/maximise toolbox button*/
+		border-radius:8px;
+	}
 #toolbox
 	{
+		/*side toolbox*/
 		border:1px solid darkgrey;
 		position:fixed;
 		top: 8px;
@@ -42,44 +44,56 @@ canvas:hover
 		color:black;
 		border-radius:8px;
 	}
+#image-input
+	{
+		/*import image button*/
+		border-radius:8px;
+	}
 #start
 	{
+		/*start button*/
 		width: 45%;
 		border-radius:8px;
 	}
 #pause
 	{
+		/*pause button*/
 		width: 45%;
-		border-radius:8px;
-	}
-#num-verts
-	{
-		width: 20%;
 		border-radius:8px;
 	}
 #num-polys
 	{
+		/*number of polygons in evolved image*/
+		width: 20%;
+		border-radius:8px;
+	}
+#num-verts
+	{
+		/*number of vertices in each polygon*/
 		width: 20%;
 		border-radius:8px;
 	}
 #clipboard
 	{
+		/*dna/svg clipboard*/
 		width: 90%;
 		border-radius:8px;
 	}
 #b_export_dna
 	{
+		/*export dna button*/
 		width: 30%;
 		border-radius:8px;
 	}
 #b_export_svg
 	{
+		/*export svg button*/
 		width: 30%;
 		border-radius:8px;
 	}
-
 #b_import_dna
 	{
+		/*import dna button*/
 		width: 30%;
 		border-radius:8px;
 	}

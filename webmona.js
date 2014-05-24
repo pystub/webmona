@@ -125,7 +125,7 @@
 			}
 	*/
 	//set up time units
-	var timeUnits = 	[{n: 'ms', m: 1000}, {n: 's', m: 60}, 
+	var timeUnits =		[{n: 'ms', m: 1000}, {n: 's', m: 60}, 
 						{n: 'm', m: 60}, {n: 'h', m: 24},	
 						{n: 'd', m: 7},	{n: 'w', m: Infinity}];
 

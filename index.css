@@ -40,31 +40,45 @@ canvas:hover
 		right: 8px;
 		background: black;
 		padding:20px;
-		height:100%;
 		color:white;
+		width:25%;
 	}
-#social {
-  position: fixed;
-  right: 30px;
-  top: 10px;
-  height: 10px;
-  
-}
-#social > * {
-  float: left;
-  opacity: 0.5;
-}
-#social > *:hover {
-  opacity: 1.0;
-}
+#b_new_random_image
+	{
+		width:90%;
+		margin: 0;
+   		padding: 0;
+	}
+#social 
+	{
+		position: fixed;
+		right: 30px;
+		top: 10px;
+		height: 10px;
+	  
+	}
+#social > * 
+	{
+		float: left;
+		opacity: 0.5;
+	}
+#social > *:hover 
+	{
+		opacity: 1.0;
+	}
 #image-input
 	{
 		/*import image button*/
 		
 	}
+#b_view_gallery
+	{
+		/*view gallery button*/
+		width: 90%;
+	}
 #b_upload_image
 	{
-		/*import dna button*/
+		/*upload image button*/
 		width: 90%;
 		
 	}
@@ -72,12 +86,16 @@ canvas:hover
 	{
 		/*start button*/
 		width: 45%;
+		margin: 0;
+   		padding: 0;
 		
 	}
 #pause
 	{
 		/*pause button*/
 		width: 45%;
+		margin: 0;
+   		padding: 0;
 		
 	}
 #num-polys
@@ -96,24 +114,38 @@ canvas:hover
 	{
 		/*dna/svg clipboard*/
 		width: 90%;
-		
+		margin: 0;
+  		padding: 0;
 	}
 #b_export_dna
 	{
 		/*export dna button*/
 		width: 30%;
+		margin: 0;
+  		padding: 0;
 		
 	}
 #b_export_svg
 	{
 		/*export svg button*/
 		width: 30%;
-		
+		margin: 0;
+   		padding: 0;
 	}
 #b_import_dna
 	{
 		/*import dna button*/
 		width: 30%;
-		
+		margin: 0;
+   		padding: 0;
 	}
-
+#top-button-container
+	{
+		font-size:0;  
+		overflow: hidden; 
+	}
+#bottom-button-container
+	{
+		font-size:0;  
+		overflow: hidden;  
+	}

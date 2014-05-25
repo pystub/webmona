@@ -47,6 +47,8 @@
 	var exportButton = document.getElementById('b_export_dna');
 	//export svg button on html page
 	var exportSVGButton = document.getElementById('b_export_svg');
+	//new random image button on html page
+	var newRandomImageButton = document.getElementById('b_new_random_image');
 	//number of polygons displayed on html page
 	var numPolysInput = document.getElementById('num-polys');
 	//number of vertices displayed on html page
@@ -1145,3 +1147,35 @@ function share(){
         _gaq.push(['_trackEvent', 'webmona', 'share', 'fail']);
     });
 }
+
+//if no image is loaded, get random image from imgur original images gallery
+//check if an image has been loaded
+if (proxyImage.src === '') 
+	{
+		//get imgur image
+		reader.readAsDataURL (event.target.files[0]);
+	}
+
+//when new random image button is clicked
+newRandomImageButton.addEventListener ('click', function (event) 
+	{
+		//check if an image has been loaded
+		if (proxyImage.src === '') 
+			{
+				return;
+			}
+		//if not left click then return
+		if (event.button !== 0)
+			{
+				return;
+			}
+		//get random image from imgur original images gallery
+		
+		//load as original image
+	});
+
+//when view whole gallery button is clicked
+newRandomImageButton.addEventListener ('click', function (event) 
+	{
+		
+	});

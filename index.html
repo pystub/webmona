@@ -37,11 +37,13 @@
 	   				}(document, 'script', 'facebook-jssdk'));
 	   			</script>
    			</div><br>
-			<label>Source image</label>
-			<input type='file' id='image-input' /><br><br>
-			<button id='b_upload_image'>Upload best match to imgur</button><br><br>
-			<button id='start'>Start</button>
-			<button id='pause'>Pause</button><br><br>
+			<label>Upload image</label>
+			<input type='file' id='image-input' /><br>
+			<div id='top-button-container'>
+			<button id='b_new_random_image'>Random image from gallery</button><br>
+			<button id='b_upload_image'>Upload best match to imgur</button><br>
+			<button id='start'>▶ Start</button>
+			<button id='pause'>ll Pause</button><br><br></div><br>
 			Fitness <output id='fitness'></output><br><br>
 			Time elapsed <output id='time-elapsed'></output><br><br>
 			Mutations <output id='evolution-count'></output><br>
@@ -60,10 +62,12 @@
 			<input id='num-polys' type='number' step='1' min='1' max='1000' value='64' /><br>
 			<label for='num-verts'>Vertices&nbsp;&nbsp;</label>
 			<input id='num-verts' type='number' step='1' min='3' max='30' value='3' /><br><br>
+			<div id='bottom-button-container'>
 			<textarea id='clipboard'></textarea><br>
 			<button id='b_export_dna'>Export DNA</button>
 			<button id='b_export_svg'>Export SVG</button>
-			<button id='b_import_dna'>Import DNA</button>
+			<button id='b_import_dna'>Import DNA</button></div><br>
+			<button id='b_view_gallery'>View whole gallery</button><br>
 		</div>
 		<script type="text/javascript" src="webmona.js"></script>
 	</body>

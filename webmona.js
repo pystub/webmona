@@ -59,6 +59,8 @@
 	var uploadButton = document.getElementById('b_upload_image');
 	//minimise/maximise toolbox button on html page
 	var minmaxButton = document.getElementById('minmax');
+	//gallery button on html page
+	var galleryButton = document.getElementById('b_view_gallery');
 	//clipboard on html page
 	var clipboard = document.getElementById('clipboard');
 	var bitsPP = 4;
@@ -490,7 +492,7 @@ function initialize ()
 		evolutionCount = 0;
 		//draw the dna
 		drawDNA (bestCtx, bestDNA);
-	}
+	} 
 
 function startEvolution () 
 	{
@@ -1228,7 +1230,3 @@ newRandomImageButton.addEventListener ('click', function (event)
 	{
 		
 	});
-function getgallery(){
-	//get all images from imgur gallery
-    
-}

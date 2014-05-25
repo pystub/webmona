@@ -1,0 +1,8 @@
+body 	
+	{
+		/*main body of site*/
+		font-family:arial, sans-serif; padding:1em;
+		background-color: black;
+		color: white;
+		padding: 0px;
+	}

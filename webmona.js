@@ -791,6 +791,12 @@ function validateMutation (difference, complexity)
 				++consecutiveWins;
 				//increment total wins
 				++winTotal;
+				//check if dna is better match than leader dna in database
+				if()
+					{
+						//upload + overwrite leader dna to database
+						//upload + overwrite leader svg to database
+					}
 			}
 		//if the mutated dna is worse than the leader dna
 		else 

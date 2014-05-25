@@ -29,7 +29,7 @@ canvas:hover
 #minmax
 	{
 		/*minimise/maximise toolbox button*/
-		border-radius:8px;
+		
 	}
 #toolbox
 	{
@@ -60,60 +60,60 @@ canvas:hover
 #image-input
 	{
 		/*import image button*/
-		border-radius:8px;
+		
 	}
 #b_upload_image
 	{
 		/*import dna button*/
 		width: 90%;
-		border-radius:8px;
+		
 	}
 #start
 	{
 		/*start button*/
 		width: 45%;
-		border-radius:8px;
+		
 	}
 #pause
 	{
 		/*pause button*/
 		width: 45%;
-		border-radius:8px;
+		
 	}
 #num-polys
 	{
 		/*number of polygons in evolved image*/
 		width: 20%;
-		border-radius:8px;
+		
 	}
 #num-verts
 	{
 		/*number of vertices in each polygon*/
 		width: 20%;
-		border-radius:8px;
+		
 	}
 #clipboard
 	{
 		/*dna/svg clipboard*/
 		width: 90%;
-		border-radius:8px;
+		
 	}
 #b_export_dna
 	{
 		/*export dna button*/
 		width: 30%;
-		border-radius:8px;
+		
 	}
 #b_export_svg
 	{
 		/*export svg button*/
 		width: 30%;
-		border-radius:8px;
+		
 	}
 #b_import_dna
 	{
 		/*import dna button*/
 		width: 30%;
-		border-radius:8px;
+		
 	}
 

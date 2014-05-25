@@ -1137,11 +1137,11 @@ function share(){
         dataType: 'json'
     }).success(function(data) {
         var url = 'http://imgur.com/' + data.data.id + '?tags';
-        _gaq.push(['_trackEvent', 'neonflames', 'share', url]);
+        _gaq.push(['_trackEvent', 'webmona', 'share', url]);
         w.location.href = url;
     }).error(function() {
         alert('Could not reach api.imgur.com. Sorry :(');
         w.close();
-        _gaq.push(['_trackEvent', 'neonflames', 'share', 'fail']);
+        _gaq.push(['_trackEvent', 'webmona', 'share', 'fail']);
     });
 }

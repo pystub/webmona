@@ -1113,11 +1113,11 @@ function share(){
     var img;
     try 
 	    {
-	        img = bestCtx.toDataURL('image/jpeg', 0.9).split(',')[1];
+	        img = document.getElementById('best-canvas').toDataURL('image/jpeg', 0.9).split(',')[1];
 	    } 
     catch(e) 
 	    {
-	        img = bestCtx.toDataURL().split(',')[1];
+	        img = document.getElementById('best-canvas').toDataURL().split(',')[1];
 	    }
     var w = window.open();
     w.document.write('Uploading to imgur.com...');
@@ -1125,7 +1125,7 @@ function share(){
         url: 'https://api.imgur.com/3/upload.json',
         type: 'POST',
         headers: {
-            Authorization: 'Client-ID cc01e3195c1adc2'
+            Authorization: 'Client-ID e2b59ff031a5614'
         },
         data: {
             type: 'base64',

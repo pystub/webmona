@@ -6,13 +6,9 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 	</head>
 	<body>
-	Gallery here 
-	//loop for number of images to get
-		//get imageid for (next)best % match from database
-		//get gallery(imageid) from imgur
-		[original]
-
-		//get svg(imageid) from database
-		[best match]
+		<label>Number of images to display</label>
+		<input id='num-images' type='number' step='1' min='1' max='1000' value='32' /><br>
+		<div id='gallery'></div>
+		<!--<script src='gallery.js'></script>-->
 	</body>
 </html>

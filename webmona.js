@@ -74,6 +74,8 @@
 	var consecutiveWins = 0;
 	//largest streak of unsuccessful mutations.
 	var failStreak = 0;
+	//largest streak of unsuccessful mutations before random image is loaded from gallery.
+	var failStreakThreshold = 128;
 	//largest streak of successful mutations.
 	var winStreak = 0;
 	//total number of failed mutations
@@ -859,6 +861,12 @@ function updateInfo ()
 		winStreakOut.value = failStreak;
 		//update fail streak count on html page
 		failStreakOut.value = winStreak;
+		//if lots of fails and auto image change ticked
+		if (failStreak>failStreakThreshold&&document.getElementById('auto_image_change').value=true)
+			{
+				//get new random image
+				getrandomimage();
+			}
 		//update fail total displayed on html page
 		failTotalOut.value = failTotal;
 		//update win total displayed on html page
@@ -1016,7 +1024,7 @@ proxyImage.addEventListener ('load', function (event)
 					comparators = null;
 				}
 			}
-
+		//upload to imgur
 		//add random DNA to start with
 		initialize ();
 		//start evolving the image
@@ -1070,7 +1078,7 @@ uploadButton.addEventListener ('click', function (event)
 				return;
 			}
 		//upload best image to imgur
-		share();
+		share(bestCtx,renderGallery);
 	});
 
 //when svg export button is clicked
@@ -1116,8 +1124,45 @@ minmaxButton.addEventListener ('click', function (event)
 			div.style.display = 'block';
 			}
 	});
-function share(){
+function share(canvasid,galleryid){
 
+    var img;
+    try 
+	    {
+	        img = canvasid.toDataURL('image/jpeg', 0.9).split(',')[1];
+	    } 
+    catch(e) 
+	    {
+	        img = canvasid.toDataURL().split(',')[1];
+	    }
+    var w = window.open();
+    w.document.write('Uploading to imgur.com...');
+    $.ajax({
+        url: 'https://api.imgur.com/3/upload.json',
+        type: 'POST',
+        headers: {
+            Authorization: 'Client-ID e2b59ff031a5614'
+        },
+        data: {
+            type: 'base64',
+            name: 'webmonarender.jpg',
+            title: 'Webmona Render',
+            description: 'Made using http://infoburp.github.io/webmona/',
+            image: img
+        },
+        dataType: 'json'
+    }).success(function(data) {
+        var url = 'http://imgur.com/' + data.data.id + '?tags';
+        _gaq.push(['_trackEvent', 'webmona', 'share', url]);
+        w.location.href = url;
+    }).error(function() {
+        alert('Could not reach api.imgur.com. Sorry :(');
+        w.close();
+        _gaq.push(['_trackEvent', 'webmona', 'share', 'fail']);
+    });
+}
+function getrandomimage(){
+	//get random image from imgur gallery
     var img;
     try 
 	    {
@@ -1153,7 +1198,6 @@ function share(){
         _gaq.push(['_trackEvent', 'webmona', 'share', 'fail']);
     });
 }
-
 //if no image is loaded, get random image from imgur original images gallery
 //check if an image has been loaded
 if (proxyImage.src === '') 
@@ -1175,9 +1219,8 @@ newRandomImageButton.addEventListener ('click', function (event)
 			{
 				return;
 			}
-		//get random image from imgur original images gallery
-		
-		//load as original image
+		//get random image from imgur original images gallery + load as original image
+		getrandomimage();
 	});
 
 //when view whole gallery button is clicked
@@ -1185,3 +1228,7 @@ newRandomImageButton.addEventListener ('click', function (event)
 	{
 		
 	});
+function getgallery(){
+	//get all images from imgur gallery
+    
+}
